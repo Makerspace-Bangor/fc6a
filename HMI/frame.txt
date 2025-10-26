@@ -1,0 +1,20 @@
+Example: Data frame D100 register
+aw, I downloadeded the manual, but lost the URL
+
+
+05 30 30 57 52 44 30 31 30 30 30 31 03
+│  │  │  │  │ │ │ │ │ │ │ │ │ │
+│  │  │  │  │ │ │ │ │ │ │ │ │ └─ ETX
+│  │  │  │  │ │ │ │ │ │ │ │ └── count (01)
+│  │  │  │  │ │ │ │ │ │ │ └──── operand 4 digits ("0100")
+│  │  │  │  │ │ │ │ │ │ └────── device ("D")
+│  │  │  │  │ │ │ │ │ └──────── command ("R")
+│  │  │  │  │ │ │ │ └────────── station ("00")
+│  │  │  │  │ │ │ └──────────── ENQ (0x05)
+
+
+Register D100 = 1234
+
+05 30 30 57 57 44 30 31 30 30 30 31 31 32 33 34 03
+ENQ | cmd='W' dev='D' addr='0100' count='01' data='1234'
+
