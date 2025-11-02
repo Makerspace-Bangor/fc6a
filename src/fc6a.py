@@ -6,7 +6,7 @@ import time
 ### WARNING!!! ###
 '''
 This library will let you do some things that the IDEC PLC might never do. 
-Here, we allow for switching endian not from call to call. 
+Here, we allow for switching endian from call to call. 
 
 Writing special registers, and M type seems to be busted right now, though, we can read. 
 Limited datatypes supported at this time. B,F,W
