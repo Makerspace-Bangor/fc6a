@@ -5,20 +5,10 @@ import time
 
 ### WARNING!!! ###
 '''
-This library will let you do some things that the IDEC PLC might never do. Such as:
-Write or Read a float from an even register to an odd one. 
-in the IDEC Conventions, registers as floats are odd then even.
+This library will let you do some things that the IDEC PLC might never do. 
+Here, we allow for switching endian not from call to call. 
 
-This may be configurable in the settings, though Its not default.
-
-Here, we assume the data type is whatever function call you provide, and that the upper byte is the 
-next consecutive register. .. so be cautius, that you are reading and writing the correct registers
-else extraneous reults may occur.
-
-TODO: FIX Write bit
-TODO: Force bits?
-TODO: Add doubles
-
+Writing special registers, and M type seems to be busted right now, though, we can read. 
 Limited datatypes supported at this time. B,F,W
 
 '''
@@ -96,16 +86,27 @@ class FC6AMaint:
             raise IOError(f"Write failed: {resp!r}")
 
     def read_float(self, addr: int, swapped=True):
-        """Read 32-bit float (2 words)."""
+        """Read 32-bit float (2 words) with selectable endian/word-swap."""
+
         req = self._build_read("D", addr, 4)
         resp = self._send(req)
         if resp[0] != 0x06:
             raise IOError(f"Bad response: {resp!r}")
-        hex_str = resp[4:-3].decode("ascii")
-        lo = int(hex_str[0:4], 16)
-        hi = int(hex_str[4:8], 16)
-        val = (lo << 16 | hi) if swapped else (hi << 16 | lo)
-        return struct.unpack(">f", struct.pack(">I", val))[0]
+
+        hex_str = resp[4:-3].decode("ascii")   # hex string like "3F800000" etc.
+
+        # IDEC maintenance protocol returns HI word first, LO word second
+        hi = int(hex_str[0:4], 16)
+        lo = int(hex_str[4:8], 16)
+
+        # Swap words if needed
+        raw = (lo << 16) | hi if swapped else (hi << 16) | lo
+
+        # If swapped=TRUE we already LE format internally, else BE
+        if swapped:
+            return struct.unpack("<f", struct.pack("<I", raw))[0]
+        else:
+            return struct.unpack(">f", struct.pack(">I", raw))[0]
 
     def write_float(self, addr: int, value: float, swapped=True):
         """Write 32-bit float (2 words)."""
@@ -118,3 +119,65 @@ class FC6AMaint:
         resp = self._send(req)
         if resp[0] != 0x06:
             raise IOError(f"Write float failed: {resp!r}")
+       
+    # --- Batch reading functions ---
+    def read_words_block(self, start_addr: int, count: int):
+        """Read multiple contiguous 16-bit words."""
+        nbytes = count * 2
+        req = self._build_read("D", start_addr, nbytes)
+        resp = self._send(req)
+        if not resp or resp[0] != 0x06:
+            raise IOError(f"Bad response: {resp!r}")
+
+        hex_str = resp[4:-3].decode("ascii")
+        # Each word = 4 hex characters
+        words = [int(hex_str[i:i+4], 16) for i in range(0, len(hex_str), 4)]
+        return words
+
+    def read_floats_block(self, start_addr: int, count: int, endian: int = 0):
+        """
+        Read multiple contiguous 32-bit floats (2 words per float).
+
+        Args:
+            start_addr (int): Starting D-register address.
+            count (int): Number of floats to read.
+            endian (int): 0 = little-endian (low word first, default)
+                          1 = big-endian (high word first)
+        """
+        nbytes = count * 4
+        req = self._build_read("D", start_addr, nbytes)
+        resp = self._send(req)
+        if not resp or resp[0] != 0x06:
+            raise IOError(f"Bad response: {resp!r}")
+
+        hex_str = resp[4:-3].decode("ascii")
+        floats = []
+
+        for i in range(0, len(hex_str), 8):
+            hi = int(hex_str[i:i+4], 16)
+            lo = int(hex_str[i+4:i+8], 16)
+
+            if endian == 0:
+                # little-endian (FC6A default)
+                raw = (lo << 16) | hi
+                val = struct.unpack("<f", struct.pack("<I", raw))[0]
+            elif endian == 1:
+                # big-endian (word order swapped)
+                raw = (hi << 16) | lo
+                val = struct.unpack(">f", struct.pack(">I", raw))[0]
+            else:
+                raise ValueError("Endian must be 0 (little) or 1 (big)")
+
+            floats.append(val)
+
+        return floats
+
+
+    def read_bits_block(self, start_addr: int, count: int):
+        """Read multiple contiguous bits from M relays."""
+        req = self._build_read("M", start_addr, count)
+        resp = self._send(req)
+        if not resp or resp[0] != 0x06:
+            raise IOError(f"Bad response: {resp!r}")
+        payload = resp[4:-3].decode("ascii")
+        return [int(ch) for ch in payload]
