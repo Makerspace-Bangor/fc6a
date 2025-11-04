@@ -11,6 +11,7 @@ Monitor Multiple PLCs, and registers.
  This includes the ability to concurently read and write PLCs with different endians.  
   
 Send control values.
+Write your own software applications for controling IDEC PLCs
 
 
 
@@ -35,4 +36,4 @@ Send control values.
   
   
 </pre>
-<img src"https://github.com/Makerspace-Bangor/fc6a/blob/main/pictures/customView.png">
+<img src="https://github.com/Makerspace-Bangor/fc6a/blob/main/pictures/customView.png" alt="Custom Multi plc monitoring apliaction where PLCs and reggisters have big and little endians"  width="500" height="600">
