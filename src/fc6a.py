@@ -181,3 +181,11 @@ class FC6AMaint:
             raise IOError(f"Bad response: {resp!r}")
         payload = resp[4:-3].decode("ascii")
         return [int(ch) for ch in payload]
+
+    def close(self):
+        # close connection
+        try:
+            if hasattr(self, "sock") and self.sock:
+                self.sock.close()
+        except Exception:
+            pass
