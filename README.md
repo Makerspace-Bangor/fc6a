@@ -37,3 +37,5 @@ Write your own software applications for controling IDEC PLCs
   
 </pre>
 <img src="https://github.com/Makerspace-Bangor/fc6a/blob/main/pictures/customView.png" alt="Custom Multi plc monitoring apliaction where PLCs and reggisters have big and little endians"  width="500" height="600">
+<br>
+<img src="https://github.com/Makerspace-Bangor/fc6a/blob/main/pictures/GenCustomMonitor.png" alt="Generate your own custom monitor" width="500" height="600">
