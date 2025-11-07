@@ -64,7 +64,15 @@ PY;
 #!/usr/bin/env python3
 import csv, time, os, datetime, itertools
 import matplotlib.pyplot as plt
-from fc6a import FC6AMaint
+try:
+    from fc6a import FC6AMaint
+except ImportError:
+    print("fc6a module not found, downloading from GitHub...")
+    import requests
+    url = "https://raw.githubusercontent.com/Makerspace-Bangor/fc6a/main/src/fc6a.py"
+    code = requests.get(url).text
+    exec(code, globals())  # inject FC6AMaint
+    print("fc6a module loaded from GitHub.")
 
 PLC_CONFIGS = [
 $plc_str
@@ -239,6 +247,19 @@ function addPLC() {
 
 <body>
 <h2>Generate Custom FC6A Monitor Script</h2>
+<br>You will need network connectivity to your PLC for this<br>
+script generator to work, so we have included the ability to get<br>
+the class library from the official repo, via a network connection.<br>
+-- you could still download and installl the fc6a library from:<br>
+<a href="https://github.com/Makerspace-Bangor/fc6a/blob/main/src/fc6a.py">https://github.com/Makerspace-Bangor/fc6a/blob/main/src/fc6a.py</a><br> 
+The generated script requires Python3.<br><br>
+<br><b>How to use this page:</b>
+<br> See repo documentation.
+<br>
+
+
+
+
 
 <form method="post">
 <div id="plc_container">
@@ -274,5 +295,26 @@ function addPLC() {
 <br><br>
 <input type="submit" value="Generate Python File">
 </form>
+<br> Your browser may warn you about this file type <br>
+<br>
+<br>
+<br>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
