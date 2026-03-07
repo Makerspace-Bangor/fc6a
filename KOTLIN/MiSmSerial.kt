@@ -1,7 +1,9 @@
+package com.example.myapplication
+
 import com.fazecast.jSerialComm.SerialPort
 import java.io.ByteArrayOutputStream
 import java.nio.charset.StandardCharsets
-import kotlin.math.min
+import java.util.Locale
 
 data class Reply(
     val kind: Kind,
@@ -17,6 +19,39 @@ data class Reply(
     val nakCode: String = ""
 ) {
     enum class Kind { ACK_OK, ACK_NG, NAK, MALFORMED, EMPTY, UNKNOWN }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        other as Reply
+        if (kind != other.kind) return false
+        if (!raw.contentEquals(other.raw)) return false
+        if (ctrl != other.ctrl) return false
+        if (device != other.device) return false
+        if (command != other.command) return false
+        if (!data.contentEquals(other.data)) return false
+        if (bccRecv != other.bccRecv) return false
+        if (bccCalc != other.bccCalc) return false
+        if (bccOk != other.bccOk) return false
+        if (ngCode != other.ngCode) return false
+        if (nakCode != other.nakCode) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = kind.hashCode()
+        result = 31 * result + raw.contentHashCode()
+        result = 31 * result + ctrl
+        result = 31 * result + device.hashCode()
+        result = 31 * result + command.hashCode()
+        result = 31 * result + data.contentHashCode()
+        result = 31 * result + (bccRecv ?: 0)
+        result = 31 * result + (bccCalc ?: 0)
+        result = 31 * result + bccOk.hashCode()
+        result = 31 * result + ngCode.hashCode()
+        result = 31 * result + nakCode.hashCode()
+        return result
+    }
 }
 
 class MiSmSerial(
@@ -30,7 +65,7 @@ class MiSmSerial(
 
     enum class BccMode { AUTO, ENQ, NO_ENQ }
 
-    private val dev = device.uppercase().also {
+    private val dev = device.uppercase(Locale.US).also {
         require(it.length == 2) { "device must be 2 ASCII hex chars, e.g. FF" }
     }
 
@@ -56,17 +91,14 @@ class MiSmSerial(
     }
 
     private fun toAsciiHexByte(b: Int): ByteArray =
-        String.format("%02X", b and 0xFF).toByteArray(StandardCharsets.US_ASCII)
+        String.format(Locale.US, "%02X", b and 0xFF).toByteArray(StandardCharsets.US_ASCII)
 
     private fun asciiHexToInt(twoAscii: ByteArray): Int =
-        twoAscii.toString(StandardCharsets.US_ASCII).toInt(16)
-
-    private fun isHexAscii(data: ByteArray): Boolean =
-        data.all { (it in '0'.code.toByte()..'9'.code.toByte()) || (it in 'A'.code.toByte()..'F'.code.toByte()) }
+        String(twoAscii, StandardCharsets.US_ASCII).toInt(16)
 
     private fun pad4(n: Int): String {
         require(n in 0..9999) { "operand number must be 0..9999" }
-        return String.format("%04d", n)
+        return String.format(Locale.US, "%04d", n)
     }
 
     private fun dtypeForBit(dtype: Char): Char = when (dtype.uppercaseChar()) {
@@ -91,7 +123,7 @@ class MiSmSerial(
             require(io in 0..9999) { "bit index must be 0..9999" }
             return (if (isOut) 'Y' else 'X') to io
         }
-        val s = io.toString().trim().uppercase()
+        val s = io.toString().trim().uppercase(Locale.US)
         require(s.isNotEmpty()) { "empty IO address" }
         val head = s[0]
         val tail = s.substring(1)
@@ -103,7 +135,7 @@ class MiSmSerial(
                 'Y' to tail.toInt()
             }
             'I' -> {
-                require(!isOut) { "output() does not accept I addresses" }
+                require(!isOut) { "input() does not accept I addresses" }
                 require(tail.all { it.isDigit() }) { "I address must be like I0, I7" }
                 'X' to tail.toInt()
             }
@@ -135,7 +167,7 @@ class MiSmSerial(
         val framed = byteArrayOf(0x05) + body + toAsciiHexByte(bcc) + byteArrayOf(0x0D)
 
         if (debug) {
-            runCatching { println("TX(ascii): " + body.toString(StandardCharsets.US_ASCII)) }
+            runCatching { println("TX(ascii): " + String(body, StandardCharsets.US_ASCII)) }
             println("TX(hex):   " + framed.joinToString("") { "%02x".format(it) })
         }
         return framed
@@ -161,7 +193,7 @@ class MiSmSerial(
         if (raw.last() != 0x0D.toByte() || raw.size < 6) return Reply(Reply.Kind.MALFORMED, raw)
 
         val ctrl = raw[0]
-        val dev = raw.copyOfRange(1, 3).toString(StandardCharsets.US_ASCII)
+        val devId = String(raw, 1, 2, StandardCharsets.US_ASCII)
         val cmd = raw[3].toInt().toChar()
         val bccAscii = raw.copyOfRange(raw.size - 3, raw.size - 1)
         val data = raw.copyOfRange(4, raw.size - 3)
@@ -176,7 +208,7 @@ class MiSmSerial(
             kind = Reply.Kind.UNKNOWN,
             raw = raw,
             ctrl = ctrl,
-            device = dev,
+            device = devId,
             command = cmd,
             data = data,
             bccRecv = bccRecv,
@@ -187,12 +219,12 @@ class MiSmSerial(
         return when (ctrl) {
             0x15.toByte() -> base.copy(
                 kind = Reply.Kind.NAK,
-                nakCode = if (data.size >= 2) data.copyOfRange(0, 2).toString(StandardCharsets.US_ASCII) else ""
+                nakCode = if (data.size >= 2) String(data, 0, 2, StandardCharsets.US_ASCII) else ""
             )
             0x06.toByte() -> {
                 if (cmd == '2') base.copy(
                     kind = Reply.Kind.ACK_NG,
-                    ngCode = if (data.size >= 2) data.copyOfRange(0, 2).toString(StandardCharsets.US_ASCII) else ""
+                    ngCode = if (data.size >= 2) String(data, 0, 2, StandardCharsets.US_ASCII) else ""
                 ) else base.copy(kind = Reply.Kind.ACK_OK)
             }
             else -> base
@@ -201,7 +233,7 @@ class MiSmSerial(
 
     private fun xferOnce(cont: Char, cmd: Char, dtype: Char, payload: ByteArray, includeEnq: Boolean): Reply {
         val req = frameReq(cont, cmd, dtype, payload, includeEnq)
-        port.purgePort(SerialPort.PURGE_RXCLEAR or SerialPort.PURGE_TXCLEAR)
+        port.flushIOBuffers()
         port.writeBytes(req, req.size)
 
         val raw = recvUntilCr()
@@ -255,7 +287,7 @@ class MiSmSerial(
         raiseIfErr(rep)
 
         require(rep.data.size == 1 && (rep.data[0] == '0'.code.toByte() || rep.data[0] == '1'.code.toByte())) {
-            "Unexpected bit payload: ${rep.data.toString(StandardCharsets.US_ASCII)}"
+            "Unexpected bit payload: ${String(rep.data, StandardCharsets.US_ASCII)}"
         }
         return if (rep.data[0] == '1'.code.toByte()) 1 else 0
     }
@@ -274,7 +306,7 @@ class MiSmSerial(
     fun output(bit: Any, on: Boolean = true): Int {
         val (_, b) = parseIo(bit, isOut = true)
         val v = if (on) 1 else 0
-        val payload = String.format("%04d%d", b, v).toByteArray(StandardCharsets.US_ASCII) // EXACT "00001"
+        val payload = String.format(Locale.US, "%04d%d", b, v).toByteArray(StandardCharsets.US_ASCII)
         val rep = xfer('0', 'W', 'y', payload)
         raiseIfErr(rep)
         return v
@@ -282,6 +314,6 @@ class MiSmSerial(
 
     fun input(bit: Any): Int {
         val (_, b) = parseIo(bit, isOut = false)
-        return readBit("X" + String.format("%04d", b))
+        return readBit("X" + String.format(Locale.US, "%04d", b))
     }
 }
