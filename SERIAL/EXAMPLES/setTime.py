@@ -50,11 +50,12 @@ except Exception as e:
     sys.exit(1)
 
 try:
-    plc.write_bit("M8000", 0) #curtesy stop
-    print("M8000 set to 0 (STOP).")
+    #plc.write_bit("M8000", 0) #curtesy stop
+    #print("M8000 set to 0 (STOP).")
     set_time(plc)
-    plc.write_bit("M8000", 1)
-    print("M8000 set to 1 (Run).") 
+    # no one wants to stop they process for time change
+    #plc.write_bit("M8000", 1)
+    #print("M8000 set to 1 (Run).") 
 except Exception as e:
     print(f"\nCommunication error: {e}")
 
