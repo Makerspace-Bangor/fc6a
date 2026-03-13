@@ -33,6 +33,10 @@ The battery voltage can also be measured by writing 1. The measured value in mV 
 ##### SD CARD ERROR M8255 bit set pg 492 manual
 ### REcipie err M8265
 
+######### NON ERR POINTS OF INTEREST ##############
+firmware: M8029 :: version may relate to functionality
+dateTime: D8015 thru D8021  set with M8020
+
 """
 
 
