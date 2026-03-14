@@ -86,6 +86,26 @@ def _parse_addr(addr: Union[str, int], dtype: Optional[str] = None) -> Tuple[str
         return dtype, addr
 
     s = str(addr).strip()
+    # Add support for dot bit word syntax:: ie::"M8004.15"
+    if "." in s:
+        base, bit = s.split(".")
+        if not bit.isdigit():
+            raise ValueError("bit index must be numeric")
+
+        d = base[0]
+        n = base[1:]
+
+        if not n.isdigit():
+            raise ValueError("addr numeric portion must be digits")
+
+        word = int(n)
+        b = int(bit)
+
+        if b < 0 or b > 15:
+            raise ValueError("bit must be 0..15")
+
+        return d, word * 16 + b
+    #-----------------------------------------------------
     if len(s) < 2:
         raise ValueError("addr must look like 'D0100' or 'M8070'")
 
@@ -440,6 +460,26 @@ class MiSmSerial:
         """
         Write 1 bit. Compatible with calls like write_bit("Y0000", 1, 0).
         """
+
+        # --- support word.bit syntax ---
+        if isinstance(addr, str) and "." in addr:
+            base, bit = addr.split(".")
+            bit = int(bit)
+
+            if bit < 0 or bit > 15:
+                raise ValueError("bit must be 0..15")
+
+            v = self.read(base)
+
+            if on:
+                v |= (1 << bit)
+            else:
+                v &= ~(1 << bit)
+
+            self.write(base, v)
+            return 1 if int(on) else 0
+        # --------------------------------
+
         dt, op = _parse_addr(addr, dtype=dtype)
         bit_dt = _dtype_for_bit(dt.upper())
 
@@ -454,6 +494,14 @@ class MiSmSerial:
         """
         Read 1 bit. Compatible with calls like read_bit("M8070", 0).
         """
+        # --- support word.bit syntax ---
+        if isinstance(addr, str) and "." in addr:
+            base, bit = addr.split(".")
+            bit = int(bit)
+
+            v = self.read(base)
+            return 1 if (v & (1 << bit)) else 0
+        # --------------------------------        
         dt, op = _parse_addr(addr, dtype=dtype)
         bit_dt = _dtype_for_bit(dt.upper())
 
@@ -636,16 +684,20 @@ def output(plc: MiSmSerial, bit: Union[str, int], on: int = 1) -> int:
 
 
 # -------------------------
-# Chat writes a serial library in 4 hours. seems to work ok. needs more testing.
-
-'''
+"""
 if __name__ == "__main__":
     # Example: your test sequence
-    plc = MiSmSerial("/dev/ttyACM0", device="FF", debug=True, bcc_mode="auto")
+    plc = MiSmSerial("/dev/ttyACM0", device="FF", debug=False, bcc_mode="auto")
 
     from time import sleep
+    v = plc.read_bit("M8004.01")   # second arg accepted/ignored for compatibility
+    print(v)
+    v = plc.read("M8004")   # second arg accepted/ignored for compatibility
+    print(v)
 
-    v = plc.read_bit("M8070", 0)   # second arg accepted/ignored for compatibility
+    plc.write_bit("M8004.15", 0)
+
+    v = plc.read_bit("M8004.15")   # second arg accepted/ignored for compatibility
     print(v)
 
     for i in range(0,8):
@@ -655,4 +707,5 @@ if __name__ == "__main__":
         plc.output(i,0)
         sleep(1)
     plc.close()
-'''
+
+"""
