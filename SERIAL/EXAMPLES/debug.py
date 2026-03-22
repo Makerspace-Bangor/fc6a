@@ -29,6 +29,12 @@ Requirements:
 - Python 3
 - pyserial
 - MiSmSerial.py available in the same directory or on PYTHONPATH
+
+NOTES:
+
+https://lit.stromquist.com/docs/IDEC/KIT-FC6A_UserMan.pdf
+page 368 Device IDs for expansion slots.
+D8000, D8002 CPU IDs. TODO: locate product IDS for CPU IDs.
 """
 
 import sys
