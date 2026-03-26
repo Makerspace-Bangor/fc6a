@@ -39,7 +39,7 @@ import serial
 BAUD = 19200
 DEFAULT_DEVICE = "FF"
 DEFAULT_TIMEOUT = 1.0
-
+PRECISION = 3 # default is 6, on the PLCs, but my typical use is 3-4, so.. 
 
 # -------------------------
 # Low-level helpers
