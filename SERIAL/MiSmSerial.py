@@ -642,7 +642,9 @@ class MiSmSerial:
             raise ValueError("endian must be 0 (little) or 1 (big)")
 
         b = struct.pack(">HH", high, low)
-        return struct.unpack(">f", b)[0]
+        val = struct.unpack(">f", b)[0]
+        return round(val, PRECISION)
+        #return struct.unpack(">f", b)[0]
 
     def write_float(self, addr: Union[str, int], value: float, endian: int = 0, dtype: Optional[str] = None) -> float:
         """
