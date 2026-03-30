@@ -1,3 +1,5 @@
+TODO::Add read_ascii() for registers and blocks of regiters.
+
 
 <pre>
 # fc6a:: A Maintenance protocol repo for python.
