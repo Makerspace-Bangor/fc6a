@@ -12,6 +12,8 @@ aw, I downloadeded the manual, but lost the URL
 │  │  │  │  │ │ │ │ └────────── station ("00")
 │  │  │  │  │ │ │ └──────────── ENQ (0x05)
 
+^^^^ Ok this is wrong, and I recognize that. Will fix later
+
 
 Register D100 = 1234
 
