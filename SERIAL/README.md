@@ -1,10 +1,8 @@
 <pre>
-# TODO :: add a variable for floating point percission
-  IDEC max percision for a 32 bot register is 6
-  Im not sure how the plc deals with it for real, 
-  like gloabaly, or individualy
-  discovered by reading D40/D41 prog ver e260=1.216
-  as 1.2150000001367
+# added PRECISSION variable. forget if its 4 or 6, IDEC max is 6, our most frequest use is 4
+# Password:
+  ENQ + device + 0 + W + V + [8 Character pass] + option + BCC + CR
+  yeah its plain text. 
   
 </pre>
 
