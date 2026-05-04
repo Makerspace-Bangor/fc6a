@@ -61,16 +61,35 @@ If I had not been nominated for this competition, I would be using those platfor
 Predicted memory use is around 42K, if I just write out all the registers as 16 bit u\_int16. 
 \end{itemize}
 I could get creative to bring this figure down, but MCU flash memory will likely be the most limiting factor. 
-I haven't built the server yet, so I don't have an exact figure. 
+
+here I have wrote a basic example where 1 register is configured:
+\begin{verbatim}
+Sketch uses 15300 bytes (6%) of program storage space. Maximum is 253952 bytes.
+Global variables use 1761 bytes (21%) of dynamic memory, leaving 6431 bytes for local variables. Maximum is 8192 bytes.
+\end{verbatim}
 
 \section*{Project Status}
 Active Development. Multiple client projects built, including some on Arduino Compatible hardware clients. 
+A basic server has been configured on an Arduino MEGA. While it is good enough to pass my custom clients, the HG2J IDEC HMI I am using is not having it. 
+This could be because in my clients, rather than addressing specific hosts, via CPU, or a register, I address all devices on the network. 
+There is a clue on the HMI:
+\begin{verbatim}
+ Communication error READID:00h 0
+ No reply from Ext device Con-
+ firm PLC com cable settings
+ \end{verbatim}
+ 
+ Where I have confirmed the server with my own client, I am thinking that the error must be in the generic way I am addressing specific devices. For most client applications FF, "address all" is good enough specificity comes from the IP, or device name, rather than the PLC memory addressing... it only ever matters when downloading, uploading, or re-initializing a device. Im speculating that the server operation also behaves this way.
+ 
+Ok its late, and Im on to the rabbit holes portion of this. I changed the Arduino Mac to match IDEC prefix \textbf{00:03:7B}, but my port scanner doesn't call my Arduino \textbf{IDEC IZUMI} like it does the PLC and HMI... I wonder why that is. 
+ 
+ 
 \section*{Project Plan:}
 What I want to do is just write a big ol table of registers. but that will hog memory. What I will do is slightly more convoluted perhaps. 
 The plan is to write the server in python3, on my desktop, to get the server concept operational, and test it with Things like my HMI, to verify operations.
 While I am fairly certain on what requests look like, I do not have the Return code patterns memorized yet. The server will basically be responding with return requests. 
 
-Good question, how will I implement other busses unsupported by things like the PLC / HMI? The plan here is to implement a form of extended memory, and treat other devices like native input and output.  The libraries I have written so far do not have the faculties to provide Analog IO, or extended memory. No big deal, I was going to write those eventually any way. 
+How will I implement other busses unsupported by things like the PLC / HMI? The plan here is to implement a form of extended memory, and treat other devices like native input and output.  The libraries I have written so far do not have the faculties to provide Analog IO, or extended memory. No big deal, I was going to write those eventually any way. 
 
 So then Your PLC, or HMI, could request data from Arduino devices, and shields. The only thing we would need to do is return specific data types. 
 
@@ -95,6 +114,12 @@ You can of course roll your own HMI interface, but this is a separate blog topic
 
 
 \section*{Arduino Implementation examples}
+Example 0: basic operational testing. I built an arduino server with a Mega, and the Ethernet R3 Shield.
+Then had my custom remote client read the server IP: 192.168.1.2  for a maintenance protocol packet.
+
+
+
+
 In this example, I use Windo/I to create a testing monitor for the Arduino to communicate on. 
 
 	\begin{figure}[t!]
