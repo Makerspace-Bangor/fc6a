@@ -3,7 +3,7 @@
 MiSmSerial - IDEC MicroSmart "Maintenance Protocol" over SERIAL (ASCII framing)
 
 Key points:
-- Default baud: 19200 (global BAUD)
+- Default baud: 9600 (global BAUD)
 - Frames are ASCII-based, terminated by CR (0x0D)
 - Request format:
     ENQ(0x05) + dev(2 ASCII) + cont('0'/'1') + cmd(1) + dtype(1) + payload + BCC(2 ASCII hex) + CR
@@ -36,7 +36,7 @@ import serial
 # Globals
 # -------------------------
 
-BAUD = 19200
+BAUD = 9600
 DEFAULT_DEVICE = "FF"
 DEFAULT_TIMEOUT = 1.0
 PRECISION = 3 # default is 6, on the PLCs, but my typical use is 3-4, so.. 
@@ -578,6 +578,34 @@ class MiSmSerial:
             out.append({"timer": tnum + i, "current": cur, "preset": pre, "status": st})
         return out
 
+    def write_timer(self, tnum: int, value: int, preset: Optional[int] = None) -> int:
+        """
+        Write timer current/present value by default.
+
+        If preset is provided, also write the timer preset value.
+
+        Examples:
+            plc.write_timer(0, 150)
+                -> T0000 current/present value = 150
+
+            plc.write_timer(0, 150, preset=300)
+                -> T0000 current/present value = 150
+                -> T0000 preset value = 300
+        """
+        if tnum < 0 or tnum > 9999:
+            raise ValueError("timer number must be 0..9999")
+
+        if value < 0 or value > 0xFFFF:
+            raise ValueError("timer current value must be 0..65535")
+
+        if preset is not None:
+            if preset < 0 or preset > 0xFFFF:
+                raise ValueError("timer preset value must be 0..65535")
+
+            self.write(tnum, preset, dtype="T")
+
+        return self.write(tnum, value, dtype="t")
+
     def write_counter(self, cnum: int, preset: int) -> int:
         """
         Convenience: write counter preset (Cxxxx) using 16-bit word write.
@@ -684,9 +712,8 @@ def input(plc: MiSmSerial, bit: Union[str, int]) -> int:
 def output(plc: MiSmSerial, bit: Union[str, int], on: int = 1) -> int:
     return plc.output(bit, on)
 
-
-# -------------------------
 """
+# -------------------------
 if __name__ == "__main__":
     # Example: your test sequence
     plc = MiSmSerial("/dev/ttyACM0", device="FF", debug=False, bcc_mode="auto")
@@ -698,7 +725,8 @@ if __name__ == "__main__":
     print(v)
 
     plc.write_bit("M8004.15", 0)
-
+    plc.write_timer(420, 100)            # set current time to 100 on t0420
+    plc.write_timer(421, 100, preset=30) # set current time to 100 on t0421 with a preset of 100
     v = plc.read_bit("M8004.15")   # second arg accepted/ignored for compatibility
     print(v)
 
