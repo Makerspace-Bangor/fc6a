@@ -1,6 +1,3 @@
-TODO::Add read_ascii() for registers and blocks of regiters.
-
-
 <pre>
 # fc6a:: A Maintenance protocol repo for python.
 With this class library, you can remotely read and write IDEC Programable Logic Controlers 
@@ -35,9 +32,25 @@ Write your own software applications for controling IDEC PLCs
   Bit
   Word
   Float
+  Counters
+
+
+#===================================================  
+# Features:
+#===================================================  
+  optional debugging.
   
+
+#===================================================  
+# Todo / Development
+#===================================================  
+  Abstract N register datatypes to work with things like strings and 
+  doubles, and non floating point types occupying multiple registers... 
+  
+  ZLD binary imagge downloading.
+  Security bit setting.
+  Factory Reset
+  SD Card operations, list, read / write files, delete.
+  Upload files -- for data integrity purposes
   
 </pre>
-<img src="https://github.com/Makerspace-Bangor/fc6a/blob/main/pictures/customView.png" alt="Custom Multi plc monitoring apliaction where PLCs and reggisters have big and little endians"  width="500" height="600">
-<br>
-<img src="https://github.com/Makerspace-Bangor/fc6a/blob/main/pictures/GenCustomMonitor.png" alt="Generate your own custom monitor" width="500" height="600">
