@@ -743,6 +743,99 @@ class MiSmTCP:
         for i in range(n):
             vals.append(int(rep.data[i * 4:(i + 1) * 4].decode("ascii"), 16))
         return vals
+    # -------------------------
+    # Blocks of data 
+    # -------------------------
+    
+    def read_block(self, addr, count=2, endian=0, dtype=None):
+        """
+        Read count 16-bit registers as a list of words.
+        endian:
+          0 = normal PLC/order-as-returned
+          1 = reversed word order
+        """
+        if count < 1 or count > 127:
+            raise ValueError("count must be 1..127 registers")
+
+        dt, op = _parse_addr(addr, dtype=dtype)
+        dt = _dtype_for_nbyte(dt)
+
+        nbytes = count * 2
+        payload = _pad4(op).encode("ascii") + f"{nbytes:02X}".encode("ascii")
+
+        rep = self._xfer("0", "R", dt, payload)
+        self._raise_if_err(rep)
+
+        expected = count * 4
+        if len(rep.data) != expected or not _is_hex_ascii(rep.data):
+            raise IOError(f"Unexpected block payload: {rep.data!r}")
+
+        words = [
+            int(rep.data[i:i + 4].decode("ascii"), 16)
+            for i in range(0, expected, 4)
+        ]
+
+        if endian == 1:
+            words.reverse()
+        elif endian != 0:
+            raise ValueError("endian must be 0 or 1")
+
+        return words
+
+    def write_block(self, addr, values, endian=0, dtype=None):
+        """
+        Write a list of 16-bit register values.
+        """
+        if not values:
+            raise ValueError("values must not be empty")
+        if len(values) > 127:
+            raise ValueError("too many registers")
+
+        #words = [int(v) & 0xFFFF for v in values]
+        original_words = [int(v) & 0xFFFF for v in values]
+        words = list(original_words)
+        if endian == 1:
+            words = list(reversed(words))
+        elif endian != 0:
+            raise ValueError("endian must be 0 or 1")
+
+        dt, op = _parse_addr(addr, dtype=dtype)
+        dt = _dtype_for_nbyte(dt)
+
+        data_ascii = "".join(f"{w:04X}" for w in words).encode("ascii")
+        nbytes = len(words) * 2
+        payload = _pad4(op).encode("ascii") + f"{nbytes:02X}".encode("ascii") + data_ascii
+
+        rep = self._xfer("0", "W", dt, payload)
+        self._raise_if_err(rep)
+        return original_words    
+    
+    # -------------------------
+    # block-o-register helpers
+    # -------------------------
+
+    def read_uint(self, addr, count=2, endian=0, dtype=None):
+        words = self.read_block(addr, count=count, endian=endian, dtype=dtype)
+
+        value = 0
+        for w in words:
+            value = (value << 16) | w
+
+        return value
+
+    def write_uint(self, addr, value, count=2, endian=0, dtype=None):
+        if count < 1 or count > 127:
+            raise ValueError("count must be 1 .. 127 registers")
+        
+        if value < 0 or value >= (1 << (16 * count)):
+            raise ValueError(f"value does not fit in {count} registers")
+
+        words = []
+        for shift in range((count - 1) * 16, -1, -16):
+            words.append((value >> shift) & 0xFFFF)
+
+        return self.write_block(addr, words, endian=endian, dtype=dtype)
+
 
     # -------------------------
     # Float helpers (2 regs)
