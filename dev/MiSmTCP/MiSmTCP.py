@@ -814,7 +814,7 @@ class MiSmTCP:
     # block-o-register helpers
     # -------------------------
 
-    def read_uint(self, addr, count=2, endian=0, dtype=None):
+    def read_unit(self, addr, count=2, endian=0, dtype=None):
         words = self.read_block(addr, count=count, endian=endian, dtype=dtype)
 
         value = 0
@@ -823,7 +823,7 @@ class MiSmTCP:
 
         return value
 
-    def write_uint(self, addr, value, count=2, endian=0, dtype=None):
+    def write_unit(self, addr, value, count=2, endian=0, dtype=None):
         if count < 1 or count > 127:
             raise ValueError("count must be 1 .. 127 registers")
         
