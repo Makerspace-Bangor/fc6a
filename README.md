@@ -52,5 +52,6 @@ Write your own software applications for controling IDEC PLCs
   Factory Reset
   SD Card operations, list, read / write files, delete.
   Upload files -- for data integrity purposes
+  Force IO 
   
 </pre>
