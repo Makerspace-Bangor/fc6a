@@ -684,8 +684,9 @@ class MiSmSerial:
         if len(values) > 127:
             raise ValueError("too many registers")
 
-        words = [int(v) & 0xFFFF for v in values]
-
+        #words = [int(v) & 0xFFFF for v in values]
+        original_words = [int(v) & 0xFFFF for v in values]
+        words = list(original_words)
         if endian == 1:
             words = list(reversed(words))
         elif endian != 0:
@@ -700,7 +701,7 @@ class MiSmSerial:
 
         rep = self._xfer("0", "W", dt, payload)
         self._raise_if_err(rep)
-        return words    
+        return original_words    
     
     # -------------------------
     # block-o-register helpers
@@ -716,6 +717,9 @@ class MiSmSerial:
         return value
 
     def write_uint(self, addr, value, count=2, endian=0, dtype=None):
+        if count < 1 or count > 127:
+            raise ValueError("count must be 1 .. 127 registers")
+        
         if value < 0 or value >= (1 << (16 * count)):
             raise ValueError(f"value does not fit in {count} registers")
 
