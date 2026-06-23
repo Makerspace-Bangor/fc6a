@@ -793,6 +793,47 @@ class MiSmSerial:
         self._raise_if_err(rep)
         return float(value)
 
+    def force_io(self, enable: bool = True) -> int:
+        """
+        Enable or disable/suspend IDEC Force I/O mode.
+
+        Capture-derived maintenance protocol frames:
+          enable  -> W O 1
+          disable -> W O 0
+
+        Returns 1 when enabled, 0 when disabled.
+        """
+        v = 1 if bool(enable) else 0
+        rep = self._xfer("0", "W", "O", str(v).encode("ascii"))
+        self._raise_if_err(rep)
+        return v
+
+    def force(self, bit: Union[str, int], on: int = 1) -> int:
+        """Force one physical output Q0..Q7 ON/OFF."""
+        _, b = _parse_io(bit, is_out=True)
+        if b < 0 or b > 7:
+            raise ValueError("force currently supports Q0..Q7 only")
+
+        v = 1 if int(on) else 0
+
+        self.force_io(True)
+
+        rep = self._xfer("0", "W", "]", f"{b:04d}{v}".encode("ascii"))
+        self._raise_if_err(rep)
+
+        rep = self._xfer("0", "W", "^", f"{b:04d}1".encode("ascii"))
+        self._raise_if_err(rep)
+
+        return v
+
+    def release_force(self, bit: Union[str, int]) -> int:
+        """Release Force control."""        	
+        return self.force(False)
+
+    # Short aliases
+    force_output = force
+    force_release = release_force
+
 
 # -------------------------
 # Optional module-level wrappers
