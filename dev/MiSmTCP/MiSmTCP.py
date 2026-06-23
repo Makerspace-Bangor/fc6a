@@ -939,9 +939,10 @@ class MiSmTCP:
 
         return v
 
-    def release_force(self, bit: Union[str, int]) -> int:
+    #def release_force(self, bit: Union[str, int]) -> int:
+    def release_force(self) -> int:
         """Release Force control."""        	
-        return self.force(False)
+        return self.force_io(False)
 
     # Short aliases
     force_output = force
