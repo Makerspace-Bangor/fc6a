@@ -13,7 +13,6 @@ Send control values.
 Write your own software applications for controling IDEC PLCs
 
 
-
 #===================================================  
 # System Requirements: 
 #===================================================  
@@ -22,10 +21,10 @@ Write your own software applications for controling IDEC PLCs
 
   
 #===================================================  
-# WindLDDR, and Automation Organizer NOT Required. #
+# Optional :        
 #===================================================  
-  Testesd on FC6A Micro Smart PLCs, verified operational on Windows 10+ and Linux
-
+  WindLDR
+ 
 #===================================================  
 # Supported Data Types:
 #===================================================  
@@ -33,25 +32,22 @@ Write your own software applications for controling IDEC PLCs
   Word
   Float
   Counters
-
-
+  
 #===================================================  
 # Features:
 #===================================================  
   optional debugging.
-  
+  read_block: need app testing on Strings
+  Force IO: override program, put IO in a state
 
 #===================================================  
 # Todo / Development
 #===================================================  
-  Abstract N register datatypes to work with things like strings and 
-  doubles, and non floating point types occupying multiple registers... 
   
   ZLD binary imagge downloading.
   Security bit setting.
   Factory Reset
   SD Card operations, list, read / write files, delete.
   Upload files -- for data integrity purposes
-  Force IO 
   
 </pre>
