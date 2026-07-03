@@ -1,6 +1,19 @@
 Here I figure out all the neat things you can do with an IDEC HG2J-7U HMI.
-
 <pre>
+
+<b>TL;DR:</b> It is LINUX!
+
+ID="arago"
+NAME="Arago"
+VERSION="2019.07"
+VERSION_ID="2019.07"
+PRETTY_NAME="Arago 2019.07"
+os-release (END)
+
+Arago Linux (or the Arago Project) is an open-source Linux distribution 
+created and maintained by Texas Instruments. 
+
+
 There is FTP
 
 Plug in a mouse: you get a cursor
