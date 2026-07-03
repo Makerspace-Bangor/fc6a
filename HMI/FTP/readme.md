@@ -1,4 +1,4 @@
-#HMI: HG2J-7U tested on.
+#HMI: tested on HG2J-7U
 
 <pre>
 HOW IT WORKS:

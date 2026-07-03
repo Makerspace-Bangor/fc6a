@@ -1,1 +1,0 @@
-../init.d/power_down_detect.sh
