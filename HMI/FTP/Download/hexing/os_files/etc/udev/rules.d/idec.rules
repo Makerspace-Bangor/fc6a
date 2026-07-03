@@ -1,0 +1,57 @@
+# There are a number of modifiers that are allowed to be used in some
+# of the different fields. They provide the following subsitutions:
+#
+# %n the "kernel number" of the device.
+#    For example, 'sda3' has a "kernel number" of '3'
+# %e the smallest number for that name which does not matches an existing node
+# %k the kernel name for the device
+# %M the kernel major number for the device
+# %m the kernel minor number for the device
+# %b the bus id for the device
+# %c the string returned by the PROGRAM
+# %s{filename} the content of a sysfs attribute
+# %% the '%' char itself
+#
+
+# read/write UART for normal users
+SUBSYSTEM=="tty", KERNEL=="ttyS[1-2]", GROUP="tty", MODE="0666"
+
+# read/write Buzzer for normal users
+KERNEL=="event0", ACTION=="add",  MODE="0666"
+
+# read/write Brightness for normal users
+ACTION=="add", SUBSYSTEM=="backlight", RUN+="/bin/chmod 666 /sys/class/backlight/backlight/brightness"
+
+# read/write SRAM (or MRAM) for normal users
+KERNEL=="mtdblock0", ACTION=="add",  MODE="0666"
+
+# Create a symbolic link for USB1(partition 1) and USB2(partition 1)
+KERNEL=="sd*[1]", ACTION=="add|change", DEVPATH=="*47401400.usb/musb-hdrc.0/usb1/1-1/1-1:1.0/*", SYMLINK+="usb2"
+KERNEL=="sd*[1]", ACTION=="add|change", DEVPATH=="*47401c00.usb/musb-hdrc.1/usb2/2-1/2-1:1.0/*", SYMLINK+="usb1"
+
+# Create a symbolic link for USB1 and USB2
+ACTION=="add", SYMLINK=="usb1", ENV{ID_FS_TYPE}=="vfat|ntfs", RUN+="/bin/mkdir -m 444 /home/idec/usr/exmem/A"
+ACTION=="add", SYMLINK=="usb1", ENV{ID_FS_TYPE}=="vfat|ntfs", RUN+="/bin/mount -t $env{ID_FS_TYPE} -o rw,noauto,dirsync,noexec,nodev,noatime,dmask=000,fmask=111 /dev/%k /home/idec/usr/exmem/A", OPTIONS="last_rule"
+ACTION=="add", SYMLINK=="usb2", ENV{ID_FS_TYPE}=="vfat|ntfs", RUN+="/bin/mkdir -m 444 /home/idec/usr/exmem/B"
+ACTION=="add", SYMLINK=="usb2", ENV{ID_FS_TYPE}=="vfat|ntfs", RUN+="/bin/mount -t $env{ID_FS_TYPE} -o rw,noauto,dirsync,noexec,nodev,noatime,dmask=000,fmask=111 /dev/%k /home/idec/usr/exmem/B", OPTIONS="last_rule"
+
+ACTION=="remove", DEVPATH=="*47401400.usb/musb-hdrc.0/usb1/1-1/1-1:1.0/*", RUN+="/bin/umount -l /home/idec/usr/exmem/B"
+ACTION=="remove", DEVPATH=="*47401400.usb/musb-hdrc.0/usb1/1-1/1-1:1.0/*", RUN+="/bin/rmdir /home/idec/usr/exmem/B", OPTIONS="last_rule"
+ACTION=="remove", DEVPATH=="*47401c00.usb/musb-hdrc.1/usb2/2-1/2-1:1.0/*", RUN+="/bin/umount -l /home/idec/usr/exmem/A"
+ACTION=="remove", DEVPATH=="*47401c00.usb/musb-hdrc.1/usb2/2-1/2-1:1.0/*", RUN+="/bin/rmdir /home/idec/usr/exmem/A", OPTIONS="last_rule"
+
+# Rename the USB Speaker by USB port
+ACTION=="add", SUBSYSTEM=="sound", DEVPATH=="*47401400.usb/musb-hdrc.0/usb1/1-1/1-1:1.0/sound/card?", ATTR{id}="usb_speaker2"
+ACTION=="add", SUBSYSTEM=="sound", DEVPATH=="*47401c00.usb/musb-hdrc.1/usb2/2-1/2-1:1.0/sound/card?", ATTR{id}="usb_speaker1"
+KERNEL=="controlC[0-1]", ACTION=="add", MODE="0666"
+KERNEL=="pcmC[0-1]D[0-1]p", ACTION=="add", MODE="0666"
+KERNEL=="timer", ACTION=="add", MODE="0666"
+
+# Rename the wireless LAN by USB port
+SUBSYSTEM=="net", ACTION=="add", KERNEL=="wlan*", KERNELS=="1-1:1.0", NAME="usb_wlan2", RUN+="/sbin/ifdown usb_wlan2", RUN+="/sbin/ifup usb_wlan2"
+SUBSYSTEM=="net", ACTION=="add", KERNEL=="wlan*", KERNELS=="2-1:1.0", NAME="usb_wlan1", RUN+="/sbin/ifdown usb_wlan1", RUN+="/sbin/ifup usb_wlan1"
+
+# Create a symbolic link for Keyboard
+KERNEL=="event[0-9]", ACTION=="add", SUBSYSTEM=="input", ENV{ID_INPUT_KEYBOARD}=="1", DEVPATH=="*47401400.usb/musb-hdrc.0/usb1/1-1/1-1:1.0/*", SYMLINK+="input/keyboard2", MODE="0666"
+KERNEL=="event[0-9]", ACTION=="add", SUBSYSTEM=="input", ENV{ID_INPUT_KEYBOARD}=="1", DEVPATH=="*47401c00.usb/musb-hdrc.1/usb2/2-1/2-1:1.0/*", SYMLINK+="input/keyboard1", MODE="0666"
+
