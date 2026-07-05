@@ -1,0 +1,132 @@
+<pre>
+Objective: Play DOOM on the HMI!
+
+Scan taken from when the Firmware was downloading 
+$ nmap -Pn -p100-65535 192.168.1.20
+Starting Nmap 7.94SVN ( https://nmap.org ) at 2026-07-02 20:38 EDT
+Nmap scan report for 192.168.1.20
+Host is up (0.0022s latency).
+Not shown: 65433 closed tcp ports (conn-refused)
+PORT     STATE SERVICE
+2537/tcp open  upgrade
+2539/tcp open  vsiadmin
+2541/tcp open  lonworks2
+
+
+## Here, a clean ZNX from standard NV4 output
+$ hexdump -C Read_regs.ZNX | head
+00000000  5a 4e 58 00 01 00 00 00  01 00 02 00 00 00 00 00  |ZNX.............|
+00000010  03 00 02 00 00 00 00 00  f8 3e 98 02 01 00 00 00  |.........>......|
+00000020  48 00 00 00 7c b5 6b 02  a6 91 2c c0 14 00 00 00  |H...|.k...,.....|
+00000030  6f 73 5f 75 70 64 61 74  65 2e 74 61 72 2e 78 7a  |<b>os_update.tar.xz</b>|
+00000040  00 00 00 00 02 00 00 00  c4 b5 6b 02 34 89 2c 00  |..........k.4.,.|
+00000050  2e c4 36 55 0c 00 00 00  70 72 6f 6a 65 63 74 2e  |..6U....<b>project.</b>|
+00000060  7a 6e 76 00 fd 37 7a 58  5a 00 00 01 69 22 de 36  |<b>znv</b>..7zXZ...i".6|
+00000070  04 c0 b0 b3 f2 03 80 80  80 06 21 01 14 00 00 00  |..........!.....|
+00000080  7b 13 8e 21 e2 27 10 ef  ff 5d 00 17 0b bc 1c 7d  |{..!.'...].....}|
+00000090  01 95 c0 1d 3f 82 a2 8a  c4 9e 8d 2f 6a 08 0f 13  |....?....../j...|
+
+Im thinking that the end of the tar.xz file must be in the znx file, 
+bundled with the program code. 
+I suspect that they are separate even if they are part of the same ZNX file.
+head eludes to this, with project.znv, and os_update.tar.xz
+maybe I can use scalple to pull the xz, znv files from thier embeded offsets.
+or i could do math...
+
+0x48 + 0x1c = 0x64              start of os_update.tar.xz
+0x026bb57c                      size of os_update.tar.xz
+
+0x02 + 0x026bb5c4 + 0x1a = 0x26bb5e0   start of project.znv
+0x002c8934                              size of project.znv
+# interpret hexdump:
+00000020  48 00 00 00  7c b5 6b 02  ...
+00000030  ... "os_update.tar.xz"
+
+00000040  02 00 00 00  c4 b5 6b 02  34 89 2c 00 ...
+00000050  ... "project.znv"
+ 
+os_update.tar.xz  offset 0x64       size 0x26bb57c
+project.znv       offset 0x26bb5e0  size 0x2c8934
+
+$dd if=Read_regs.ZNX of=os_update.tar.xz bs=1 skip=$((0x64)) count=$((0x26bb57c))
+
+$dd if=Read_regs.ZNX of=project.znv bs=1 skip=$((0x26bb5e0)) count=$((0x2c8934))
+2918708+0 records in
+2918708+0 records out
+2918708 bytes (2.9 MB, 2.8 MiB) copied, 2.5951 s, 1.1 MB/s
+
+$ file project.znv 
+project.znv: MS Windows cursor resource - 128 icons, 3x256, 18 colors, hotspot @13x35044
+
+$ file os_update.tar.xz 
+os_update.tar.xz: XZ compressed data, checksum CRC32
+
+# believe it or not that looks right.
+# well, the md5sum is different, but this is a different program than what I started with
+$ md5sum os_update.tar.xz 
+cc51edc0042ae7d5656c116324edbe98  os_update.tar.xz
+
+
+$tar -tf os_update.tar.xz
+--No Errors
+
+List of files from os_update.tar.xz >> see untar.txt
+
+$ mkdir os_files
+$ tar -xvf os_update.tar.xz -C os_files/
+$ sudo chown -R $USER:$USER os_files/
+
+#############################
+where to go from here:
+ah, might try to figure out the port 2541 thing, 
+or do a better process monitor on the HMI while the the update process is active.
+
+the "firmware" is linux files. 
+Im not sure if the checksum is packaged in the ZNX file,
+I think it must be, we can do offline firmware updates, 
+so that means the checksum is an md5sum of the os_update.tar.xz
+( I deleted my notes from the first failed attempt, and I shouldnt have done that. )
+
+Lets see... 
+I think the port 2537 is a process control interface. 
+normaly it listens for PLC coms. but then if it gets specific comms, it opens other services temporarily. 
+like an ftp for the program code.
+or and FTP for the ""FIRMWARE""
+any then maybe other services. 
+
+well I could try to figure that out, but its probably just easier to read the linux files,
+I already have a pretty good idea how that stuff works.
+
+so instead I fired up bless, and reviewed the ZNX file.
+there is another compressed package I missed, an arm port of NTFS-FUSE.
+ there are 2 things that look like conpressed files, and 1 md5sums that look like md5dums,
+ in the znx file. 
+ 
+
+################################
+# znx_info:
+################################
+$ ./znx_info.py Read_regs.ZNX 
+
+Read_regs.ZNX
+=============
+size: 0x2983f14 (43532052 bytes)
+header total-0x1c: 0x2983ef8 (OK)
+members: 2
+      offset          size        stored      mystery   crc32     sha256                                                            name
+------------  ------------  ------------  ------------  --------  ----------------------------------------------------------------  ----------------
+0x00000064  0x026bb57c  0x00000048  0xc02c91a6  1376a72a  5905b827b3c80046809f699a258b12d6721ecfb0dbc06f05bb4f25a62bd7610e  os_update.tar.xz
+0x026bb5e0  0x002c8934  0x026bb5c4  0x5536c42e  34503107  8b74c71f14298e65c9663dd62a4fc863fa62923060f347b3fa5bae8af6008d19  project.znv
+linux:
+  os-release: Arago 2019.07
+  version_id: 2019.07
+  /etc/version: 20241129010957
+  /etc/timestamp: 20241129011703
+nested archives:
+  os_update.tar.xz -> ./home/root/boot-update.tar.xz
+  os_update.tar.xz -> ./home/root/boot-update.tar.xz -> ntfs-3g_2017.3.23-r0_armv7at2hf-neon.tar.xz
+  os_update.tar.xz -> ./home/root/boot-update.tar.xz -> ntfsprogs_2017.3.23-r0_armv7at2hf-neon.tar.xz
+
+ok this read me is way too long.
+
+</pre>

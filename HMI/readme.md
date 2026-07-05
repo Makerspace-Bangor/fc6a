@@ -73,6 +73,34 @@ no idea where though. its not in the err... user ftp
 AB / AD / LA / LE / LB / LF  -> enter/start FTP download mode
 LC / LD / AH                 -> commit / reload (reboot) /exit
 
+####################
+# using other devices with the HMI
 
- 
+The HMI may be controled via other devices besides a PLC. 
+This may include an arduino, or a Computer.
+The manual specifies that the registers for timing dictate the interface
+that the HMI will listen to. Practicaly speaking, I have not seen this.
+--What I have seen, is that there are registers being polled by the HMI
+if your device, responds to that polling on port 2357, 
+then the HMI will respond.
+as to which ports to send data on, its not clear, to me.
+some porgrams, the registers are D0502 - D05012
+the PLC interface registers are ah.. whatever the plc clock registers are.
+Then it will be different, on other programs. I havent seen where to configure it,
+and the manual says its reading the clock. 
+
+Then in other HMI programs, intialization happend yet again on other registers.
+I used wireshrk to figure out what registers are being polled when the HMI tries to 
+initalize. 
+Heres an example initialization registers  I used in one program. 
+
+    case 570: return 26; //init
+    case 3498: // init
+    case 3499: // init
+    case 3500: // init
+
+Initialy, I belived that the date and time was required to be sent for the 
+HMI to start listening to the attached device, then I figured out, 
+a register response is enough. 
+
 </pre>

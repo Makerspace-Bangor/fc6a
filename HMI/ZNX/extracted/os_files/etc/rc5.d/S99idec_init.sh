@@ -1,0 +1,1 @@
+../init.d/idec_init.sh

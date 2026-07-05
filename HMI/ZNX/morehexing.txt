@@ -1,0 +1,23 @@
+<pre>
+I was just looking for ssh and the splash screen. 
+<b>$os_files/home/root$ file  idec_*</b>
+idec_init.BIN:      ELF 32-bit LSB executable, ARM, EABI5 version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-armhf.so.3, for GNU/Linux 3.2.0, stripped
+idec_loader.BIN:    ELF 32-bit LSB executable, ARM, EABI5 version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-armhf.so.3, for GNU/Linux 3.2.0, stripped
+idec_operation.BIN: ELF 32-bit LSB executable, ARM, EABI5 version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-armhf.so.3, for GNU/Linux 3.2.0, stripped
+<b></b>
+
+<b>$os_files/home/root$ strings -a idec_init.BIN | grep -Ei 'dropbear|ssh|passwd|shadow|root|telnet|ftp|http|splash|ppm|png|jpg|logo'</b>
+/bin/cp /home/root/idec_operation.BIN /home/idec/.tmp/idec_operation.BIN
+rmmod /home/root/.driver/21driver*.ko
+/usr/sbin/pure-ftpd
+/home/root/idec_operation.BIN
+insmod /home/root/.driver/21driver3.ko
+insmod /home/root/.driver/21driver1.ko
+/home/idec/.work/ftp_srv/ftp_srv_log
+/usr/bin/killall -15 pure-ftpd
+/etc/pureftpd.passwd
+/etc/pureftpd.pdb
+killall ftp
+puredb:/etc/pureftpd.pdb
+
+</pre>

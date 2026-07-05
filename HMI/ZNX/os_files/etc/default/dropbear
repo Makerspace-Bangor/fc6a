@@ -1,4 +1,0 @@
-# Disallow root logins by default
-DROPBEAR_EXTRA_ARGS="-w"
-DROPBEAR_PORT=10387
-NO_START=1
