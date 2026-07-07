@@ -27,7 +27,7 @@ alt + sysreq + B = reload program screen, led goes orange
 alt + sysreq + K = blank scree, LED green the whole time. pressing again, no effect
 alt + sysreq + V = same as K
 alt + sysreq + H = Does Nothing (its a standard key)
-alt + sysreq +  =
+alt + sysreq + F = Reboot from session
 alt + sysreq +  =
 alt + sysreq +  =
 
