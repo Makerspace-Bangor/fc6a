@@ -5,6 +5,7 @@ import time
 import os
 from ftplib import FTP, all_errors
 import argparse
+import subprocess
 
 DEFAULT_HMI_IP = "192.168.1.150"
 HMI_IP = DEFAULT_HMI_IP
@@ -173,7 +174,14 @@ def main():
         default=DEFAULT_HMI_IP,
         help=f"HMI IP address (default: {DEFAULT_HMI_IP})"
     )
-
+    
+    parser.add_argument(
+        "-fz",
+        "--filezilla",
+        action="store_true",
+        help="Open FileZilla instead of the interactive FTP shell"
+    )
+    
     args = parser.parse_args()
 
     HMI_IP = args.ip
@@ -188,6 +196,17 @@ def main():
 
     open_hmi_ftp_session(username, password)
     ftp = wait_for_ftp(username, password)
+
+    if args.filezilla:
+        ftp.quit()  # release the connection for FileZilla
+
+        subprocess.Popen([
+            "filezilla",
+            f"ftp://{username}:{password}@{HMI_IP}:{FTP_PORT}/"
+        ])
+
+        print("Opened FileZilla.")
+        return
 
     print("\nConnected. Type FTP commands like:")
     print("  pwd")
