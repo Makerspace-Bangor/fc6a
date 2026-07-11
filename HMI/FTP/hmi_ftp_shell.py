@@ -6,8 +6,9 @@ import os
 from ftplib import FTP, all_errors
 import argparse
 import subprocess
+from ftplib import FTP, all_errors, error_perm
 
-DEFAULT_HMI_IP = "192.168.1.150"
+DEFAULT_HMI_IP = "192.168.1.20"
 HMI_IP = DEFAULT_HMI_IP
 DISM_PORT = 2537
 FTP_PORT = 2539
@@ -56,18 +57,21 @@ def make_lb_body(username: str, password: str) -> bytes:
 
     return b"00FFLB" + bytes([0xC0, 0x00, 0x01]) + user_field + pass_field
 
-
 def send_cmd(sock, seq, body, name):
     pkt = frame(seq, body)
     print(f"{name} TX:", pkt.hex(" "))
     sock.sendall(pkt)
+
     rx = sock.recv(4096)
+    if not rx:
+        raise ConnectionError(f"HMI closed while waiting for cmd {name}")
+
     print(f"{name} RX:", rx.hex(" "))
     return rx
 
 
 def open_hmi_ftp_session(username, password):
-    with socket.create_connection((HMI_IP, DISM_PORT), timeout=5) as s:
+    with socket.create_connection((HMI_IP, DISM_PORT), timeout=20) as s:
         send_cmd(s, 5, b"00FFAB", "AB")
         send_cmd(s, 6, make_lb_body(username, password), "LB")
         send_cmd(s, 7, b"00FFLF", "LF")
@@ -79,7 +83,7 @@ def wait_for_ftp(username, password):
     for attempt in range(1, 21):
         try:
             ftp = FTP()
-            ftp.connect(HMI_IP, FTP_PORT, timeout=5)
+            ftp.connect(HMI_IP, FTP_PORT, timeout=20)
             print(ftp.getwelcome())
             ftp.login(username, password)
             ftp.voidcmd("TYPE I")
@@ -129,6 +133,7 @@ def ftp_shell(ftp):
 
             elif cmd == "cd":
                 ftp.cwd(args[0])
+                ftp.retrlines("LIST")
 
             elif cmd == "get":
                 remote = args[0]
@@ -219,7 +224,7 @@ def main():
     print("  clear")
     print("  quit")
     print()
-
+    ftp.retrlines("LIST")
     try:
         ftp_shell(ftp)
     finally:

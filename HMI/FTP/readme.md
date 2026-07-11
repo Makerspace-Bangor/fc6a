@@ -1,5 +1,5 @@
 #HMI: tested on HG2J-7U
-
+<img src="pictures/hmi_ftp.png">
 <pre>
 HOW IT WORKS:
 Maintenance protocol commands are sent to the HMI.
