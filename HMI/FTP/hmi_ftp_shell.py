@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import errno
 import socket
 import random
 import time
@@ -12,7 +13,18 @@ DEFAULT_HMI_IP = "192.168.1.150"
 HMI_IP = DEFAULT_HMI_IP
 DISM_PORT = 2537
 FTP_PORT = 2539
+FTP_STARTED = 0.0 # debug timer
+LAST_CMD    = 0.0 # debug timer
+"""
+OK tried a bunch of things. 
+NOOP ( keep alive )did not help.
+setting ftp to active might address some issues, but failed to fix all.
+tried caching, marginal help.
+FTP_STARTED = time.monotonic()
+ftp.set_debuglevel(2) # max detail debug log
 
+./hmi_ftp_shell.py 192.168.1.20 --debug
+"""
 
 def clear_screen():
     os.system("cls" if os.name == "nt" else "clear")
@@ -77,7 +89,7 @@ def open_hmi_ftp_session(username, password):
         send_cmd(s, 7, b"00FFLF", "LF")
 
 
-def wait_for_ftp(username, password):
+def wait_for_ftp(username, password, debug=False):
     last = None
 
     for attempt in range(1, 21):
@@ -86,6 +98,10 @@ def wait_for_ftp(username, password):
             ftp.connect(HMI_IP, FTP_PORT, timeout=20)
             print(ftp.getwelcome())
             ftp.login(username, password)
+            if debug:
+                ftp.set_debuglevel(2) # max debug
+
+            #ftp.set_pasv(False) # pasv default, if false, set to active mode
             ftp.voidcmd("TYPE I")
             return ftp
         except all_errors as e:
@@ -121,6 +137,18 @@ def ftp_shell(ftp):
 
             elif cmd == "pwd":
                 print(ftp.pwd())
+
+            elif cmd in ("h", "help", "?"):
+                print("  pwd")
+                print("  ls")
+                print("  cd /tmp")
+                print("  get project.znv")
+                print("  put localfile.txt")
+                print("  delete file.txt")
+                print("  chmod 755 project.znv")
+                print("  clear")
+                print("  quit")
+                print()
 
             elif cmd in ("ls", "dir"):
                 path = args[0] if args else ""
@@ -163,7 +191,7 @@ def ftp_shell(ftp):
                 print("unknown command")
 
         except Exception as e:
-            print("ERR:", e)
+            print(f"ERR {type(e).__name__}: {e!r}")
 
 
 def main():
@@ -186,21 +214,40 @@ def main():
         action="store_true",
         help="Open FileZilla instead of the interactive FTP shell"
     )
+
+    parser.add_argument(
+        "--debug",
+        action="store_true",
+        help="Enable FTP protocol debugging"
+    )
+
     
     args = parser.parse_args()
 
     HMI_IP = args.ip
 
-    print(f"HMI: {HMI_IP}")    
+    # Generate user creds   
     username = rand_hex(16)
     password = rand_hex(15)
 
-    print("Temporary FTP creds:")
-    print("USER", username)
-    print("PASS", password)
 
-    open_hmi_ftp_session(username, password)
-    ftp = wait_for_ftp(username, password)
+    #open_hmi_ftp_session(username, password)
+    #ftp = wait_for_ftp(username, password)
+    # Gracefull close
+    try:
+        open_hmi_ftp_session(username, password)
+    except OSError as e:
+        if e.errno in (errno.EHOSTUNREACH, errno.ENETUNREACH):
+            print(f"No route to host: Check IP address. Default is: {HMI_IP}")
+        elif e.errno == errno.ECONNREFUSED:
+            print(f"Connection refused: No HMI at {HMI_IP}:{DISM_PORT}")
+        elif e.errno == errno.ETIMEDOUT:
+            print(f"Connection timed out: Check IP address {HMI_IP}")
+        else:
+            print(f"Connection failed: {e}")
+        return 1
+
+    ftp = wait_for_ftp(username, password, args.debug)
 
     if args.filezilla:
         ftp.quit()  # release the connection for FileZilla
@@ -213,17 +260,11 @@ def main():
         print("Opened FileZilla.")
         return
 
-    print("\nConnected. Type FTP commands like:")
-    print("  pwd")
-    print("  ls")
-    print("  cd /tmp")
-    print("  get project.znv")
-    print("  put localfile.txt")
-    print("  delete file.txt")
-    print("  chmod 755 project.znv")
-    print("  clear")
-    print("  quit")
-    print()
+    print(f"\nHMI: {HMI_IP}\n") 
+    print("Temporary FTP creds:")
+    print("USER", username)
+    print("PASS", password)
+
     ftp.retrlines("LIST")
     try:
         ftp_shell(ftp)
@@ -238,4 +279,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

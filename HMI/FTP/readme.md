@@ -36,3 +36,5 @@ Other options: -fz
 
 
 </pre>
+Now features a more elegant exit.
+<img src="pictures/graceful_exit.png">
