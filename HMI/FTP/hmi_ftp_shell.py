@@ -8,7 +8,7 @@ import argparse
 import subprocess
 from ftplib import FTP, all_errors, error_perm
 
-DEFAULT_HMI_IP = "192.168.1.20"
+DEFAULT_HMI_IP = "192.168.1.150"
 HMI_IP = DEFAULT_HMI_IP
 DISM_PORT = 2537
 FTP_PORT = 2539

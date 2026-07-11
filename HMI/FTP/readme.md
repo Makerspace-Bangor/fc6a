@@ -11,12 +11,6 @@ the user then may log in, with an active service window of 15 minutes.
 
 About the files and foldes you may see:
 
-    ftp:/> ls
-    drwxrwxrwx    4 0          0                 288 May 16  2000 .
-    drwxrwxrwx    4 0          0                 288 May 16  2000 ..
-    dr-xr-xr-x    3 0          0                 224 Jul  2 18:08 exmem
-    drwxrwxrwx    2 0          0                  60 Jul  2 18:21 tmp
-
 tmp: is a folder where a copy of your HMI program lives.
 The project, is always named project.znv
 
@@ -32,7 +26,12 @@ or: will default to 192.168.1.150 OEM Default IP
 
 $ ./hmi_ftp_shell.py
 
-Buggy program is buggy, Ill work all that out later. 
+
+Other options: -fz 
+    open the ftp session with filezilla becuase it works!
+
+
+<b>Buggy program is buggy, Ill work all that out later.<b> 
 
 
 
