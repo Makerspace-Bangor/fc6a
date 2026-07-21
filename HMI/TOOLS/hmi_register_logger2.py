@@ -14,9 +14,15 @@ Example:
 Useful modes:
     --quiet       Do not print to the terminal.
     --debug       Print RX/TX frames and write the detailed CSV format.
+    --help        prints response interpretations, as I learn more about 
+                  which commands mean which opertations. 
+                    
     --append      Append to an existing output file.
     --csv         output to a specified csv file
                   Without this flag, output is sent to hmi_registers.txt
+
+$python3 hmi_register_logger2.py  --host 0.0.0.0 --port 2101 
+
 """
 
 import argparse
@@ -33,6 +39,52 @@ from pathlib import Path
 HOST = "0.0.0.0"
 PORT = 2101
 DEFAULT_CSV = "hmi_registers.txt"
+
+
+# Command descriptions shown by --help.
+#
+# Keep these descriptions conservative: several operand selectors have only
+# been observed in HMI traffic and are not fully documented yet.
+#
+# Add future definitions with one line:
+#     "WM": "Write M internal relay bits.",
+COMMAND_DESCRIPTIONS = {
+    "RD": "Read D data registers (16-bit words).",
+    "RM": "Read M internal relay bits.",
+    "RA": "Read A operand data; exact A-area meaning is not yet documented.",
+    "R_": "Read Timer register: R_ 0 read timer register 0",
+    "WD": "Write D data register(s).",
+    "WM": "Write M internal relay bit(s).",
+    "Wm": "Observed lowercase-m write; exact format is not yet documented.",
+    "Rl": "Observed lowercase-l read; exact operand meaning is not documented.",
+}
+
+
+def command_help_text():
+    width = max(len(command) for command in COMMAND_DESCRIPTIONS)
+    lines = [
+        "Observed command decoding:",
+        "",
+        "  The first character normally indicates the operation:",
+        "    R = read",
+        "    W = write",
+        "    C = Clear data",
+        "",
+        "  The second character normally identifies the operand area or",
+        "  a special request type. Command names are case-sensitive.",
+        "",
+    ]
+
+    for command, description in COMMAND_DESCRIPTIONS.items():
+        lines.append(f"    {command:<{width}}  {description}")
+
+    lines += [
+        "",
+        "  Unknown commands are still recorded using their raw command and",
+        "  payload. Add or edit entries in COMMAND_DESCRIPTIONS as more",
+        "  protocol commands are identified.",
+    ]
+    return "\n".join(lines)
 
 # Preserve the only nonzero value from the original emulator.
 D_VALUES = {
@@ -459,7 +511,9 @@ def handle(client, tracker, debug=False):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Record unique IDEC HMI register requests."
+        description="Record unique IDEC HMI register requests.",
+        epilog=command_help_text(),
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument("--host", default=HOST)
     parser.add_argument("--port", default=PORT, type=int)
