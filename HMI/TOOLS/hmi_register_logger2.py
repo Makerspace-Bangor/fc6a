@@ -51,7 +51,7 @@ DEFAULT_CSV = "hmi_registers.txt"
 COMMAND_DESCRIPTIONS = {
     "RD": "Read D data registers (16-bit words).",
     "RM": "Read M internal relay bits.",
-    "RA": "Read A operand data; address format and A-area meaning are not yet documented.",
+    "RA": "read extended D-register area",
     "R_": "Read timer register.",
     "WD": "Write D data register(s).",
     "WM": "Write M internal relay bit(s).",
