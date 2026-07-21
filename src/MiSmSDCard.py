@@ -41,7 +41,7 @@ import socket
 import time
 
 
-VERSION = "2026.07.16.2"
+VERSION = "2026.07.18.1"
 
 
 class SDProtocolError(IOError):
@@ -234,7 +234,7 @@ def _parse_entry(payload: bytes) -> Optional[Dict[str, Any]]:
 
 class MiSmSDCard:
     def __init__(
-        self, plc: Any, device: Optional[str] = None, timeout: float = 2.0,
+        self, plc: Any, device: Optional[str] = None, timeout: float = 5.0,
         debug: Optional[bool] = None, retries: int = 3, retry_delay: float = 0.25,
     ):
         self.plc = plc
@@ -367,6 +367,172 @@ class MiSmSDCard:
 
         return found
 
+    def writeSD(
+        self, path: str, file: Optional[str] = None,
+        data: Union[str, bytes, bytearray, memoryview, None] = None,
+        block_size: int = 0x400,
+        progress: Optional[Callable[[int, int], None]] = None,
+        encoding: str = "utf-8",
+        parents: bool = False,
+    ) -> int:
+        """
+        Write bytes or text to a PLC SD-card file.
+
+        When parents=True, create missing parent directories first.
+        """
+        target = self._wire_path(_join_path(path, file))
+
+        if data is None:
+            raise ValueError("data is required")
+
+        if parents:
+            parent = target.rsplit("/", 1)[0]
+
+            if parent:
+                self.makedirsSD(parent, exist_ok=True)
+
+        payload = data.encode(encoding) if isinstance(data, str) else bytes(data)
+        return self._write_file(target, payload, block_size, progress)
+
+    def _write_file(
+        self, target: str, data: bytes, block_size: int,
+        progress: Optional[Callable[[int, int], None]],
+    ) -> int:
+        if not 1 <= int(block_size) <= 0xFFFF:
+            raise ValueError("block_size must be 1..65535")
+
+        total = len(data)
+        if total > 0xFFFFFFFF:
+            raise ValueError("File is too large for the captured FD format")
+
+        path_data = target.encode("ascii") + b"\x00"
+        if len(path_data) > 0xFFF:
+            raise ValueError("SD card path is too long")
+
+        device = self.device.encode("ascii")
+        body = device + b"1FD"
+        body += f"{total:08X}{len(path_data):03X}".encode("ascii")
+        body += path_data
+
+        reply = self._request_write(
+            _frame_bcc(body),
+            f"create file {target}",
+        )
+        self._raise_if_bad(reply)
+
+        if reply.command != "0":
+            raise SDTransportError(
+                f"Unexpected create-file acknowledgment {reply.command!r}"
+            )
+
+        if progress:
+            progress(0, total)
+
+        if total == 0:
+            body = device + b"0FD000000000000"
+            reply = self._request_write(
+                _frame_bcc(body),
+                f"finish empty file {target}",
+                offset=0,
+                size=0,
+                final=True,
+            )
+            self._raise_if_bad(reply)
+
+            if reply.command != "0":
+                raise SDTransportError(
+                    f"Unexpected empty-file acknowledgment {reply.command!r}"
+                )
+
+            return 0
+
+        offset = 0
+
+        while offset < total:
+            chunk = data[offset:offset + block_size]
+            final = offset + len(chunk) == total
+            command = b"0FD" if final else b"1FD"
+
+            body = device + command
+            body += f"{offset:08X}{len(chunk):04X}".encode("ascii")
+            body += chunk
+
+            reply = self._request_write(
+                _frame_bcc(body),
+                f"write {target}",
+                offset=offset,
+                size=len(chunk),
+                final=final,
+            )
+            self._raise_if_bad(reply)
+
+            expected = "0" if final else "1"
+            if reply.command != expected:
+                raise SDTransportError(
+                    f"Unexpected FD acknowledgment {reply.command!r}; "
+                    f"expected {expected!r} at offset {offset}"
+                )
+
+            offset += len(chunk)
+
+            if progress:
+                progress(offset, total)
+
+        return offset
+
+    def mkdirSD(self, path: str) -> None:
+        """Create a directory on the PLC SD card."""
+        target = self._wire_path(path)
+        path_data = target.encode("ascii") + b"\x00"
+
+        if len(path_data) > 0xFFF:
+            raise ValueError("SD card path is too long")
+
+        body = self.device.encode("ascii") + b"0FM"
+        body += f"{len(path_data):03X}".encode("ascii")
+        body += path_data
+
+        reply = self._request(_frame_bcc(body), f"create directory {target}")
+        self._raise_if_bad(reply)
+
+        if reply.command != "0":
+            raise SDTransportError(
+                f"Unexpected FM acknowledgment command {reply.command!r}"
+            )
+
+    def makedirsSD(self, path: str, exist_ok: bool = True) -> None:
+        """Create a directory and any missing parent directories."""
+        target = self._wire_path(path)
+
+        if target == "/":
+            return
+
+        parts = [part for part in target.split("/") if part]
+        current = ""
+
+        for part in parts:
+            parent = current or "/"
+            current += "/" + part
+
+            entries = self.listSD(parent)
+            existing = next(
+                (entry for entry in entries if entry["name"] == part),
+                None,
+            )
+
+            if existing is None:
+                self.mkdirSD(current)
+                continue
+
+            if not existing["is_dir"]:
+                raise NotADirectoryError(
+                    f"Cannot create directory {current}: "
+                    f"{existing['name']!r} is a file"
+                )
+
+            if current == target and not exist_ok:
+                raise FileExistsError(current)
+
     def deleteSD(self, path: str, file: Optional[str] = None) -> bool:
         """
         Delete a file or folder from the PLC SD card.
@@ -397,13 +563,6 @@ class MiSmSDCard:
         self._read_file(target, data.extend, block_size, progress)
         return bytes(data)
 
-    def writeSD(
-        self, path: str, file: Optional[str] = None, data: Union[str, bytes, None] = None
-    ) -> None:
-        target = _join_path(path, file)
-        raise NotImplementedError(
-            f"writeSD({target!r}) is not implemented yet; write-file protocol is still unknown."
-        )
 
     def saveSD(
         self, path: str, file: Optional[str] = None, local_path: Optional[str] = None,
@@ -496,6 +655,87 @@ class MiSmSDCard:
                 progress(received, total)
 
         return received
+
+    def _request_write(
+        self, packet: bytes, label: str,
+        offset: Optional[int] = None,
+        size: Optional[int] = None,
+        final: Optional[bool] = None,
+    ) -> SDReply:
+        """
+        Send one FD write request without reconnecting and retrying it.
+
+        An interrupted FD transfer must be restarted from the create-file
+        request rather than retrying one block on a new TCP connection.
+        """
+        if self.debug:
+            if offset is None:
+                print()
+                print("TX", label)
+                print("TX hex:", packet.hex(" ").upper())
+                print("TX txt:", _printable(packet))
+            else:
+                print(
+                    f"TX file block: offset=0x{offset:08X} "
+                    f"size={size} final={final}"
+                )
+
+        for name in ("sd_write_xfer", "_sd_write_xfer"):
+            fn = getattr(self.plc, name, None)
+            if callable(fn):
+                raw = fn(packet)
+                break
+        else:
+            ser = getattr(self.plc, "_ser", None)
+
+            if ser is not None:
+                try:
+                    ser.reset_input_buffer()
+                except Exception:
+                    pass
+
+                ser.write(packet)
+                ser.flush()
+                raw = self._serial_recv_until_cr(ser)
+            else:
+                connect = getattr(self.plc, "connect", None)
+                sock = getattr(self.plc, "_sock", None)
+
+                if sock is None and callable(connect):
+                    connect()
+                    sock = getattr(self.plc, "_sock", None)
+
+                if sock is None:
+                    raise TypeError(
+                        "SD file writing requires MiSmSerial._ser, "
+                        "a persistent MiSmTCP._sock, or sd_write_xfer()."
+                    )
+
+                old_timeout = sock.gettimeout()
+
+                try:
+                    current = 0.0 if old_timeout is None else float(old_timeout)
+                    sock.settimeout(max(current, float(self.timeout)))
+                    sock.sendall(packet)
+                    raw = self._socket_recv_until_cr(sock, limit=64)
+                except (OSError, socket.timeout):
+                    close = getattr(self.plc, "close", None)
+                    if callable(close):
+                        close()
+                    raise
+                finally:
+                    if getattr(self.plc, "_sock", None) is sock:
+                        try:
+                            sock.settimeout(old_timeout)
+                        except OSError:
+                            pass
+
+        reply = _parse_reply(raw)
+
+        if self.debug:
+            print(f"RX: {reply.kind} command={reply.command!r}")
+
+        return reply
 
     def _request_file_chunk(self, packet: bytes, received: int, total: int) -> SDReply:
         """Receive one binary-safe file block through MiSmSerial or MiSmTCP."""
