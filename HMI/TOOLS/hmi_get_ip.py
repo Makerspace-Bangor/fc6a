@@ -40,6 +40,15 @@ $ ip -4 addr show dev enp2s0
        valid_lft forever preferred_lft forever
     inet 192.168.1.50/24 scope global secondary enp2s0 <--secondary address assigned.
        valid_lft forever preferred_lft forever
+
+### IF you have multiple networking interfaces, then the program run without spcifications for the interface will crash. 
+### TODO : FiX
+however, you can specify the address to work around that.
+$ sudo python3 hmi_get_ip.py --interface eth1 --assign
+
+### TODO: fix reinstantiation issues
+temp fix: $ sudo ip addr flush dev eth1
+
        
 TODO: exit when the IP is assigned, stop scanning.       
 """
