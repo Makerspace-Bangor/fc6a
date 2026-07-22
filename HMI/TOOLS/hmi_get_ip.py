@@ -18,27 +18,20 @@ sudo apt install python3-scapy
 Requires sudo priviligdges to run. 
 This program finds your IDEC HMI, and the IP addres of the PLC it wants
 to communicate with, then TEMPORAILY sets your IP to the IP your HMI wants.
-
-Not the smartest program, you still need to know your HMI IP. 
-To find that:
-    Press and Hold the top left corner of the HMI screen for 5-10 seconds.
-    The Maintenance screen appears.
-    Press System Mode button.
-    (screen may go blank for a few seconds)
-    Center, lower third, View the "Wired IP Address"
-    This is your HMI IP.
-    Press Run to return to normal operation.
     
 #obsurvational example:
 
-$sudo python3 hmi_get_ip.py --hmi-ip 192.168.1.20
+$ sudo python3 hmi_get_ip.py 
 [sudo] password for user:   
 Listening for HMI ARP requests on enp2s0
-Observation mode only. Use --assign to claim addresses.
+Verifying requesters on TCP port 2537
+Observation mode only. Use --assign to claim an address.
 HMI 192.168.1.20 [00:03:7b:20:08:f1] is looking for 192.168.1.50
 
+### Assign an IP to your PC that the HMI can find:
 $sudo python3 hmi_get_ip.py --hmi-ip 192.168.1.20 --assign
 
+# proof
 $ ip -4 addr show dev enp2s0
 2: enp2s0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
     inet 192.168.1.69/24 scope global enp2s0
@@ -46,7 +39,8 @@ $ ip -4 addr show dev enp2s0
     inet 192.168.1.50/24 scope global secondary enp2s0 <--secondary address assigned.
        valid_lft forever preferred_lft forever
 
-### IF you have multiple networking interfaces, then the program run without spcifications for the interface will crash. 
+### IF you have multiple networking interfaces, then the program run without 
+spcifications for the interface the program may crash. 
 ### TODO : FiX
 however, you can specify the address to work around that.
 $ sudo python3 hmi_get_ip.py --interface eth1 --assign
@@ -63,7 +57,7 @@ Observation mode only. Use --assign to claim an address.
 HMI 192.168.1.20 [00:03:7b:20:08:f1] is looking for 192.168.1.50
 HMI 192.168.1.20 [00:03:7b:20:08:f1] is looking for 192.168.1.69  <-- previous connection retained, 
 while not having been programmed to the HMI
-
+Looks like the HMI cached my previous connection.
 
 """
 if os.name == "nt":
