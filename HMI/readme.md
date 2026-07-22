@@ -1,5 +1,14 @@
 Here I figure out all the neat things you can do with an IDEC HG2J-7U HMI.
 <pre>
+TOOLS/
+├── hmi_clear.py       Errase the HMI
+├── hmi_get_ip.py      Get the IP of the HMI, and the IP it wants coms with
+├── hmi_info.py        Get OEM Data about the HMI in xml format
+├── hmi_register_logger2.py  Initialize the HMI, and listen for its requests
+
+
+
+
 
 <b>TL;DR:</b> It is LINUX!
 
