@@ -16,7 +16,6 @@ through the ASCII Maintenance Protocol over TCP.
 
 The library:
 
-- uses TCP port `2101` by default;
 - requires only the Python standard library;
 - supports persistent or per-request TCP connections;
 - validates the XOR BCC in PLC replies;
