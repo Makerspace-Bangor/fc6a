@@ -55,8 +55,8 @@ COMMAND_DESCRIPTIONS = {
     "R_": "Read timer register.",
     "WA": "Write extended D-register area (in HEX)",
     "WD": "Write D data register(s).",
-    "WM": "Write M internal relay bit(s).",
-    "Wm": "Observed lowercase-m write; exact format is not yet documented.",
+    "WM": "Write M internal relay 8 bit(s).",
+    "Wm": "Write 1 bit",
     "Rl": "Observed lowercase-l read; exact operand meaning is not documented.",
 }
 
