@@ -8,7 +8,6 @@
 **Review date:** 2026-07-23
 
 This guide documents the public behavior actually implemented by `MiSmSerial.py`.
-It was reviewed independently from `MiSmTCP.py`.
 
 `MiSmSerial` and `MiSmTCP` share some register-access concepts, but their constructors,
 connection handling, dependencies, method names, retries, and available operations are
