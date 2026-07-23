@@ -51,16 +51,8 @@ The constructor opens the serial device immediately through `pyserial`.
 
 ### Not implemented
 
-- TCP communication
-- TCP port selection
-- Persistent socket management
-- `connect()`
-- `disconnect()`
-- `reconnect()`
 - Context-manager support
 - Automatic serial reconnection
-- PLC program upload
-- PLC program download
 - Extended-memory access
 
 ---
