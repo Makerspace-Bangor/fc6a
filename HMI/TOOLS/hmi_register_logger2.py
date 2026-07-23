@@ -23,6 +23,12 @@ Useful modes:
 
 $python3 hmi_register_logger2.py  --host 0.0.0.0 --port 2101 
 
+### TODO FIX Network issues::
+m@cker:~/Downloads$ sudo ip route replace 192.168.1.150/32 dev eth1 src 192.168.1.160
+[sudo] password for m: 
+m@cker:~/Downloads$ ip route get 192.168.1.150
+192.168.1.150 dev eth1 src 192.168.1.160 uid 1000 
+
 """
 
 import argparse
