@@ -1,48 +1,13 @@
 <pre>
-# fc6a:: A Maintenance protocol repo for python.
-With this class library, you can remotely read and write IDEC Programable Logic Controlers 
- using the IDEC Maintinance protocol. 
+# fc6a:: A Maintenance protocol python client library.
 
-Example use cases: Over Ethernet, or serial:
-Log operations, plot sensor values.
-Monitor Multiple PLCs, and registers.
- This includes the ability to concurently read and write PLCs with different endians.  
-  
-Send control values.
-Write your own software applications for controling IDEC PLCs
+ APIs:
+ https://github.com/Makerspace-Bangor/fc6a/blob/main/src/API/MiSmSerial_API.md
+ https://github.com/Makerspace-Bangor/fc6a/blob/main/src/API/MiSmTCP_API.md
+ https://github.com/Makerspace-Bangor/fc6a/blob/main/src/API/MiSm_Common_API.md
+
  
- 
-
-#===================================================  
-# System Requirements: 
-#===================================================  
-  IDEC PLCs
-  python3
-
-  
-#===================================================  
-# Optional :        
-#===================================================  
-  WindLDR
- 
-#===================================================  
-# Supported Data Types:
-#===================================================  
-  Bit
-  Word
-  Float
-  Counters
-  
-#===================================================  
-# Features:
-#===================================================  
-  optional debugging.
-  read_block: need app testing on Strings
-  Force IO: override program, put IO in a state
-
-#===================================================  
-# Todo / Development
-#===================================================  
+### Todo / Development
   
   ZLD binary imagge downloading.
   Security bit setting.
@@ -50,9 +15,7 @@ Write your own software applications for controling IDEC PLCs
   SD Card operations, list, read / write files, delete.
   Upload files -- for data integrity purposes
 
-#===================================================  
-# Archive:
-#===================================================  
+### Archive:
 
  fc6a.py, the original library is scheuduled for achival.
  The libary asserted certain functions use certain data tpyes.
