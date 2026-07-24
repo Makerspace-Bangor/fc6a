@@ -1,0 +1,131 @@
+Listening on 0.0.0.0:2101
+Logging unique requests to hmi_registers.txt
+Learning the initial live request set...
+
+========================================================================
+HMI LIVE REQUEST MONITOR
+Baseline learned: 1 active read commands
+Read reply values are ignored.
+Waiting for command-set changes or write events...
+
+========================================================================
+HMI REQUEST CHANGE  2026-07-24 09:12:01
+Active read commands: 13
+
+ADDED READ REQUESTS
++ READ  RM: M500-M515
++ READ  RM: M1140-M1155
++ READ  RM: M2000-M2015
++ READ  Rl: l2774 (2 bytes)
++ READ  RD: D1300
++ READ  RD: D1310-D1315
++ READ  RD: D1350
++ READ  RD: D3500-D3502
++ READ  RA: A2898 (2 bytes): D10392
++ READ  RA: A2904 (2 bytes): D10500
++ READ  RM: M0-M15
++ READ  RM: M120-M135
+
+Waiting for the next change...
+
+========================================================================
+HMI REQUEST CHANGE  2026-07-24 09:12:06
+Active read commands: 34
+
+ADDED READ REQUESTS
++ READ  RM: M0-M31
++ READ  RM: M80-M95
++ READ  RM: M240-M255
++ READ  RM: M340-M355
++ READ  RM: M400-M431
++ READ  RM: M940-M955
++ READ  RM: M1080-M1095
++ READ  RM: M1700-M1715
++ READ  RM: M2000-M2063
++ READ  RM: M7000-M7031
++ READ  R_: T0
++ READ  R_: T22
++ READ  R_: T30
++ READ  R_: T38
++ READ  RD: D54-D59
++ READ  RD: D62-D63
++ READ  RD: D68-D69
++ READ  RD: D280-D281
++ READ  RD: D1300-D1302
++ READ  RD: D1320-D1321
++ READ  RD: D3826-D3827
+
+Waiting for the next change...
+
+========================================================================
+HMI REQUEST CHANGE  2026-07-24 09:12:08
+Active read commands: 27
+
+REMOVED READ REQUESTS
+- READ  Rl: l2774 (2 bytes)
+- READ  RD: D1300
+- READ  RM: M0-M15
+- READ  RM: M400-M415
+- READ  RM: M500-M515
+- READ  RM: M1140-M1155
+- READ  RM: M2000-M2015
+
+Waiting for the next change...
+
+========================================================================
+HMI REQUEST CHANGE  2026-07-24 09:12:28
+Active read commands: 52
+
+ADDED READ REQUESTS
++ READ  RM: M0-M47
++ READ  RM: M160-M175
++ READ  RM: M8120-M8135
++ READ  R_: T4
++ READ  R_: T12
++ READ  RD: D56-D59
++ READ  RD: D62-D65
++ READ  RD: D154
++ READ  RD: D157-D158
++ READ  RD: D321
++ READ  RD: D404
++ READ  RD: D406-D407
++ READ  RD: D1025
++ READ  RD: D1300
++ READ  RD: D1302
++ READ  RD: D1326-D1327
++ READ  RD: D1335-D1337
++ READ  RD: D2710-D2711
++ READ  RD: D3502
++ READ  RD: D3512-D3513
++ READ  RD: D3811-D3812
++ READ  RD: D3814-D3815
++ READ  RD: D4167-D4168
++ READ  RD: D4177-D4178
++ READ  RD: D4524-D4525
+
+Waiting for the next change...
+
+========================================================================
+HMI REQUEST CHANGE  2026-07-24 09:12:30
+Active read commands: 35
+
+REMOVED READ REQUESTS
+- READ  RM: M940-M955
+- READ  RM: M1080-M1095
+- READ  RM: M1700-M1715
+- READ  RM: M7000-M7031
+- READ  R_: T22
+- READ  R_: T30
+- READ  R_: T38
+- READ  RD: D54-D59
+- READ  RD: D62-D63
+- READ  RD: D68-D69
+- READ  RD: D280-D281
+- READ  RD: D1300-D1302
+- READ  RD: D1320-D1321
+- READ  RM: M0-M31
+- READ  RM: M120-M135
+- READ  RM: M340-M355
+- READ  RD: D3502
+
+Waiting for the next change...

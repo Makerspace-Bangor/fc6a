@@ -11,6 +11,9 @@ Live mode watches the active READ request set and reports only changes:
 
     python3 hmi_reg.py --live
 
+### HACKY BS:
+python3 -u hmi_reg.py --live 2>&1 | tee -a out.txt && echo "===========================================" >> out.txt
+
 Live mode intentionally compares request commands, addresses, and counts. It
 never compares the values returned in read replies. Repeated WRITE requests are
 shown as events because a button press may write the same register more than
