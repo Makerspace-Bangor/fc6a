@@ -63,7 +63,7 @@ COMMAND_DESCRIPTIONS = {
     "WD": "Write D data register(s).",
     "WM": "Write M internal relay 8 bit(s).",
     "Wm": "Write 1 bit",
-    "Rl": "Observed lowercase-l read; exact operand meaning is not documented.",
+    "Rl": "block read of multiple PLC bits packed into bytes (thats a guess)",
 }
 
 
