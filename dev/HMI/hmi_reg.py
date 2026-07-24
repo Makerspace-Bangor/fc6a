@@ -15,12 +15,6 @@ Live mode intentionally compares request commands, addresses, and counts. It
 never compares the values returned in read replies. Repeated WRITE requests are
 shown as events because a button press may write the same register more than
 once without changing screens.
-
-python3 hmi_reg.py --live \
-    --live-warmup 2.0 \
-    --live-hold 2.0 \
-    --live-debounce 0.15
-
 """
 
 import argparse
