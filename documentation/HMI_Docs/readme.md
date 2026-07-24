@@ -8,7 +8,7 @@ The HMI is a linux PC, that frequently accepts Mainenacne Protocol commands on p
 before exansiating those commands to linux processes. 
 
 
-Docs here shall be for the HMI, under whatever Name.
+Docs here shall be for the HMI, under whatever Name, and may pertain to NV4 programing.
 
 
 
