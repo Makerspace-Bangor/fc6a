@@ -1,6 +1,9 @@
 #HMI Contents
 <pre>
 
+    NOTE: HMI Transport listed as DM Link, internal refferences as DiSm
+    Still accuring documentation resources. 
+    
 
 HMI/
 ├── FTP
