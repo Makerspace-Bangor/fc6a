@@ -640,9 +640,7 @@ the transmission order.
 
 ## 14. Unsigned Integer API
 
-The Serial library names these methods `read_uint()` and `write_uint()`.
-
-It does not use the TCP guide's `read_unit()` or `write_unit()` spelling.
+The TCP library names these methods `read_uint()` and `write_uint()`.
 
 ### `read_uint()`
 
