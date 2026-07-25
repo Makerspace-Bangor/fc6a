@@ -10,66 +10,118 @@
 // - Optional live matplotlib visuals per checked register
 // - 4-hour display window at 1 Hz by default
 // =============================================================
+function bad_request(string $message = "Invalid request."): void
+{
+    http_response_code(400);
+    header("Content-Type: text/plain; charset=UTF-8");
+    exit($message);
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $plcs = [];
     $p = 1;
 
-    while (isset($_POST["ip_$p"])) {
-        $name = substr(
-            preg_replace("/[^A-Za-z0-9_]/", "", $_POST["name_$p"]),
-            0,
-            20
-        );
-        $ip = $_POST["ip_$p"];
-        $endian = isset($_POST["endian_$p"]) ? "1" : "0";
+while (isset($_POST["ip_$p"])) {
+    $name_input = $_POST["name_$p"] ?? null;
+    $ip_input = $_POST["ip_$p"] ?? null;
 
-        if (!filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
-            die("Invalid IP address for PLC #$p");
-        }
-
-        $regs = [];
-        if (isset($_POST["reg_name_$p"])) {
-            for ($i = 0; $i < count($_POST["reg_name_$p"]); $i++) {
-                $r_name = preg_replace(
-                    "/[^A-Za-z0-9_]/",
-                    "",
-                    $_POST["reg_name_$p"][$i]
-                );
-                $r_addr = strtoupper($_POST["reg_addr_$p"][$i]);
-                $r_type = strtoupper($_POST["reg_type_$p"][$i]);
-                $r_visual = isset($_POST["reg_visual_{$p}_{$i}"])
-                    ? "True"
-                    : "False";
-
-                $word_addr = preg_match("/^D[0-9]{4}$/", $r_addr);
-                $bit_addr =
-                    preg_match("/^M[0-9]{4}$/", $r_addr) ||
-                    preg_match("/^D[0-9]{4}\.(?:[0-9]|0[0-9]|1[0-5])$/", $r_addr);
-                $valid_addr = $r_type === "B" ? $bit_addr : $word_addr;
-
-                if (
-                    $r_name &&
-                    $valid_addr &&
-                    in_array($r_type, ["B", "F", "W"])
-                ) {
-                    $regs[] =
-                        "        (\"$r_name\", \"$r_addr\", \"$r_type\", $r_visual),";
-                }
-            }
-        }
-
-        if (!empty($regs)) {
-            $plcs[] = [
-                'name' => $name,
-                'ip' => $ip,
-                'endian' => $endian,
-                'registers' => implode("\n", $regs)
-            ];
-        }
-
-        $p++;
+    // PLC name and IP must be ordinary strings, not arrays or objects.
+    if (!is_string($name_input) || !is_string($ip_input)) {
+        bad_request("Invalid PLC data.");
     }
+
+    $name = preg_replace("/[^A-Za-z0-9_]/", "", $name_input) ?? "";
+    $name = substr($name, 0, 20);
+
+    $ip = trim($ip_input);
+    $endian = isset($_POST["endian_$p"]) ? "1" : "0";
+
+    if (!filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+        bad_request("Invalid IP address for PLC #$p.");
+    }
+
+    $regs = [];
+
+    $reg_names = $_POST["reg_name_$p"] ?? [];
+    $reg_addrs = $_POST["reg_addr_$p"] ?? [];
+    $reg_types = $_POST["reg_type_$p"] ?? [];
+
+    // These fields must be arrays because the form submits multiple rows.
+    if (
+        !is_array($reg_names) ||
+        !is_array($reg_addrs) ||
+        !is_array($reg_types)
+    ) {
+        bad_request("Invalid register data.");
+    }
+
+    // All three arrays should describe the same number of register rows.
+    if (
+        count($reg_names) !== count($reg_addrs) ||
+        count($reg_names) !== count($reg_types)
+    ) {
+        bad_request("Incomplete register data.");
+    }
+
+    for ($i = 0; $i < count($reg_names); $i++) {
+        $r_name_input = $reg_names[$i] ?? null;
+        $r_addr_input = $reg_addrs[$i] ?? null;
+        $r_type_input = $reg_types[$i] ?? null;
+
+        // Each individual array element must also be a string.
+        if (
+            !is_string($r_name_input) ||
+            !is_string($r_addr_input) ||
+            !is_string($r_type_input)
+        ) {
+            bad_request("Invalid register row.");
+        }
+
+        $r_name = preg_replace(
+            "/[^A-Za-z0-9_]/",
+            "",
+            $r_name_input
+        ) ?? "";
+
+        $r_addr = strtoupper(trim($r_addr_input));
+        $r_type = strtoupper(trim($r_type_input));
+
+        $r_visual = isset($_POST["reg_visual_{$p}_{$i}"])
+            ? "True"
+            : "False";
+
+        $word_addr = preg_match("/^D[0-9]{4}$/", $r_addr);
+
+        $bit_addr =
+            preg_match("/^M[0-9]{4}$/", $r_addr) ||
+            preg_match(
+                "/^D[0-9]{4}\.(?:[0-9]|0[0-9]|1[0-5])$/",
+                $r_addr
+            );
+
+        $valid_addr = $r_type === "B" ? $bit_addr : $word_addr;
+
+        if (
+            $r_name !== "" &&
+            $valid_addr &&
+            in_array($r_type, ["B", "F", "W"], true)
+        ) {
+            $regs[] =
+                "        (\"$r_name\", \"$r_addr\", \"$r_type\", $r_visual),";
+        }
+    }
+
+    if (!empty($regs)) {
+        $plcs[] = [
+            "name" => $name,
+            "ip" => $ip,
+            "endian" => $endian,
+            "registers" => implode("\n", $regs),
+        ];
+    }
+
+    $p++;
+}
 
     if (empty($plcs)) {
         die("No valid PLCs or registers provided.");
@@ -448,7 +500,7 @@ https://github.com/Makerspace-Bangor/fc6a/blob/main/src/MiSmTCP.py
 
 <br>
 <b>How to use this page:</b>
-<a href="https://github.com/Makerspace-Bangor/fc6a/blob/main/documentation/doc.pdf">
+<a href="https://github.com/Makerspace-Bangor/fc6a/blob/main/documentation/archive/gen_php.pdf">
 See repo documentation.
 </a>
 <br><br>
