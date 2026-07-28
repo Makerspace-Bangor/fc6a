@@ -1,0 +1,74 @@
+{
+  "source": "D0_D1_Q0_test_With_Comment_And_Firmware_V280.zld",
+  "file_size": 1830260,
+  "declared_payload_size": 1830240,
+  "header_size": 120,
+  "section_count": 4,
+  "header_fields": {
+    "field_04": 47958,
+    "field_08": 16384025,
+    "field_12": 262144
+  },
+  "sections": [
+    {
+      "index": 1,
+      "type_id": 16,
+      "type_hex": "0x0010",
+      "offset": 120,
+      "length": 23528,
+      "zld_check": 13858,
+      "zld_check_hex": "0x00003622",
+      "reserved1": 0,
+      "reserved2": 0,
+      "filename": "section_10_program.bin",
+      "role": "probable WPn compiled program",
+      "sha256": "31bc3a4d0ba909b28088ba2662f661cfb9deb4ae938f366160e0009f2537ad09",
+      "output_path": "D0D1Q0/section_10_program.bin"
+    },
+    {
+      "index": 2,
+      "type_id": 17,
+      "type_hex": "0x0011",
+      "offset": 23648,
+      "length": 276,
+      "zld_check": 49082,
+      "zld_check_hex": "0x0000BFBA",
+      "reserved1": 0,
+      "reserved2": 0,
+      "filename": "section_11_supplemental.bin",
+      "role": "probable W;n supplementary data",
+      "sha256": "089d07a0e54f336d735b613c692aa1978c1f74e734ad785efe2a3d55d9c3d4b9",
+      "output_path": "D0D1Q0/section_11_supplemental.bin"
+    },
+    {
+      "index": 3,
+      "type_id": 4121,
+      "type_hex": "0x1019",
+      "offset": 23924,
+      "length": 605184,
+      "zld_check": 18368951,
+      "zld_check_hex": "0x011849B7",
+      "reserved1": 0,
+      "reserved2": 0,
+      "filename": "firmware_77ff01.bin",
+      "role": "confirmed WS77FF01 firmware",
+      "sha256": "78177f3f7fd68855eba0d4d499d50c430b927f316085400199be1a17dc8219b4",
+      "output_path": "D0D1Q0/firmware_77ff01.bin"
+    },
+    {
+      "index": 4,
+      "type_id": 4377,
+      "type_hex": "0x1119",
+      "offset": 629108,
+      "length": 1201152,
+      "zld_check": 18357281,
+      "zld_check_hex": "0x01181C21",
+      "reserved1": 0,
+      "reserved2": 0,
+      "filename": "firmware_77ff05.bin",
+      "role": "confirmed WS77FF05 firmware",
+      "sha256": "dd7e25acd34ae81e318b076de32a51c68fa77aab2869426850cb92e87810185b",
+      "output_path": "D0D1Q0/firmware_77ff05.bin"
+    }
+  ]
+}
