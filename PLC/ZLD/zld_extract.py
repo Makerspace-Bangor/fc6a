@@ -1,17 +1,12 @@
 #!/usr/bin/env python3
 """
-Extract sections from IDEC DataFileManager .zld files.
+Inspect and extract sections from IDEC DataFileManager .zld files.
 
-Confirmed section types:
-    0x1019  Firmware sent with WS77FF01
-    0x1119  Firmware sent with WS77FF05
-
-Probable section types:
-    0x0010  Compiled PLC program sent with WPn
-    0x0011  Supplementary data sent with W;n
-
-The first two roles are strongly indicated by captures and section sizes, but should
-still be verified against a capture made from the exact same .zld file.
+Known section types:
+    0x0010  Probable WPn compiled program
+    0x0011  Probable W;n supplementary data
+    0x1019  Confirmed WS77FF01 firmware
+    0x1119  Confirmed WS77FF05 firmware
 """
 
 import argparse
@@ -26,6 +21,7 @@ BASE_HEADER_SIZE = 24
 RECORD_TABLE_OFFSET = 20
 RECORD_SIZE = 24
 MAX_RECORD_COUNT = 64
+HEADER_FILENAME = "zld_header.bin"
 
 SECTION_INFO = {
     0x0010: ("section_10_program.bin", "probable WPn compiled program"),
@@ -52,7 +48,8 @@ def parse_zld(path):
 
     if data[:4] != MAGIC:
         raise ZLDError(
-            f"{path}: unexpected magic {data[:4].hex()}, expected {MAGIC.hex()}"
+            f"{path}: unexpected magic {data[:4].hex()}, "
+            f"expected {MAGIC.hex()}"
         )
 
     record_count = struct.unpack_from("<H", data, 14)[0]
@@ -73,14 +70,14 @@ def parse_zld(path):
             f"actual payload size {len(data) - 20}"
         )
 
+    header = data[:header_size]
     sections = []
     previous_end = header_size
 
     for index in range(record_count):
         record_offset = RECORD_TABLE_OFFSET + index * RECORD_SIZE
-        type_id, offset, length, zld_check, reserved1, reserved2 = struct.unpack_from(
-            "<6I", data, record_offset
-        )
+        values = struct.unpack_from("<6I", data, record_offset)
+        type_id, offset, length, zld_check, reserved1, reserved2 = values
 
         if offset < header_size:
             raise ZLDError(
@@ -102,7 +99,8 @@ def parse_zld(path):
 
         payload = data[offset:offset + length]
         filename, role = SECTION_INFO.get(
-            type_id, (f"section_{type_id:08x}.bin", "unknown section")
+            type_id,
+            (f"section_{index + 1:02d}_{type_id:08x}.bin", "unknown section"),
         )
 
         sections.append(
@@ -126,14 +124,20 @@ def parse_zld(path):
 
     if previous_end != len(data):
         raise ZLDError(
-            f"{path}: parsed sections end at {previous_end}, file ends at {len(data)}"
+            f"{path}: parsed sections end at {previous_end}, "
+            f"file ends at {len(data)}"
         )
 
     return {
         "source": str(path),
+        "source_filename": path.name,
+        "source_sha256": sha256(data),
         "file_size": len(data),
         "declared_payload_size": declared_size,
         "header_size": header_size,
+        "header_filename": HEADER_FILENAME,
+        "header_sha256": sha256(header),
+        "header": header,
         "section_count": record_count,
         "header_fields": {
             "field_04": struct.unpack_from("<I", data, 4)[0],
@@ -166,22 +170,33 @@ def write_sections(parsed, output_dir, program_only=False):
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
+    header_path = output_dir / parsed["header_filename"]
+    header_path.write_bytes(parsed["header"])
+
     manifest = {
-        key: value for key, value in parsed.items() if key != "sections"
+        key: value
+        for key, value in parsed.items()
+        if key not in ("sections", "header")
     }
+    manifest["complete_extraction"] = not program_only
     manifest["sections"] = []
 
     for section in parsed["sections"]:
-        if program_only and section["type_id"] not in (0x0010, 0x0011):
-            continue
-
-        output_path = output_dir / section["filename"]
-        output_path.write_bytes(section["payload"])
-
+        extract = not program_only or section["type_id"] in (0x0010, 0x0011)
         metadata = {
-            key: value for key, value in section.items() if key != "payload"
+            key: value
+            for key, value in section.items()
+            if key != "payload"
         }
-        metadata["output_path"] = str(output_path)
+        metadata["extracted"] = extract
+
+        if extract:
+            output_path = output_dir / section["filename"]
+            output_path.write_bytes(section["payload"])
+            metadata["output_path"] = section["filename"]
+        else:
+            metadata["output_path"] = None
+
         manifest["sections"].append(metadata)
 
     manifest_path = output_dir / "manifest.json"
@@ -195,12 +210,15 @@ def main():
     )
     parser.add_argument("zld", type=Path, help="input .zld file")
     parser.add_argument(
-        "-o", "--output-dir", type=Path,
-        help="extract sections to this directory"
+        "-o",
+        "--output-dir",
+        type=Path,
+        help="extract sections to this directory",
     )
     parser.add_argument(
-        "--program-only", action="store_true",
-        help="extract only section types 0x10 and 0x11"
+        "--program-only",
+        action="store_true",
+        help="extract only section types 0x10 and 0x11",
     )
     args = parser.parse_args()
 
@@ -213,7 +231,9 @@ def main():
 
     if args.output_dir:
         manifest = write_sections(
-            parsed, args.output_dir, program_only=args.program_only
+            parsed,
+            args.output_dir,
+            program_only=args.program_only,
         )
         print()
         print(f"Extracted to: {args.output_dir}")
@@ -221,4 +241,9 @@ def main():
 
 
 if __name__ == "__main__":
+    main()
+    main()
+    main()
+    main()
+    main()
     main()
