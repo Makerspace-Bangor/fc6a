@@ -1,0 +1,6 @@
+This program doesnt do anything signifigant, 
+It just checks if D0 is less then D1.
+if true, Q0 is turned on
+
+The goal here is to investigate zld binary formats. 
+

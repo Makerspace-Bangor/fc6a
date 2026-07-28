@@ -109,3 +109,25 @@ header or section table and are not standalone DataFileManager packages.
 The `0x0010` and `0x0011` roles are strongly supported by captures and testing,
 but should still be treated as reverse-engineered rather than official IDEC
 documentation.
+
+
+
+### Purpose:
+The current status of this project, we are able to download a zld program file without firmware. 
+This program can deconstruct a ZLD file with firmware, into the respective file components. 
+This should provide a method to download ZLD files to a PLC via a platform of choice. 
+
+About the ZLD binary format: 
+These files are compiled bianry formats. even the comments are compiled. section 11, probably containes the comments, 
+this is derrived from a frequency analysis of zld files with different comment lemgth, resulting in a linear size variation 
+for ZlD files with, without, or with varying size commentary. 
+-- sucks for me, but Im totaly stoked about that feature as a user. 
+
+The section 11 header: 
+
+6a 3b 20 c3 49 44 45 44 4a a0 fa 14 ...
+            I  D  E  D  J
+is followed by incomprendable nonsense, which changes in size and composition, 
+as the commentary changes, under the same
+code base.
+
