@@ -131,3 +131,20 @@ is followed by incomprendable nonsense, which changes in size and composition,
 as the commentary changes, under the same
 code base.
 
+<pre>
+ZLD/
+├── D0D1Q0
+│   ├── firmware_77ff01.bin
+│   ├── firmware_77ff05.bin
+│   ├── manifest.json
+│   ├── section_10_program.bin
+│   └── section_11_supplemental.bin
+├── D0_D1_Q0_Coments.txt
+├── D0_D1_Q0_test_With_Comment_And_Firmware_V280.zld
+├── D0_D1_Q0_test_With_Comment.zld
+├── D0_D1_Q0_test.zld
+├── readme.md
+├── zld_extract.py
+└── zld_rebuild.py
+
+</pre>
