@@ -179,6 +179,38 @@ def _parse_io(io: Union[str, int], is_out: bool) -> Tuple[str, int]:
 
     raise ValueError("IO must start with Q/I or X/Y (e.g. Q0, I7, Y0000, X0007)")
 
+# -------------------------
+# Connection error handling
+# -------------------------
+class MiSmConnectionError(ConnectionError):
+    """Raised when communication with the PLC cannot be established."""
+
+def connect(self):
+    if self._sock is not None:
+        return
+
+    try:
+        self._sock = socket.create_connection(
+            (self.host, self.port),
+            timeout=self.timeout,
+        )
+
+    except TimeoutError as exc:
+        raise MiSmConnectionError(
+            f"PLC not found at {self.host}:{self.port}. "
+            "Check the IP address, PLC power, and network cabling."
+        ) from exc
+
+    except ConnectionRefusedError as exc:
+        raise MiSmConnectionError(
+            f"PLC connection refused at {self.host}:{self.port}. "
+            "Check that maintenance communication is enabled."
+        ) from exc
+
+    except OSError as exc:
+        raise MiSmConnectionError(
+            f"Unable to connect to PLC at {self.host}:{self.port}: {exc}"
+        ) from exc
 
 # -------------------------
 # Reply parsing / ACK-NAK
@@ -320,12 +352,37 @@ class MiSmTCP:
         if connect_now and keep_open:
             self.connect()
 
+    # better error handling when connection issues occur 
     def connect(self) -> None:
         """Open the TCP connection if it is not already open."""
         if self._sock is not None:
             return
-        self._sock = socket.create_connection((self.host, self.port), timeout=self.timeout)
-        self._sock.settimeout(self.timeout)
+
+        try:
+            sock = socket.create_connection(
+                (self.host, self.port),
+                timeout=self.timeout,
+            )
+            sock.settimeout(self.timeout)
+            self._sock = sock
+
+        except TimeoutError:
+            raise SystemExit(
+                f"PLC not found at {self.host}:{self.port}. "
+                "Check the IP address, PLC power, and network cabling."
+            ) from None
+
+        except ConnectionRefusedError:
+            raise SystemExit(
+                f"PLC connection refused at {self.host}:{self.port}. "
+                "Check that maintenance communication is enabled."
+            ) from None
+
+        except OSError as exc:
+            raise SystemExit(
+                f"Unable to connect to PLC at {self.host}:{self.port}: {exc}"
+            ) from None   
+  
 
     def close(self) -> None:
         """Close the TCP connection."""
