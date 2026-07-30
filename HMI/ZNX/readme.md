@@ -1,29 +1,41 @@
 <pre>
-The ZNX file is a program binary, file archive of both the linux version
-and, your program code. The HMI can read the ZNX files by either, having them in the 
-HGATA01/NVDATA folder, with an ini file pointing the OS to extract the file,
-or via standard program download.
-
-Notes.txt     for process notes
-Toos/         for some tools related to znx files and programing the HMI
-untar.txt     A list of the package contents for the os_upade.tar.xz 
-              Embeded file.
+project offset = os_update offset + os_update size
+0x64 + 0x26bb57c = 0x26bb5e0
 
 
+<b>$ znx_info.py screens2.ZNX</b> 
 
-Read_regs.ZNX an example ZNX file
-extracted/:   the "FIRMWARE" extracted 
+screens2.ZNX
+============
+size: 0x2929c64 (43162724 bytes)
+header total-0x1c: 0x2929c48 (OK)
+members: 2
+      offset          size        stored      mystery   crc32     sha256                                                            name
+------------  ------------  ------------  ------------  --------  -----------------------------------------------------------       ----------------
+0x00000064      0x026bb57c   0x00000048     0xc02c91a6  1376a72a  5905b827b3c80046809f699a258b12d6721ecfb0dbc06f05bb4f25a62bd7610e  os_update.tar.xz
+0x026bb5e0      0x0026e684   0x026bb5c4     0x55235880  790c7d17  aac3e00c6d6e19ef06bf178bade334a1cf3425f40eb25779d7e7e5f97855fc7d  project.znv
+linux:
+  os-release: Arago 2019.07
+  version_id: 2019.07
+  /etc/version: 20241129010957
+  /etc/timestamp: 20241129011703
+nested archives:
+  os_update.tar.xz -> ./home/root/boot-update.tar.xz
+  os_update.tar.xz -> ./home/root/boot-update.tar.xz -> ntfs-3g_2017.3.23-r0_armv7at2hf-neon.tar.xz
+  os_update.tar.xz -> ./home/root/boot-update.tar.xz -> ntfsprogs_2017.3.23-r0_armv7at2hf-neon.tar.xz
+  
 
-ZNX/
-├── notes.txt
-├── readme.md
-├── tools
-│   ├── extract_znx.py
-│   ├── readme.md
-│   ├── Read_regs.ZNX
-│   └── znx_info.py
-└── untar.txt
+</pre>
+# Sample Extraction 
+<pre>
+<b>$ ./extract_znx.py Read_regs.ZNX</b> 
+found 2 file(s)
 
+      offset          size        stored  name
+------------  ------------  ------------  --------------------------------
+0x00000064    0x026bb57c    0x00000048    os_update.tar.xz
+0x026bb5e0    0x002c8934    0x026bb5c4    project.znv
 
+extracted 2 file(s) to Read_regs
 
 </pre>
