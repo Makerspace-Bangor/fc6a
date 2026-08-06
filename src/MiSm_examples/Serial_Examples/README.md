@@ -1,3 +1,4 @@
+## Serial Example Code 
 <pre>
 # added PRECISSION variable. forget if its 4 or 6, IDEC max is 6, our most frequest use is 4
 # Password:

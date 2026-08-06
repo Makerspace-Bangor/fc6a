@@ -12,7 +12,7 @@ plc = MiSmSerial(
 )
 
 try:
-	  # watchout Virtualbox with FK with your ports. 
+    # watchout Virtualbox with FK with your ports. 
     # Turn OFF M8000 (put PLC no RUN)
     plc.write_bit("M8000", 0)
     print("M8000 set to 0 (STOP).")
