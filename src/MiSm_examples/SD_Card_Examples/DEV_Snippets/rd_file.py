@@ -6,7 +6,7 @@ import serial
 PORT = "/dev/ttyACM0"
 BAUD = 9600
 
-DEFAULT_FILE = "/FCDATA01/DATALOG/1-secLog/LOG_260609.CSV"
+DEFAULT_FILE = "/FCDATA01/DATALOG/1-secLog/LOG_260608.CSV"
 DEFAULT_OUT = "LOG_260608.CSV"
 BLOCK_HEX = "5C0"  # 0x5C0 = 1472 bytes
 
@@ -232,7 +232,8 @@ def main():
 if __name__ == "__main__":
     main()
 '''  
-Example:
+Example(s):
+$./rd_file.py 
 $./rd_file.py /dev/ttyACM0 --file /FCDATA01/DATALOG/1-secLog/20260406/20260406_00.CSV -o bleh.CSV
 
 ## Might not init properly, or maybe its timing...
