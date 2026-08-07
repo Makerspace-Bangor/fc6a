@@ -18,8 +18,6 @@ it should be possbile to then extend the number of units to control
 well beyond 4
 """
 
-
-
 LISTEN_IP = "0.0.0.0"
 LISTEN_PORT = 5150
 
@@ -28,11 +26,17 @@ LISTEN_PORT = 5150
 HMI_IP = None
 
 # Change these addresses to match the actual PLCs.
+# Using N+1 = ip
 PLC_BY_SELECTOR = {
     1: "192.168.1.2",
     2: "192.168.1.3",
     3: "192.168.1.4",
     4: "192.168.1.5",
+    5: "192.168.1.6",
+    6: "192.168.1.7",
+    7: "192.168.1.8",
+    8: "192.168.1.9",
+    9: "192.168.1.10",
 }
 
 # The referenced HMI sends 0 during startup.
@@ -66,33 +70,16 @@ def decode_selector(packet: bytes) -> Optional[int]:
     return packet[0]
 
 
-def selection_changed(selector: int, plc_ip: str) -> None:
-    """
-    This function runs only when the selected PLC changes.
-
-    Put the selected PLC into your other program here.
-    """
-
-    print(f"Selected PLC {selector}: {plc_ip}")
-
-    # Example:
-    # plc_manager.select(plc_ip)
-    # Or:
-    # plc = MiSmTCP(plc_ip, device="FF", timeout=2.0)
-
-
 def main() -> None:
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-
     sock.bind((LISTEN_IP, LISTEN_PORT))
 
     active_selector = None
     active_plc_ip = None
 
-    print(f"Listening for HMI selection packets on UDP {LISTEN_PORT}")
+    #print(f"Listening for HMI selection packets on UDP {LISTEN_PORT}")
 
     while True:
         packet, sender = sock.recvfrom(2048)
@@ -102,11 +89,6 @@ def main() -> None:
             continue
 
         selector = decode_selector(packet)
-
-        print(
-            f"UDP from {sender_ip}:{sender_port}  "
-            f"data={packet!r}  hex={packet.hex(' ')}"
-        )
 
         if selector is None:
             print("Ignored empty UDP packet")
@@ -133,13 +115,14 @@ def main() -> None:
         ):
             active_selector = requested_selector
             active_plc_ip = plc_ip
+            print(active_selector)
+            #selection_changed(active_selector, active_plc_ip)
+	    # Only update on selection change
+            #print(
+            #    f"UDP from {sender_ip}:{sender_port}  "
+            #    f"data={packet!r}  hex={packet.hex(' ')}"
+            #)
 
-            selection_changed(active_selector, active_plc_ip)
-        else:
-            print(
-                f"PLC {active_selector} remains selected: "
-                f"{active_plc_ip}"
-            )
 
         if SEND_ACK:
             reply = f"ok {active_selector}".encode("ascii")
@@ -151,3 +134,14 @@ if __name__ == "__main__":
         main()
     except KeyboardInterrupt:
         print("\nStopped")
+
+"""
+:~/fc6a/HMI/UDP$ python3 udp_select.py 
+Listening for HMI selection packets on UDP 5150
+Selected PLC 2: 192.168.1.3
+UDP from 192.168.1.150:49274  data=b'2'  hex=32
+Selected PLC 3: 192.168.1.4
+UDP from 192.168.1.150:49274  data=b'3'  hex=33
+	
+"""	
+	
