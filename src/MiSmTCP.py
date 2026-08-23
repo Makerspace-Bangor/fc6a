@@ -996,10 +996,23 @@ class MiSmTCP:
 
         return v
 
-    #def release_force(self, bit: Union[str, int]) -> int:
     def release_force(self) -> int:
-        """Release Force control."""        	
-        return self.force_io(False)
+        """Release all forced outputs and suspend Force I/O."""
+
+        # Suspend forced I/O first.
+        self.force_io(False)
+
+        # Clear the force designation for every output we currently support.
+        for b in range(8):
+            rep = self._xfer("0", "W", "^", f"{b:04d}0".encode("ascii"))
+            self._raise_if_err(rep)
+
+        return 1
+
+    # This may work, but I also want the libraries to match. 
+    #def release_force(self) -> int:
+    #    """Release Force control."""        	
+    #    return self.force_io(False)
 
     # Short aliases
     force_output = force
