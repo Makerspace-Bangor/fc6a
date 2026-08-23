@@ -827,8 +827,17 @@ class MiSmSerial:
         return v
 
     def release_force(self) -> int:
-        """Release Force control."""        	
-        return self.force(False)
+        """Release all forced outputs and suspend Force I/O."""
+
+        # Suspend forced I/O first.
+        self.force_io(False)
+
+        # Clear the force designation for every output we currently support.
+        for b in range(8):
+            rep = self._xfer("0", "W", "^", f"{b:04d}0".encode("ascii"))
+            self._raise_if_err(rep)
+
+        return 1
 
     # Short aliases
     force_output = force
