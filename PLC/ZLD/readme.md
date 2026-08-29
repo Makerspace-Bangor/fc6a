@@ -1,3 +1,8 @@
+## todo: fix this readme.  
+Today I verfied that a legacy password may be provided to download code the the PLC.
+I also reminded myself that atlease in the 260 Firmware factory reset may be conducted 
+without a password.
+
 # ZLD Extractor
 
 `zld_extract.py` inspects IDEC DataFileManager `.zld` files and optionally
