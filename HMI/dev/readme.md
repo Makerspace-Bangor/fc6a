@@ -23,4 +23,8 @@ sn@ker:~/fc6a/HMI/dev/test/Read_regs/os_update/home/root$ sha256sum \
 
 kinda makes me wonder what other project files are 
 embeded in the os files.
+file exploration:  
+~/AO/WindOI-NV4/ConfigurationData/Common/RuntimeSys/HG2J_SYSTEM.BIN  
+~/AO/WindOI-NV4/ConfigurationData/Common/RuntimeSys/HG2J_OS.BIN  
+
 </pre>
