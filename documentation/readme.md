@@ -1,7 +1,7 @@
 # Directory Tree
 
 <pre>
-<a href="./">.</a>
+<a href="documentation/">.</a>
 ├── <a href="./Applications/">Applications</a>
 │   └── <a href="./Applications/readme.md">readme.md</a>
 ├── <a href="./archive/">archive: old stuff linked elsewhere</a>

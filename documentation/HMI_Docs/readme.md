@@ -4,7 +4,7 @@ Docs for the Mainenance protocol relating the the HMI
 Docs here shall be for the HMI, under whatever Name, and may pertain to NV4 programing.
 
 	<h1>Directory Tree</h1><p>
-	<a href="./">.</a><br>
+	<a href="./">HMI_Docs</a><br>
 	├── <a href="./DM_link.pdf">DM_link.pdf vendor platforms and wiring</a><br>
 	├── <a href="./HMI_Maintenance_Protocol_Reference.docx">HMI_Maintenance_Protocol_Reference.docx Protocol Commands</a><br>
 	├── <a href="./IDEC_WINDOI_NV4_InternalDos.pdf">IDEC_WINDOI_NV4_InternalDocs.pdf all the embedded NV4 docs in 1 pdf</a><br>
