@@ -1,0 +1,271 @@
+					}
+					Thread.Sleep(100);
+				}
+				catch
+				{
+					return ResultCode.OtherError;
+				}
+				return ResultCode.Success;
+			};
+			return RetryWrapper(func);
+		}
+
+		public ResultCode SendLBCommand(string user, string password, bool isCreateZNV)
+		{
+			Func<ResultCode> func = () =>
+			{
+				try
+				{
+					List<byte> list = new List<byte>();
+					list.Add(5);
+					list.AddRange(EncodingHelper.ASCII.GetBytes($"{DeviceNo:X2}"));
+					list.AddRange(EncodingHelper.ASCII.GetBytes("FF"));
+					list.AddRange(EncodingHelper.ASCII.GetBytes("LB"));
+					byte[] bytes = BitConverter.GetBytes((short)192);
+					list.AddRange(bytes);
+					short num = Convert.ToInt16(isCreateZNV);
+					list.Add((byte)num);
+					char[] array = Helper.SplitStringToHex(user, 32);
+					for (int i = 0; i < array.Length; i++)
+					{
+						list.Add(Convert.ToByte(array[i]));
+					}
+					char[] array2 = Helper.SplitStringToHex(string.Empty, 32);
+					for (int j = 0; j < array2.Length; j++)
+					{
+						list.Add(Convert.ToByte(array2[j]));
+					}
+					string text = Helper.EncryptPassword(password);
+					for (int k = 0; k < text.Length; k++)
+					{
+						list.Add(Convert.ToByte(text[k]));
+					}
+					for (int l = 0; l < array2.Length; l++)
+					{
+						list.Add(Convert.ToByte(array2[l]));
+					}
+					array2 = Helper.SplitStringToHex(string.Empty, 64);
+					for (int m = 0; m < array2.Length; m++)
+					{
+						list.Add(Convert.ToByte(array2[m]));
+					}
+					list.AddRange(EncodingHelper.ASCII.GetBytes($"{CalcBCC(list.ToArray()):X2}"));
+					list.Add(13);
+					byte[] array3 = MakeRequestCommand(list.ToArray());
+					if (ResultCode.Success != Connection.Send(array3, array3.Length))
+					{
+						return ResultCode.CommunicationError;
+					}
+					byte[] reply;
+					switch (ReadReply(out reply))
+					{
+					default:
+						if (reply == null || reply[0] != 21)
+						{
+							break;
+						}
+						goto case ResultCode.Timeout;
+					case ResultCode.Timeout:
+						return ResultCode.Busy;
+					case ResultCode.Success:
+						goto end_IL_0000;
+					}
+					return ResultCode.CommunicationError;
+					end_IL_0000:;
+				}
+				catch
+				{
+					return ResultCode.OtherError;
+				}
+				return ResultCode.Success;
+			};
+			return RetryWrapper(func);
+		}
+
+		public ResultCode SendLECommand()
+		{
+			_ = Connection.Timeout;
+			Connection.Timeout += 180000;
+			Func<ResultCode> func = () =>
+			{
+				try
+				{
+					List<byte> list = new List<byte>();
+					list.Add(5);
+					list.AddRange(EncodingHelper.ASCII.GetBytes($"{DeviceNo:X2}"));
+					list.AddRange(EncodingHelper.ASCII.GetBytes("FF"));
+					list.AddRange(EncodingHelper.ASCII.GetBytes("LE"));
+					list.AddRange(EncodingHelper.ASCII.GetBytes($"{CalcBCC(list.ToArray()):X2}"));
+					list.Add(13);
+					byte[] array = MakeRequestCommand(list.ToArray());
+					if (ResultCode.Success != Connection.Send(array, array.Length))
+					{
+						return ResultCode.CommunicationError;
+					}
+					byte[] reply;
+					switch (ReadReply(out reply))
+					{
+					default:
+						if (reply == null || reply[0] != 21)
+						{
+							break;
+						}
+						goto case ResultCode.Timeout;
+					case ResultCode.Timeout:
+						return ResultCode.Busy;
+					case ResultCode.Success:
+						goto end_IL_0000;
+					}
+					return ResultCode.CommunicationError;
+					end_IL_0000:;
+				}
+				catch
+				{
+					return ResultCode.OtherError;
+				}
+				return ResultCode.Success;
+			};
+			return RetryWrapper(func);
+		}
+
+		public ResultCode SendLFCommand()
+		{
+			Func<ResultCode> func = () =>
+			{
+				try
+				{
+					List<byte> list = new List<byte>();
+					list.Add(5);
+					list.AddRange(EncodingHelper.ASCII.GetBytes($"{DeviceNo:X2}"));
+					list.AddRange(EncodingHelper.ASCII.GetBytes("FF"));
+					list.AddRange(EncodingHelper.ASCII.GetBytes("LF"));
+					list.AddRange(EncodingHelper.ASCII.GetBytes($"{CalcBCC(list.ToArray()):X2}"));
+					list.Add(13);
+					byte[] array = MakeRequestCommand(list.ToArray());
+					if (ResultCode.Success != Connection.Send(array, array.Length))
+					{
+						return ResultCode.CommunicationError;
+					}
+					byte[] reply;
+					switch (ReadReply(out reply))
+					{
+					default:
+						if (reply == null || reply[0] != 21)
+						{
+							break;
+						}
+						goto case ResultCode.Timeout;
+					case ResultCode.Timeout:
+						return ResultCode.Busy;
+					case ResultCode.Success:
+						goto end_IL_0000;
+					}
+					return ResultCode.CommunicationError;
+					end_IL_0000:;
+				}
+				catch
+				{
+					return ResultCode.OtherError;
+				}
+				return ResultCode.Success;
+			};
+			return RetryWrapper(func);
+		}
+
+		public ResultCode SendLDCommand()
+		{
+			Func<ResultCode> func = () =>
+			{
+				try
+				{
+					List<byte> list = new List<byte>();
+					list.Add(5);
+					list.AddRange(EncodingHelper.ASCII.GetBytes($"{DeviceNo:X2}"));
+					list.AddRange(EncodingHelper.ASCII.GetBytes("FF"));
+					list.AddRange(EncodingHelper.ASCII.GetBytes("LD"));
+					list.AddRange(EncodingHelper.ASCII.GetBytes($"{CalcBCC(list.ToArray()):X2}"));
+					list.Add(13);
+					byte[] array = MakeRequestCommand(list.ToArray());
+					if (ResultCode.Success != Connection.Send(array, array.Length))
+					{
+						return ResultCode.CommunicationError;
+					}
+					byte[] reply;
+					switch (ReadReply(out reply))
+					{
+					default:
+						if (reply == null || reply[0] != 21)
+						{
+							break;
+						}
+						goto case ResultCode.Timeout;
+					case ResultCode.Timeout:
+						return ResultCode.Busy;
+					case ResultCode.Success:
+						goto end_IL_0000;
+					}
+					return ResultCode.CommunicationError;
+					end_IL_0000:;
+				}
+				catch
+				{
+					return ResultCode.OtherError;
+				}
+				return ResultCode.Success;
+			};
+			return RetryWrapper(func);
+		}
+
+		public ResultCode SendLCCommand(LinuxDownloadMode mode)
+		{
+			int timeout = Connection.Timeout;
+			Connection.Timeout += ((mode == LinuxDownloadMode.Kernel) ? 1800000 : 60000);
+			Func<ResultCode> func = () =>
+			{
+				try
+				{
+					List<byte> list = new List<byte>();
+					list.Add(5);
+					list.AddRange(EncodingHelper.ASCII.GetBytes($"{DeviceNo:X2}"));
+					list.AddRange(EncodingHelper.ASCII.GetBytes("FF"));
+					list.AddRange(EncodingHelper.ASCII.GetBytes("LC"));
+					short value = (short)mode;
+					list.AddRange(BitConverter.GetBytes(value));
+					list.AddRange(EncodingHelper.ASCII.GetBytes($"{CalcBCC(list.ToArray()):X2}"));
+					list.Add(13);
+					byte[] array = MakeRequestCommand(list.ToArray());
+					if (ResultCode.Success != Connection.Send(array, array.Length))
+					{
+						return ResultCode.CommunicationError;
+					}
+					byte[] reply;
+					switch (ReadReply(out reply))
+					{
+					default:
+						if (reply == null || reply[0] != 21)
+						{
+							break;
+						}
+						goto case ResultCode.Timeout;
+					case ResultCode.Timeout:
+						return ResultCode.Busy;
+					case ResultCode.Success:
+						goto end_IL_0000;
+					}
+					return ResultCode.CommunicationError;
+					end_IL_0000:;
+				}
+				catch
+				{
+					return ResultCode.OtherError;
+				}
+				finally
+				{
+					Connection.Timeout = timeout;
+				}
+				return ResultCode.Success;
+			};
+			return RetryWrapper(func);
+		}
+
+		public ResultCode SendLGCommand(bool isExcute)

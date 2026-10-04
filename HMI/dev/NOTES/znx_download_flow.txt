@@ -1,0 +1,669 @@
+
+		public ResultCode DownloadProjectData(string znvOrZnxFilePath, bool isSupportSaveLogDataInZNVFile, string loaderFilePath, DownloadProjectOptionInfo downloadOptionInfo, Func<string, string, PDMode, ResultCode> getDownloadOptionInfo, Func<ResultCode> showDownloadMessage1, Func<ResultCode> showDownloadMessage2, Func<DownloadCheck, ResultCode> showDownloadCheckMessage, string user = "", string password = "", ChangeProjectSettingInfo changeInfo = null, Action<PDProcessingStage, ResultCode, int, string, int, int> progress = null)
+		{
+			Func<ResultCode> func = () =>
+			{
+				//IL_0c10: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0c1b: Unknown result type (might be due to invalid IL or missing references)
+				DirectoryInfo directoryInfo = MakeTempFolder();
+				bool flag = true;
+				bool flag2 = false;
+				byte minorFormatVersion = 0;
+				try
+				{
+					_ReportProgress(progress, PDProcessingStage.FileConvert);
+					string systemSoftwareVersion = string.Empty;
+					PDSeriesID seriesID;
+					short formatVersion;
+					string osVersion;
+					string[] extractFilePaths;
+					if (Helper.IsLinuxSeries)
+					{
+						ResultCode resultCode = ResultCode.Success;
+						if (string.Compare(Path.GetExtension(znvOrZnxFilePath), ".ZNX", ignoreCase: true) == 0)
+						{
+							resultCode = ExtractZNXProjectFileForLinux(znvOrZnxFilePath, directoryInfo.FullName, isSupportSaveLogDataInZNVFile, out extractFilePaths, out seriesID, out formatVersion, out osVersion, out systemSoftwareVersion, showDownloadCheckMessage);
+							if (ResultCode.Success != resultCode)
+							{
+								_ReportProgress(progress, PDProcessingStage.FileConvert, ResultCode.Failure);
+								if (ResultCode.CheckSumError != resultCode)
+								{
+									return ResultCode.FileError;
+								}
+								return resultCode;
+							}
+							flag = false;
+							flag2 = downloadOptionInfo.IsDownloadSystemSoftwareAndOSForcibly;
+						}
+						else
+						{
+							resultCode = ExtractZNVProjectFileForLinux(znvOrZnxFilePath, directoryInfo.FullName, isSupportSaveLogDataInZNVFile, out extractFilePaths, out seriesID, out formatVersion, out osVersion, out systemSoftwareVersion, showDownloadCheckMessage);
+							if (ResultCode.Success != resultCode)
+							{
+								_ReportProgress(progress, PDProcessingStage.FileConvert, ResultCode.Failure);
+								if (ResultCode.CheckSumError != resultCode)
+								{
+									return ResultCode.FileError;
+								}
+								return resultCode;
+							}
+							flag2 = downloadOptionInfo.IsDownloadRuntimeSystem;
+						}
+					}
+					else if (ResultCode.Success != ExtractProjectFile(znvOrZnxFilePath, directoryInfo.FullName, isSupportSaveLogDataInZNVFile, out extractFilePaths, out seriesID, out formatVersion, out minorFormatVersion, out osVersion, out systemSoftwareVersion))
+					{
+						_ReportProgress(progress, PDProcessingStage.FileConvert, ResultCode.Failure);
+						return ResultCode.FileError;
+					}
+					if (ResultCode.Success != CalcProjectDataSize(extractFilePaths, out var size))
+					{
+						_ReportProgress(progress, PDProcessingStage.FileConvert, ResultCode.Failure);
+						return ResultCode.FileError;
+					}
+					List<string> list = new List<string>(extractFilePaths);
+					string text = list.Find((string item) => Regex.IsMatch(Path.GetFileName(item), ".*\\.t2f", RegexOptions.IgnoreCase));
+					if (!File.Exists(text))
+					{
+						_ReportProgress(progress, PDProcessingStage.FileConvert, ResultCode.Failure);
+						return ResultCode.FileError;
+					}
+					if (!IsSupportProject(text, minorFormatVersion))
+					{
+						_ReportProgress(progress, PDProcessingStage.FileConvert, ResultCode.Failure);
+						return ResultCode.UnsupportProject;
+					}
+					string text2 = list.Find((string item) => Regex.IsMatch(Path.GetFileName(item), ".*HG2F.BIN", RegexOptions.IgnoreCase));
+					if (formatVersion != 2 && !string.IsNullOrEmpty(text2))
+					{
+						list.Remove(text2);
+						systemSoftwareVersion = GetSystemFileVersion(seriesID, text2);
+					}
+					string text3 = list.Find((string item) => Regex.IsMatch(Path.GetFileName(item), ".*EXFONT.BIN", RegexOptions.IgnoreCase));
+					if (!string.IsNullOrEmpty(text3))
+					{
+						list.Remove(text3);
+					}
+					extractFilePaths = list.ToArray();
+					_ReportProgress(progress, PDProcessingStage.FileConvert, ResultCode.Success, 10);
+					_ReportProgress(progress, PDProcessingStage.ReadingMode);
+					ResultCode resultCode2 = PDProtocol.ReadingMode(out var mode);
+					if (resultCode2 != ResultCode.Success)
+					{
+						_ReportProgress(progress, PDProcessingStage.ReadingMode, ResultCode.Failure);
+						return resultCode2;
+					}
+					_ReportProgress(progress, PDProcessingStage.ReadingMode, ResultCode.Success, 15);
+					_ReportProgress(progress, PDProcessingStage.ReadPDSystemInformation);
+					resultCode2 = PDProtocol.ReadPDSystemInformation(out var system);
+					if (resultCode2 != ResultCode.Success)
+					{
+						_ReportProgress(progress, PDProcessingStage.ReadPDSystemInformation, ResultCode.Failure);
+						return resultCode2;
+					}
+					resultCode2 = CheckErrorForUnsupportedVersion(system);
+					if (resultCode2 != ResultCode.Success)
+					{
+						return resultCode2;
+					}
+					if (mode != PDMode.SystemTransmissionMode && system.MemorySpace < size)
+					{
+						_ReportProgress(progress, PDProcessingStage.ReadPDSystemInformation, ResultCode.Failure);
+						return ResultCode.NoCapacity;
+					}
+					_ReportProgress(progress, PDProcessingStage.ReadPDSystemInformation, ResultCode.Success, 20);
+					_ReportProgress(progress, PDProcessingStage.CheckSeriesID);
+					if (!IsSupportSeriesID(system.SeriesID))
+					{
+						_ReportProgress(progress, PDProcessingStage.CheckSeriesID, ResultCode.Failure);
+						return ResultCode.Unsupport;
+					}
+					if (system.SeriesID != seriesID)
+					{
+						_ReportProgress(progress, PDProcessingStage.CheckSeriesID, ResultCode.Failure);
+						return ResultCode.FileError;
+					}
+					_ReportProgress(progress, PDProcessingStage.CheckSeriesID, ResultCode.Success, 25);
+					PDUserDataInfo userData = default;
+					if (mode != PDMode.SystemTransmissionMode)
+					{
+						_ReportProgress(progress, PDProcessingStage.LoadingTheProjectInformation);
+						resultCode2 = PDProtocol.ReadUserDataInformation(out userData);
+						if (resultCode2 != ResultCode.Success)
+						{
+							_ReportProgress(progress, PDProcessingStage.LoadingTheProjectInformation, ResultCode.Failure);
+							return resultCode2;
+						}
+						_ReportProgress(progress, PDProcessingStage.LoadingTheProjectInformation, ResultCode.Success, 35);
+						_ReportProgress(progress, PDProcessingStage.CheckPassword);
+						if (isSupportSaveLogDataInZNVFile && (!isSupportSaveLogDataInZNVFile || !IsHashAndDataStorageSame(ref userData, downloadOptionInfo, showDownloadMessage1, showDownloadMessage2)))
+						{
+							return ResultCode.Cancel;
+						}
+						resultCode2 = CheckPassword(system.SystemVersion, user, password, userData, PasswordLevel.Lv1, 2);
+						if (resultCode2 != ResultCode.Success)
+						{
+							_ReportProgress(progress, PDProcessingStage.CheckPassword, ResultCode.Failure);
+							return ResultCode.IncorrectPassword;
+						}
+						_ReportProgress(progress, PDProcessingStage.CheckPassword, ResultCode.Success, 40);
+					}
+					else
+					{
+						if (Helper.IsLinuxSeries)
+						{
+							_ReportProgress(progress, PDProcessingStage.LoadingTheProjectInformation);
+							resultCode2 = PDProtocol.ReadUserDataInformation(out userData);
+							if (resultCode2 != ResultCode.Success)
+							{
+								_ReportProgress(progress, PDProcessingStage.LoadingTheProjectInformation, ResultCode.Failure);
+								return resultCode2;
+							}
+							_ReportProgress(progress, PDProcessingStage.LoadingTheProjectInformation, ResultCode.Success, 35);
+						}
+						userData.DataNo = ushort.MaxValue;
+					}
+					if (Helper.IsLinuxSeries)
+					{
+						PDCommunication pDCommunication = this;
+						string fullName = directoryInfo.FullName;
+						char directorySeparatorChar = Path.DirectorySeparatorChar;
+						pDCommunication.currentTemporaryFolder = fullName + directorySeparatorChar;
+						if (!flag2)
+						{
+							VersionCompareResult versionCompareResult = Helper.CompareVersionAABBCCDD(systemSoftwareVersion, userData.SystemSoftVersion);
+							VersionCompareResult versionCompareResult2 = Helper.CompareVersionAABBCCDD(osVersion, userData.OSVersion);
+							if (versionCompareResult == VersionCompareResult.IsLess && versionCompareResult2 == VersionCompareResult.IsSame)
+							{
+								return showDownloadCheckMessage(DownloadCheck.SystemSoftwareInZNXOrZNVIsSmaller);
+							}
+							if (versionCompareResult == VersionCompareResult.IsBigger && versionCompareResult2 == VersionCompareResult.IsSame)
+							{
+								resultCode2 = showDownloadCheckMessage(DownloadCheck.SystemSoftwareInZNXOrZNVIsBigger);
+								if (resultCode2 == ResultCode.Cancel)
+								{
+									return resultCode2;
+								}
+							}
+							else if (flag)
+							{
+								if (versionCompareResult2 != VersionCompareResult.IsSame)
+								{
+									return showDownloadCheckMessage(DownloadCheck.OSVersionInZNVIsDifferent);
+								}
+							}
+							else
+							{
+								switch (versionCompareResult2)
+								{
+								case VersionCompareResult.IsLess:
+									return showDownloadCheckMessage(DownloadCheck.OSVersionInZNXIsSmaller);
+								case VersionCompareResult.IsBigger:
+									resultCode2 = showDownloadCheckMessage(DownloadCheck.OSVersionInZNXIsBigger);
+									if (resultCode2 == ResultCode.Cancel)
+									{
+										return resultCode2;
+									}
+									break;
+								}
+							}
+						}
+						if (downloadOptionInfo.IsDownloadSystemSoftwareAndOSForcibly)
+						{
+							EthernetTCPConnection ethernetTCPConnection = Connection as EthernetTCPConnection;
+							if ((string.IsNullOrEmpty(userData.UsingWifi) && userData.WifiIP == ethernetTCPConnection.IPAdress) || userData.UsingWifi == "1")
+							{
+								resultCode2 = showDownloadCheckMessage(DownloadCheck.UnableDownloadOSByWifi);
+							}
+							else if (flag2 && userData.CurrentOS == 0)
+							{
+								resultCode2 = showDownloadCheckMessage(DownloadCheck.OSDownloadConfirmMessage);
+							}
+						}
+						else
+						{
+							resultCode2 = showDownloadCheckMessage(DownloadCheck.ChangeIpConfirmMessage);
+						}
+						if (resultCode2 == ResultCode.Cancel)
+						{
+							return resultCode2;
+						}
+						system.SystemVersion = userData.SystemSoftVersion;
+					}
+					if (!Helper.IsLinuxSeries)
+					{
+						if (!downloadOptionInfo.IsDownloadRuntimeSystem)
+						{
+							_ReportProgress(progress, PDProcessingStage.CheckSystemSoftware);
+							resultCode2 = getDownloadOptionInfo(systemSoftwareVersion, system.SystemVersion, mode);
+							int percent = ((resultCode2 == ResultCode.Success) ? 30 : (-1));
+							if (mode == PDMode.SystemTransmissionMode)
+							{
+								_ReportProgress(progress, PDProcessingStage.CheckSystemSoftware, ResultCode.Failure, percent);
+								_ReportProgress(progress, PDProcessingStage.ReadPDSystemInformation, ResultCode.Skip);
+							}
+							else
+							{
+								_ReportProgress(progress, PDProcessingStage.CheckSystemSoftware, ResultCode.Success, percent);
+							}
+							if (resultCode2 != ResultCode.Success)
+							{
+								return resultCode2;
+							}
+						}
+						if (downloadOptionInfo.IsDownloadRuntimeSystem && !string.IsNullOrEmpty(text2))
+						{
+							resultCode2 = DownloadSystemFile(PDTransferData.System, text2, 50, systemSoftwareVersion, (mode != PDMode.SystemTransmissionMode) ? string.Empty : loaderFilePath, progress);
+							if (resultCode2 != ResultCode.Success)
+							{
+								return resultCode2;
+							}
+						}
+						string text4 = ((!downloadOptionInfo.IsDownloadRuntimeSystem) ? system.SystemVersion : systemSoftwareVersion);
+						if (downloadOptionInfo.IsDownloadFont && !string.IsNullOrEmpty(text3))
+						{
+							resultCode2 = DownloadSystemFile(PDTransferData.Font, text3, 60, text4, "", progress);
+							if (resultCode2 != ResultCode.Success)
+							{
+								return resultCode2;
+							}
+						}
+						else
+						{
+							resultCode2 = ChangingMode(PDMode.DataTransmissionMode);
+						}
+						if (decimal.Parse(text4) <= 4.54m)
+						{
+							_ReportProgress(progress, PDProcessingStage.ChangingSystemMode, ResultCode.Continue, 65);
+							resultCode2 = ChangingMode(PDMode.SystemMode);
+							if (resultCode2 != ResultCode.Success)
+							{
+								_ReportProgress(progress, PDProcessingStage.ChangingSystemMode, ResultCode.Failure);
+								return resultCode2;
+							}
+							_ReportProgress(progress, PDProcessingStage.ChangingSystemMode, ResultCode.Success, 70);
+						}
+						_ReportProgress(progress, PDProcessingStage.Initialization);
+						PDDataType dataType = PDDataType.AllData;
+						if (!isSupportSaveLogDataInZNVFile)
+						{
+							if (!downloadOptionInfo.IsClearKeepDevices)
+							{
+								dataType = PDDataType.AllDataExceptLKLKR;
+							}
+							userData.DataNo = ushort.MaxValue;
+						}
+						else
+						{
+							dataType = PDDataType.SelectableInitialization;
+						}
+						resultCode2 = PDProtocol.Initialization(dataType, userData.DataNo);
+						if (resultCode2 != ResultCode.Success)
+						{
+							_ReportProgress(progress, PDProcessingStage.Initialization, ResultCode.Failure);
+							return resultCode2;
+						}
+						_ReportProgress(progress, PDProcessingStage.Initialization, ResultCode.Success, 75);
+						if (decimal.Parse(text4) <= 4.54m)
+						{
+							_ReportProgress(progress, PDProcessingStage.ChangingDataTransmissionMode);
+							resultCode2 = ChangingMode(PDMode.DataTransmissionMode);
+							if (resultCode2 != ResultCode.Success)
+							{
+								_ReportProgress(progress, PDProcessingStage.ChangingDataTransmissionMode, ResultCode.Failure);
+								return resultCode2;
+							}
+							_ReportProgress(progress, PDProcessingStage.ChangingDataTransmissionMode, ResultCode.Success, 80);
+						}
+						_ReportProgress(progress, PDProcessingStage.StartingUserDataTransmission);
+						resultCode2 = PDProtocol.StartingUserDataTransmission(DataTransferRate, DataTransferDataBits, DataTransferParity, DataTransferStopBits);
+						if (resultCode2 != ResultCode.Success)
+						{
+							_ReportProgress(progress, PDProcessingStage.StartingUserDataTransmission, ResultCode.Failure);
+							return resultCode2;
+						}
+						_ReportProgress(progress, PDProcessingStage.StartingUserDataTransmission, ResultCode.Success, 85);
+						_ReportProgress(progress, PDProcessingStage.UserDataDownload);
+						Action<string, int, int, ResultCode> progress2 = (string fileName, int fileSize, int transferredSize, ResultCode ret) =>
+						{
+							_ReportProgress(progress, PDProcessingStage.UserDataDownload_File, ret, -1, fileName, fileSize, transferredSize);
+						};
+						bool downloadC2fFlag = IsKeepC2f(system.SeriesID);
+						resultCode2 = PDProtocol.UserDataDownload(extractFilePaths, downloadC2fFlag, progress2);
+						if (resultCode2 != ResultCode.Success)
+						{
+							_ReportProgress(progress, PDProcessingStage.UserDataDownload, ResultCode.Failure);
+							return resultCode2;
+						}
+						_ReportProgress(progress, PDProcessingStage.UserDataDownload, ResultCode.Success, 95);
+						if (changeInfo.IPSettingType == "Do not change")
+						{
+							bool oldVer = false;
+							if (Convert.ToDecimal(systemSoftwareVersion) < 4.52m)
+							{
+								oldVer = true;
+							}
+							_ReportProgress(progress, PDProcessingStage.ChangeProjectSetting);
+							resultCode2 = PDProtocol.ChangeProjectSetting(PDOILinkType.None, PDOILinkSpeed.None, changeInfo.IpAddress, changeInfo.SubnetMask, changeInfo.DefaultGateway, changeInfo.PortNo, oldVer, changeInfo.IsChangeIP, changeInfo.IsChangeSubnetMask, changeInfo.IsChangeDefaultGateway, changeInfo.IsChangePotrtNo);
+							if (resultCode2 != ResultCode.Success)
+							{
+								_ReportProgress(progress, PDProcessingStage.ChangeProjectSetting, ResultCode.Failure);
+								return resultCode2;
+							}
+							_ReportProgress(progress, PDProcessingStage.ChangeProjectSetting, ResultCode.Success, 97);
+						}
+						_ReportProgress(progress, PDProcessingStage.BackToRunningMode);
+						resultCode2 = PDProtocol.BackToRunningMode();
+						if (resultCode2 != ResultCode.Success)
+						{
+							_ReportProgress(progress, PDProcessingStage.BackToRunningMode, ResultCode.Failure);
+							return resultCode2;
+						}
+					}
+					else
+					{
+						if (string.Compare(Path.GetExtension(znvOrZnxFilePath), ".ZNX", ignoreCase: true) == 0)
+						{
+							if (!downloadOptionInfo.IsDownloadSystemSoftwareAndOSForcibly)
+							{
+								string text5 = currentTemporaryFolder + "project.znv";
+								if (File.Exists(text5))
+								{
+									File.Delete(text5);
+								}
+								MakeZNVFileForLinux(ref system, ref userData, extractFilePaths, text5, downloadOptionInfo.IsDownloadRuntimeSystem);
+								resultCode2 = DownloadDetailDataForLinux(userData, changeInfo, progress, downloadOptionInfo.IsExcuteLadderProgram);
+							}
+							else
+							{
+								File.Copy(znvOrZnxFilePath, currentTemporaryFolder + "os_update.znx", overwrite: true);
+								resultCode2 = DownloadOSDataForLinux(userData.CurrentOS, progress);
+							}
+						}
+						else if (!downloadOptionInfo.IsDownloadRuntimeSystem)
+						{
+							string text6 = currentTemporaryFolder + "project.znv";
+							if (File.Exists(text6))
+							{
+								File.Delete(text6);
+							}
+							MakeZNVFileForLinux(ref system, ref userData, extractFilePaths, text6, isDownloadSystemSoftware: false);
+							resultCode2 = DownloadDetailDataForLinux(userData, changeInfo, progress, downloadOptionInfo.IsExcuteLadderProgram);
+						}
+						else
+						{
+							File.Copy(znvOrZnxFilePath, currentTemporaryFolder + "project.znv", overwrite: true);
+							resultCode2 = DownloadDetailDataForLinux(userData, changeInfo, progress, downloadOptionInfo.IsExcuteLadderProgram);
+						}
+						if (resultCode2 != ResultCode.Success)
+						{
+							return resultCode2;
+						}
+					}
+					if (!downloadOptionInfo.IsDownloadSystemSoftwareAndOSForcibly && changeInfo.IPSettingType == "Do not change")
+					{
+						if (!changeInfo.IsChangeIP && !changeInfo.IsChangeSubnetMask && !changeInfo.IsChangeDefaultGateway && !changeInfo.IsChangePotrtNo)
+						{
+							resultCode2 = ReConnect();
+							if (resultCode2 != ResultCode.Success)
+							{
+								_ReportProgress(progress, PDProcessingStage.BackToRunningMode, ResultCode.Failure);
+								return resultCode2;
+							}
+						}
+						_ReportProgress(progress, PDProcessingStage.BackToRunningMode, ResultCode.Success, 100);
+					}
+					return ResultCode.Success;
+				}
+				finally
+				{
+					if (!DebugMode)
+					{
+						directoryInfo?.Delete(recursive: true);
+					}
+					PDProtocol.IsCancel = false;
+				}
+			};
+			return ConnectionWrapper(func);
+		}
+
+		private ResultCode DownloadDetailDataForLinux(PDUserDataInfo userdataInfo, ChangeProjectSettingInfo changeInfo = null, Action<PDProcessingStage, ResultCode, int, string, int, int> progress = null, bool isExecuteLadder = false)
+		{
+			ResultCode resultCode = ResultCode.Success;
+			try
+			{
+				_ReportProgress(progress, PDProcessingStage.ChangingSystemMode, ResultCode.Continue, 40);
+				resultCode = ChangingMode(PDMode.DataTransmissionMode);
+				if (resultCode != ResultCode.Success)
+				{
+					_ReportProgress(progress, PDProcessingStage.ChangingSystemMode, ResultCode.Failure);
+					return resultCode;
+				}
+				_ReportProgress(progress, PDProcessingStage.ChangingSystemMode, ResultCode.Success, 45);
+				resultCode = PDProtocol.Initialization(PDDataType.SelectableInitialization, userdataInfo.DataNo);
+				if (resultCode != ResultCode.Success)
+				{
+					return resultCode;
+				}
+				_ReportProgress(progress, PDProcessingStage.ConnectingToOperatorInterface, ResultCode.Continue, 50);
+				resultCode = InitialFTPConnection();
+				if (resultCode != ResultCode.Success)
+				{
+					_ReportProgress(progress, PDProcessingStage.ConnectingToOperatorInterface, ResultCode.Failure);
+					return resultCode;
+				}
+				_ReportProgress(progress, PDProcessingStage.ConnectingToOperatorInterface, ResultCode.Success, 55);
+				if (resultCode == ResultCode.Success)
+				{
+					StartLFThread();
+					_ReportProgress(progress, PDProcessingStage.TransferringTheData, ResultCode.Continue, 60);
+					resultCode = SendProjectDataForLinux();
+					if (resultCode == ResultCode.Success)
+					{
+						_ReportProgress(progress, PDProcessingStage.TransferringTheData, ResultCode.Success, 65);
+					}
+					else
+					{
+						_ReportProgress(progress, PDProcessingStage.TransferringTheData, ResultCode.Failure, 65);
+					}
+				}
+				StopLFThread();
+				if (resultCode == ResultCode.Success)
+				{
+					_ReportProgress(progress, PDProcessingStage.CheckingTheSendAndReceiveData, ResultCode.Continue, 70);
+					resultCode = PDProtocol.SendLCCommand(LinuxDownloadMode.Normal);
+					if (resultCode != ResultCode.Success)
+					{
+						_ReportProgress(progress, PDProcessingStage.CheckingTheSendAndReceiveData, ResultCode.Failure);
+					}
+					_ReportProgress(progress, PDProcessingStage.CheckingTheSendAndReceiveData, ResultCode.Success, 75);
+				}
+				_ReportProgress(progress, PDProcessingStage.DisconnectingTheConnection, ResultCode.Continue, 80);
+				SendLDIfNecessary(resultCode == ResultCode.Success);
+				_ReportProgress(progress, PDProcessingStage.DisconnectingTheConnection, ResultCode.Success, 85);
+				if (changeInfo.IPSettingType == "Do not change")
+				{
+					_ReportProgress(progress, PDProcessingStage.ChangeProjectSetting);
+					resultCode = PDProtocol.ChangeProjectSetting(PDOILinkType.None, PDOILinkSpeed.None, changeInfo.IpAddress, changeInfo.SubnetMask, changeInfo.DefaultGateway, changeInfo.PortNo, oldVer: false, changeInfo.IsChangeIP, changeInfo.IsChangeSubnetMask, changeInfo.IsChangeDefaultGateway, changeInfo.IsChangePotrtNo);
+					if (resultCode != ResultCode.Success)
+					{
+						_ReportProgress(progress, PDProcessingStage.ChangeProjectSetting, ResultCode.Failure);
+						return resultCode;
+					}
+					_ReportProgress(progress, PDProcessingStage.ChangeProjectSetting, ResultCode.Success, 90);
+				}
+				if (Helper.IsInnerPLCSeries)
+				{
+					if (isExecuteLadder)
+					{
+						_ReportProgress(progress, PDProcessingStage.ExcuteLadderProgram, ResultCode.Continue, 95);
+					}
+					resultCode = SendLGCommand(isExecuteLadder);
+					if (isExecuteLadder)
+					{
+						if (resultCode == ResultCode.Success)
+						{
+							_ReportProgress(progress, PDProcessingStage.ExcuteLadderProgram, ResultCode.Success, 96);
+						}
+						else
+						{
+							_ReportProgress(progress, PDProcessingStage.ExcuteLadderProgram, ResultCode.Failure);
+						}
+					}
+				}
+				_ReportProgress(progress, PDProcessingStage.BackToRunningMode);
+				resultCode = PDProtocol.BackToRunningMode();
+				if (resultCode != ResultCode.Success)
+				{
+					_ReportProgress(progress, PDProcessingStage.BackToRunningMode, ResultCode.Failure);
+				}
+			}
+			catch
+			{
+				resultCode = ResultCode.Failure;
+			}
+			finally
+			{
+				SendStopLFAndLDCommand();
+			}
+			return resultCode;
+		}
+
+		private ResultCode DownloadOSDataForLinux(int currentOS, Action<PDProcessingStage, ResultCode, int, string, int, int> progress = null)
+		{
+			ResultCode resultCode = ResultCode.Success;
+			try
+			{
+				if (currentOS == 0)
+				{
+					_ReportProgress(progress, PDProcessingStage.ChangingSystemMode, ResultCode.Continue, 40);
+					resultCode = ChangingMode(PDMode.SystemTransmissionMode);
+					if (resultCode != ResultCode.Success)
+					{
+						_ReportProgress(progress, PDProcessingStage.ChangingSystemMode, ResultCode.Failure);
+						return resultCode;
+					}
+					_ReportProgress(progress, PDProcessingStage.ChangingSystemMode, ResultCode.Success, 45);
+				}
+				_ReportProgress(progress, PDProcessingStage.ErasingTheData, ResultCode.Continue, 50);
+				resultCode = PDProtocol.SendLECommand();
+				if (resultCode != ResultCode.Success)
+				{
+					_ReportProgress(progress, PDProcessingStage.ErasingTheData, ResultCode.Failure);
+					return resultCode;
+				}
+				_ReportProgress(progress, PDProcessingStage.ErasingTheData, ResultCode.Success, 55);
+				if (resultCode == ResultCode.Success)
+				{
+					_ReportProgress(progress, PDProcessingStage.ConnectingToOperatorInterface, ResultCode.Continue, 60);
+					resultCode = InitialFTPConnection();
+					if (resultCode != ResultCode.Success)
+					{
+						_ReportProgress(progress, PDProcessingStage.ConnectingToOperatorInterface, ResultCode.Failure);
+						return resultCode;
+					}
+					_ReportProgress(progress, PDProcessingStage.ConnectingToOperatorInterface, ResultCode.Success, 65);
+					if (resultCode == ResultCode.Success)
+					{
+						StartLFThread();
+						_ReportProgress(progress, PDProcessingStage.TransferringTheData, ResultCode.Continue, 70);
+						Action<string, int, int, ResultCode> progressFile = (string fileName, int fileSize, int transferredSize, ResultCode ret) =>
+						{
+							_ReportProgress(progress, PDProcessingStage.TransferringTheData, ret, -1, fileName, fileSize, transferredSize);
+						};
+						resultCode = SendOSData(progressFile);
+						if (resultCode == ResultCode.Success)
+						{
+							_ReportProgress(progress, PDProcessingStage.TransferringTheData, ResultCode.Success, 75);
+						}
+						else
+						{
+							_ReportProgress(progress, PDProcessingStage.TransferringTheData, ResultCode.Failure, 75);
+						}
+					}
+					StopLFThread();
+					if (resultCode == ResultCode.Success)
+					{
+						_ReportProgress(progress, PDProcessingStage.CheckingTheSendAndReceiveData, ResultCode.Continue, 80);
+						resultCode = PDProtocol.SendLCCommand(LinuxDownloadMode.Kernel);
+						if (resultCode != ResultCode.Success)
+						{
+							_ReportProgress(progress, PDProcessingStage.CheckingTheSendAndReceiveData, ResultCode.Failure);
+						}
+						_ReportProgress(progress, PDProcessingStage.CheckingTheSendAndReceiveData, ResultCode.Success, 85);
+					}
+					_ReportProgress(progress, PDProcessingStage.DisconnectingTheConnection, ResultCode.Continue, 90);
+					SendLDIfNecessary(resultCode == ResultCode.Success);
+					_ReportProgress(progress, PDProcessingStage.DisconnectingTheConnection, ResultCode.Success, 95);
+					_ReportProgress(progress, PDProcessingStage.BackToRunningMode);
+					resultCode = PDProtocol.BackToRunningMode();
+					if (resultCode != ResultCode.Success)
+					{
+						_ReportProgress(progress, PDProcessingStage.BackToRunningMode, ResultCode.Failure);
+					}
+				}
+			}
+			catch
+			{
+				resultCode = ResultCode.Failure;
+			}
+			finally
+			{
+				SendStopLFAndLDCommand();
+			}
+			return resultCode;
+		}
+
+		private ResultCode SendOSData(Action<string, int, int, ResultCode> progressFile)
+		{
+			ResultCode result = ResultCode.Success;
+			string text = currentTemporaryFolder + "os_update.znx";
+			string text2 = currentTemporaryFolder + "os_update.znx.md5";
+			if (File.Exists(text))
+			{
+				File.WriteAllText(text2, MD5Creator.GetMD5StringByFile(text));
+			}
+			if (File.Exists(text))
+			{
+				File.WriteAllText(text2, MD5Creator.GetMD5StringByFile(text));
+			}
+			try
+			{
+				FTPUtility.Instance.UploadFile("tmp/os_update.znx", text, isNeedUpdateProgress: true, progressFile, message);
+				FTPUtility.Instance.UploadFile("tmp/os_update.znx.md5", text2);
+			}
+			catch
+			{
+				result = ResultCode.Failure;
+			}
+			finally
+			{
+				if (File.Exists(text))
+				{
+					File.Delete(text);
+				}
+				if (File.Exists(text2))
+				{
+					File.Delete(text2);
+				}
+			}
+			return result;
+		}
+
+		private ResultCode SendProjectDataForLinux()
+		{
+			ResultCode result = ResultCode.Success;
+			string text = currentTemporaryFolder + "project.znv";
+			string text2 = currentTemporaryFolder + "project.znv.md5";
+			if (File.Exists(text))
+			{
+				File.WriteAllText(text2, MD5Creator.GetMD5StringByFile(text));
+			}
+			try
+			{
+				FTPUtility.Instance.UploadFile("tmp/project.znv", text);
+				FTPUtility.Instance.WaitFtpRequestFinished();
+				FTPUtility.Instance.UploadFile("tmp/project.znv.md5", text2);
+			}
+			catch
+			{
+				result = ResultCode.Failure;
