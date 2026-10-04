@@ -61,3 +61,18 @@ for each remaining 32-bit word:
     checksum ^= ReadUInt32()
 
 return checksum
+# make a lil checksum script, match the checksums for the 3 components:
+python3 idec_checksum.py /tmp/os_update.tar.xz  /tmp/project.znv /tmp/HG2F.orig
+/tmp/os_update.tar.xz: 0xc02c91a6
+/tmp/project.znv: 0x5536c42e
+/tmp/HG2F.orig: 0xe6ea3ba9
+
+**This was on the basis of Read_regs.ZNX which was from an un unknown version of NV4
+ZNX
+  os_update.tar.xz  -> XOR32
+  project.znv       -> XOR32
+
+ZNV
+  HG2F.BIN          -> XOR32
+  other files       -> XOR32 of stored bytes
+                        (encrypted bytes when encryption is used)
