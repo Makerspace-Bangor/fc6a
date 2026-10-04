@@ -1,0 +1,63 @@
+# Find all the dlls with .net assemblies, and decompile 
+mkdir ~/ao51-decompiled
+
+find ~/AO -type f \( -iname '*.dll' -o -iname '*.exe' \) -print0 |
+while IFS= read -r -d '' f; do
+    if file "$f" | grep -qiE 'Mono/\.Net assembly|\.Net assembly'; then
+        rel="${f#$HOME/AO/}"
+        out="$HOME/ao51-decompiled/${rel%.*}.il"
+
+        mkdir -p "$(dirname "$out")"
+
+        echo "Decompiling: $rel"
+
+        if ! monodis "$f" > "$out" 2>"$out.err"; then
+            echo "  FAILED: $rel"
+        else
+            rm -f "$out.err"
+        fi
+    fi
+done
+
+# ok some of the deconstructions failed, but its in stuff I dont care about,
+like the exes. 
+
+
+
+# find all the assemblies with ZNX / ZNV references
+grep -RniE \
+'WriteDetailFileInfoForZNX|ToCreateZNX|ExtractZNVDataFromZNX|MakeZNVFileForLinux' \
+~/ao51-decompiled
+
+grep -n -B60 -A160 \
+'WriteDetailFileInfoForZNX' \
+~/ao51-decompiled/WindOI-NV4/WINDOI-NV4.il
+
+### 
+## the restult of: WNVManager::CalculateChecksum() is the mystery field in the ZNX files
+## ZNX implementation: PDCommunication::CalcSum4Bytes(byte[])
+
+So now we're going to look for that calculation relating to znx / znv files
+grep -n -B40 -A120 \
+'CalculateChecksum (' \
+~/ao51-decompiled/WindOI-NV4/WINDOI-NV4.il
+
+grep -n -B40 -A120 \
+'CalculateChecksumFromByteArray' \
+~/ao51-decompiled/WindOI-NV4/WINDOI-NV4.il
+
+grep -n -B40 -A120 \
+'CalcSum4Bytes (' \
+~/ao51-decompiled/WindOI-NV4/WindLDR/Communications.il
+
+# The “mystery field” is just a 32-bit XOR checksum over the file, four bytes at a time.
+
+# CalculateChecksumBinary() does this:
+count = file_length >> 2
+
+checksum = ReadUInt32()
+
+for each remaining 32-bit word:
+    checksum ^= ReadUInt32()
+
+return checksum
