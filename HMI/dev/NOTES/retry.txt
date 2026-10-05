@@ -76,3 +76,142 @@ ZNV
   HG2F.BIN          -> XOR32
   other files       -> XOR32 of stored bytes
                         (encrypted bytes when encryption is used)
+                        
+## its so late, and Im so tired.
+but!
+we have managed to unpack, and repackage a ZNX file!!!
+--notes:
+once the display comes up, theres a good 30 seconds where the HMI is not going to
+accept commands.
+                        
+sn@ker:~/fc6a/HMI/dev/test$ ./extract_znx.py rgb_51.ZNX 
+found 2 file(s)
+
+      offset          size        stored  name
+------------  ------------  ------------  --------------------------------
+0x00000064  0x0270f1a8  0x00000048  os_update.tar.xz
+0x0270f20c  0x00278eec  0x0270f1f0  project.znv
+
+extracted 2 file(s) to rgb_51
+sn@ker:~/fc6a/HMI/dev/test$ ./repak_znx_roundtrip.py \
+    rgb_51.ZNX \
+    rgb_51 \
+    rgb_51_repacked.ZNX
+Template: rgb_51.ZNX
+Size:     43548920
+SHA256:   a78431b9933c5082ccc0c2b8422faadecf902523eb281981abe84a978d3007d2
+
+Found 2 ZNX member(s):
+
+  os_update.tar.xz
+    type:              1
+    original size:     40956328
+    extracted size:    40956328
+    original checksum: 0x866390b0
+    current checksum:  0x866390b0
+    size match:         YES
+    checksum match:     YES
+
+  project.znv
+    type:              2
+    original size:     2592492
+    extracted size:    2592492
+    original checksum: 0x0a3eae69
+    current checksum:  0x0a3eae69
+    size match:         YES
+    checksum match:     YES
+
+Output:   rgb_51_repacked.ZNX
+Size:     43548920
+SHA256:   a78431b9933c5082ccc0c2b8422faadecf902523eb281981abe84a978d3007d2
+
+ROUND TRIP: BYTE-FOR-BYTE IDENTICAL
+
+sn@ker:~/fc6a/HMI/dev/test$ ./hmi_znx_download.py rgb_51_repacked.ZNX 
+File:   /home/sn/fc6a/HMI/dev/test/rgb_51_repacked.ZNX
+Size:   43548920 bytes
+MD5:    5475e3b88f854bd41d056daf300c3619
+SHA256: a78431b9933c5082ccc0c2b8422faadecf902523eb281981abe84a978d3007d2
+Target: 192.168.1.150
+
+Sequence:
+  AB -> AA 07 -> wait/reconnect -> AB 07 -> LE
+  LB -> LF keepalive
+  STOR /tmp/os_update.znx
+  STOR /tmp/os_update.znx.md5
+  LC Kernel -> LD -> AH
+
+Proceed with the HMI system/OS download? [y/N] y
+Connecting maintenance port...
+AB: 00FF07
+Initial HMI mode: 07
+Preparing HMI for OS download...
+LE: ACK
+Opening temporary FTP session...
+LB: ACK
+FTP attempt 1/20 failed: [Errno 111] Connection refused
+FTP: connected to 192.168.1.150:2539
+LF: ACK
+ZNX upload: 100%
+FTP: uploaded /tmp/os_update.znx
+FTP: uploaded /tmp/os_update.znx.md5
+Starting kernel install. This may take a long time...
+LC Kernel: ACK
+LD: ACK
+AH: ACK
+ZNX download sequence completed.
+                        
+## Test2:
+Repack Extracted ZNX with new (and renamed) "project.znv"
+(((( was rgbs.ZNV))))
+sn@ker:~/fc6a/HMI/dev/test$ ./repak_znx_roundtrip.py \
+    rgb_51.ZNX \
+    rgb_51 \
+    test_new_project.ZNX
+Template: rgb_51.ZNX
+Size:     43548920
+SHA256:   a78431b9933c5082ccc0c2b8422faadecf902523eb281981abe84a978d3007d2
+
+Found 2 ZNX member(s):
+
+  os_update.tar.xz
+    type:              1
+    original size:     40956328
+    extracted size:    40956328
+    original checksum: 0x866390b0
+    current checksum:  0x866390b0
+    size match:         YES
+    checksum match:     YES
+
+  project.znv
+    type:              2
+    original size:     2592492
+    extracted size:    2595376
+    original checksum: 0x0a3eae69
+    current checksum:  0x55119a1f
+    size match:         NO
+    checksum match:     NO
+
+Output:   test_new_project.ZNX
+Size:     43551804
+SHA256:   3f923a75c3bddcbf7489d4738a89a523ba9353e366d8e3878eca21d09ed4841c
+
+ROUND TRIP: DIFFERENT
+First difference: 0x00000018 original=0xdc new=0x20
+
+sn@ker:~/fc6a/HMI/dev/test$ ls test_new_project.ZNX
+test_new_project.ZNX
+>>>> new project loaded NO Problem!
+
+
+
+>>>>>>> heres some BS for you,::
+I dont think you can push code when the screen is inactive. 
+IDK. Im kinda busy messing other stuff up. 
+but it def seems that way <<<<<<<<<<<<<<<<
+
+<<>><<>><<<>
+can a dl command wake the screen? 
+-> evidently not.
+ok so the method to wake, or turn on the backlight seems
+more neccisary now. :(
