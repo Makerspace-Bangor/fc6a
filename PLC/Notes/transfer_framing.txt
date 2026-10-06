@@ -1,0 +1,81 @@
+05
+<device: 2 ASCII hex chars>
+31
+<readWrite>
+<transferMode>
+<PLC-type character>
+<packet-size byte>
+30
+<programSize: 8 ASCII hex chars>
+<BCC: 2 ASCII hex chars>
+0D
+
+
+########## Conversions ############
+enum 0x14 -> g
+enum 0x15 -> h
+enum 0x16 -> i
+enum 0x17 -> j
+enum 0x18 -> k
+enum 0x19 -> l
+enum 0x1A -> m
+enum 0x1B -> n
+enum 0x1C -> o
+enum 0x1D -> p
+enum 0x1E -> q
+############ WPn Download#############
+W = readWrite = write
+P = transferMode
+n = PLC-type discriminator
+
+############ RPn Upload#############
+R = readWrite = read
+P = transferMode
+n = PLC-type discriminator
+
+######## rg_global analysis::
+There’s a genuinely useful undocumented variation in this method: 
+for FC6A, WindLDR does not only use P and ;. 
+It selects P/; for transfer mode 0, 
+but p/+ for transfer mode 1. 
+That gives us two command variants we had not accounted for, 
+and the code shows exactly when each is chosen.
+FC6A_D16XXCEE = 0x1B
+
+                    TransferMode 0    TransferMode 1
+program data             P                 p
+comment data             ;                 +
+
+##### Transfer commands:: 
+WPn   normal program, mode 0
+W;n   comment/supplementary data, mode 0
+
+Wpn   normal program, mode 1
+W+n   comment/supplementary data, mode 1
+
+Ru    SOLVED: ready-status request
+WW    is a generic N-byte write
+
+##### tired:::
+
+Unaccounted for commands:
+Ri
+0C?   something to do with dataclear
+
+Ive seen those in so many contexts, well, not WW, 
+but Ri  Read Initialize? Read info. IDK 
+what I do know is if I look at one more packet capture I 
+am legit going to go crazy. 
+
+##########
+Ri      read some internal PLC structure/state
+
+WW      write some internal W-space data
+
+WPn     transfer main program image
+
+Ri      read internal PLC structure/state again
+
+W;n     transfer comment/supplementary data
+
+Ru      poll until PLC says ready
