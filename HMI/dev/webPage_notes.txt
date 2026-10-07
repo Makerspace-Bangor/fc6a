@@ -1,0 +1,40 @@
+romPager server.
+
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">
+<html lang="en">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<meta http-equiv="Content-Style-Type" content="text/css">
+	<link rel="stylesheet" href="default.css" type="text/css">
+
+	<title>Display Maintenance 		192.168.1.20 - Run Mode	</title>
+</head>
+<frameset cols="30%,*" title="Display Maintenance">
+  <frame src="menu.html" name="menu" title="Menu Frame">
+  <frame src="detail.html" name="main" title="Main Frame">
+  <noframes>
+  <body>
+	<h1>Display Maintenance Menu</h1>
+<ul>
+		<li><a href="./detail.html" target="main">System Detailed Information</a></li>
+		<div id = "Remote_Access" >
+		<li> Remote Access </li>
+<div class=margin1><a href="./remote_monitor.html" target="main">Monitor</a></div>
+<div class=margin1><a href="./remote_control.html" target="main">Control</a></div>
+<li class=margin1><a href="./custom_web_page.html" target="main">Custom Web Page</a></li>		</div>
+</ul>
+
+		<h2>
+		Mode  : Run Mode	</h2>
+<h2>
+		Error : Communication error	</h2>
+	
+	<table border="1" width="90%">
+		
+		<tr class="title"><th align=center colspan="2">System</th>
+</tr>
+<tr><td align=left>Type Number</td>
+<td align=left>HG2J-7UT22TF-*		</td>
+</tr>
