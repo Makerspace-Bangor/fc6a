@@ -1,0 +1,76 @@
+Compressed archive with:
+~/fc6a/HMI/dev/test/Mod_Read_regs$ tar -C os_update/ --numeric-owner  --owner=0 --group=0 -cJf os_update.tar.xz .
+
+
+I moded etc/default/dropbear :
+# Disallow root logins by default
+#DROPBEAR_EXTRA_ARGS="-w"
+DROPBEAR_EXTRA_ARGS="-s"
+#DROPBEAR_PORT=10387
+DROPBEAR_PORT=22
+#NO_START=1
+NO_START=0
+
+# repack:
+$  python3 repak_znx_roundtrip.py Read_regs.ZNX Mod_Read_regs/ rr_ssh.ZNX
+
+
+# Download:
+~/fc6a/HMI/dev/test$ ./hmi_znx_download.py rr_ssh.ZNX 
+File:   /home/sn/fc6a/HMI/dev/test/rr_ssh.ZNX
+Size:   49718067 bytes
+MD5:    ef32001da36c82e83c081818cceaf9cc
+SHA256: 145a5105c23549efa9402e588c9adf45425eb08b7b9263907c0817e27979d053
+Target: 192.168.1.150
+
+Sequence:
+  AB -> AA 07 -> wait/reconnect -> AB 07 -> LE
+  LB -> LF keepalive
+  STOR /tmp/os_update.znx
+  STOR /tmp/os_update.znx.md5
+  LC Kernel -> LD -> AH
+
+Proceed with the HMI system/OS download? [y/N] y
+Connecting maintenance port...
+AB: 00FF07
+Initial HMI mode: 07
+Preparing HMI for OS download...
+LE: ACK
+Opening temporary FTP session...
+LB: ACK
+FTP attempt 1/20 failed: [Errno 111] Connection refused
+FTP: connected to 192.168.1.150:2539
+LF: ACK
+ZNX upload: 100%
+FTP: uploaded /tmp/os_update.znx
+FTP: uploaded /tmp/os_update.znx.md5
+Starting kernel install. This may take a long time...
+LC Kernel: ACK
+LD: ACK
+AH: ACK
+ZNX download sequence completed.
+
+
+ 
+### first login attempt:
+~/fc6a/HMI/dev/test$ ssh -i ~/.ssh/id_ed25519 root@192.168.1.20
+Unable to negotiate with 192.168.1.20 port 22: 
+no matching host key type found. Their offer: ssh-rsa
+
+
+
+### 2nd attempt at login (adjust key type still failed): 
+~/fc6a/HMI/dev/test$ ssh -vvv -i ~/.ssh/id_ed25519 \
+    -o IdentitiesOnly=yes \
+    -o HostKeyAlgorithms=+ssh-rsa \
+    root@192.168.1.20
+
+#---> Could be permissions / group ownership
+      Could be PAM:
+      $ cat Mod_Read_regs/os_update/etc/pam.d/dropbear 
+		#%PAM-1.0
+
+		auth     include  common-auth
+		account  include  common-account
+# --> Could be that typo in the compression type:
+
