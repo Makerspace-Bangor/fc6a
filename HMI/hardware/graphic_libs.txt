@@ -1,0 +1,362 @@
+# uses wayland
+
+root@am335x-idec-pd:/home/service# ls -l /usr/lib/ /lib/ /usr/local/lib/ 2>/dev/null | grep -E "libwayland|libEGL|libgbm|libGLES"
+lrwxrwxrwx    1 root     root            22 Oct 10 23:48 libEGL.so -> libEGL.so.1.17.4948957
+lrwxrwxrwx    1 root     root            22 Oct 10 23:48 libEGL.so.1 -> libEGL.so.1.17.4948957
+-rw-r--r--    1 root     root          9680 Jun  8  2023 libEGL.so.1.17.4948957
+lrwxrwxrwx    1 root     root            26 Oct 10 23:48 libGLES_CM.so -> libGLES_CM.so.1.17.4948957
+lrwxrwxrwx    1 root     root            26 Oct 10 23:48 libGLES_CM.so.1 -> libGLES_CM.so.1.17.4948957
+-rw-r--r--    1 root     root        493920 Jun  8  2023 libGLES_CM.so.1.17.4948957
+lrwxrwxrwx    1 root     root            25 Oct 10 23:48 libGLESv2.so -> libGLESv2.so.1.17.4948957
+lrwxrwxrwx    1 root     root            25 Oct 10 23:48 libGLESv2.so.1 -> libGLESv2.so.1.17.4948957
+-rw-r--r--    1 root     root        465136 Jun  8  2023 libGLESv2.so.1.17.4948957
+lrwxrwxrwx    1 root     root            25 Oct 10 23:48 libGLESv2.so.2 -> libGLESv2.so.1.17.4948957
+lrwxrwxrwx    1 root     root            15 Oct 10 23:48 libgbm.so.2 -> libgbm.so.2.0.0
+-rwxr-xr-x    1 root     root          9552 Jun  8  2023 libgbm.so.2.0.0
+lrwxrwxrwx    1 root     root            26 Oct 10 23:48 libwayland-client.so.0 -> libwayland-client.so.0.3.0
+-rwxr-xr-x    1 root     root         30644 Jun  8  2023 libwayland-client.so.0.3.0
+lrwxrwxrwx    1 root     root            26 Oct 10 23:48 libwayland-cursor.so.0 -> libwayland-cursor.so.0.0.0
+-rwxr-xr-x    1 root     root         13988 Jun  8  2023 libwayland-cursor.so.0.0.0
+lrwxrwxrwx    1 root     root            23 Oct 10 23:48 libwayland-egl.so.1 -> libwayland-egl.so.1.0.0
+-rwxr-xr-x    1 root     root          5296 Jun  8  2023 libwayland-egl.so.1.0.0
+lrwxrwxrwx    1 root     root            26 Oct 10 23:48 libwayland-server.so.0 -> libwayland-server.so.0.1.0
+-rwxr-xr-x    1 root     root         43084 Jun  8  2023 libwayland-server.so.0.1.0
+
+# processes:
+root@am335x-idec-pd:/home/service# ps | grep -E "weston|wayland|compositor|gui|app"
+  236 root     19392 S    weston --idle-time=0
+  275 root     10320 S    /usr/libexec/weston-desktop-shell
+30064 root      2332 S    grep -E weston|wayland|compositor|gui|app
+
+
+cat /proc/236/maps | grep -E "\.so" | grep -E "wayland|EGL|GLES|gbm|pvr|drm"
+cat /proc/275/maps | grep -E "\.so" | grep -E "wayland|EGL|GLES|gbm|pvr|drm"
+cat /proc/30064/maps | grep -E "\.so" | grep -E "wayland|EGL|GLES|gbm|pvr|drm"
+
+root@am335x-idec-pd:/home/service# cat /proc/30064/maps | grep -E "\.so" | grep -E "wayland|EGL|GLES|gbm|pvr|drm"
+cat: can't open '/proc/30064/maps': No such file or directory
+root@am335x-idec-pd:/home/service# 
+root@am335x-idec-pd:/home/service# cat /proc/275/maps | grep -E "\.so" | grep -E "wayland|EGL|GLES|gbm|pvr|drm"
+b6e63000-b6e66000 r-xp 00000000 00:0f 408        /usr/lib/libwayland-cursor.so.0.0.0
+b6e66000-b6e75000 ---p 00003000 00:0f 408        /usr/lib/libwayland-cursor.so.0.0.0
+b6e75000-b6e76000 r--p 00002000 00:0f 408        /usr/lib/libwayland-cursor.so.0.0.0
+b6e76000-b6e77000 rw-p 00003000 00:0f 408        /usr/lib/libwayland-cursor.so.0.0.0
+b6eb9000-b6ec0000 r-xp 00000000 00:0f 488        /usr/lib/libwayland-client.so.0.3.0
+b6ec0000-b6ecf000 ---p 00007000 00:0f 488        /usr/lib/libwayland-client.so.0.3.0
+b6ecf000-b6ed0000 r--p 00006000 00:0f 488        /usr/lib/libwayland-client.so.0.3.0
+b6ed0000-b6ed1000 rw-p 00007000 00:0f 488        /usr/lib/libwayland-client.so.0.3.0
+root@am335x-idec-pd:/home/service# cat /proc/236/maps | grep -E "\.so" | grep -E "wayland|EGL|GLES|gbm|pvr|drm"
+b6a18000-b6a1d000 r-xp 00000000 00:0f 361        /usr/lib/libpvrGBMWSEGL.so.1.17.4948957
+b6a1d000-b6a2d000 ---p 00005000 00:0f 361        /usr/lib/libpvrGBMWSEGL.so.1.17.4948957
+b6a2d000-b6a2e000 r--p 00005000 00:0f 361        /usr/lib/libpvrGBMWSEGL.so.1.17.4948957
+b6a2e000-b6a2f000 rw-p 00006000 00:0f 361        /usr/lib/libpvrGBMWSEGL.so.1.17.4948957
+b6a87000-b6af8000 r-xp 00000000 00:0f 426        /usr/lib/libGLESv2.so.1.17.4948957
+b6af8000-b6b07000 ---p 00071000 00:0f 426        /usr/lib/libGLESv2.so.1.17.4948957
+b6b07000-b6b08000 r--p 00070000 00:0f 426        /usr/lib/libGLESv2.so.1.17.4948957
+b6b08000-b6b09000 rw-p 00071000 00:0f 426        /usr/lib/libGLESv2.so.1.17.4948957
+b6b09000-b6b0a000 r-xp 00000000 00:0f 326        /usr/lib/libdrm_omap.so.1.0.0
+b6b0a000-b6b1a000 ---p 00001000 00:0f 326        /usr/lib/libdrm_omap.so.1.0.0
+b6b1a000-b6b1b000 r--p 00001000 00:0f 326        /usr/lib/libdrm_omap.so.1.0.0
+b6b1b000-b6b1c000 rw-p 00002000 00:0f 326        /usr/lib/libdrm_omap.so.1.0.0
+b6b45000-b6b47000 r-xp 00000000 00:0f 447        /usr/lib/libEGL.so.1.17.4948957
+b6b47000-b6b56000 ---p 00002000 00:0f 447        /usr/lib/libEGL.so.1.17.4948957
+b6b56000-b6b57000 r--p 00001000 00:0f 447        /usr/lib/libEGL.so.1.17.4948957
+b6b57000-b6b58000 rw-p 00002000 00:0f 447        /usr/lib/libEGL.so.1.17.4948957
+b6b72000-b6b74000 r-xp 00000000 00:0f 369        /usr/lib/libgbm.so.2.0.0
+b6b74000-b6b83000 ---p 00002000 00:0f 369        /usr/lib/libgbm.so.2.0.0
+b6b83000-b6b84000 r--p 00001000 00:0f 369        /usr/lib/libgbm.so.2.0.0
+b6b84000-b6b85000 rw-p 00002000 00:0f 369        /usr/lib/libgbm.so.2.0.0
+b6b85000-b6b8e000 r-xp 00000000 00:0f 324        /usr/lib/libdrm.so.2.4.0
+b6b8e000-b6b9d000 ---p 00009000 00:0f 324        /usr/lib/libdrm.so.2.4.0
+b6b9d000-b6b9e000 r--p 00008000 00:0f 324        /usr/lib/libdrm.so.2.4.0
+b6b9e000-b6b9f000 rw-p 00009000 00:0f 324        /usr/lib/libdrm.so.2.4.0
+b6b9f000-b6bb1000 r-xp 00000000 00:0f 457        /usr/lib/libweston-5/drm-backend.so
+b6bb1000-b6bc0000 ---p 00012000 00:0f 457        /usr/lib/libweston-5/drm-backend.so
+b6bc0000-b6bc1000 r--p 00011000 00:0f 457        /usr/lib/libweston-5/drm-backend.so
+b6bc1000-b6bc2000 rw-p 00012000 00:0f 457        /usr/lib/libweston-5/drm-backend.so
+b6f5d000-b6f66000 r-xp 00000000 00:0f 348        /usr/lib/libwayland-server.so.0.1.0
+b6f66000-b6f76000 ---p 00009000 00:0f 348        /usr/lib/libwayland-server.so.0.1.0
+b6f76000-b6f77000 r--p 00009000 00:0f 348        /usr/lib/libwayland-server.so.0.1.0
+b6f77000-b6f78000 rw-p 0000a000 00:0f 348        /usr/lib/libwayland-server.so.0.1.0
+
+# These are the libraries the HMI uses, 
+# so if we want to run doom, then we can use an arm version supported by these libraries.
+
+What that process might be:
+kill the idec_operation.BIN
+launch doom. 
+play doom.
+exit doom,
+re-launch idec_operation.BIN
+
+# well might as well find out what happens when I kill the idec_operation.BIN
+process. ... ps aux doesnt work. pidof and -w do work though
+
+root@am335x-idec-pd:/home/service# ps -w | grep idec_operation.BIN
+  299 idec      445m S    /home/idec/.tmp/idec_operation.BIN /home/idec/usr/tmp 0
+ 5346 root      2332 S    grep idec_operation.BIN
+
+ pidof idec_operation.BIN
+299
+
+root@am335x-idec-pd:/home/service# pidof idec_operation.BIN
+299
+root@am335x-idec-pd:/home/service# kill -9 299
+root@am335x-idec-pd:/home/service# client_loop: send disconnect: Broken pipe
+
+soo... lol
+
+
+root@am335x-idec-pd:/home/service# tr '\000' '\n' < /proc/"$op_pid"/environ | grep -E '^(XDG_RUNTIME_DIR|WAYLAND_DISPLAY|DISPLAY|QT_QPA_PLATFORM)='
+WAYLAND_DISPLAY=wayland-0
+XDG_RUNTIME_DIR=/tmp/0-runtime-dir
+
+
+root@am335x-idec-pd:/home/service#  ls -al /var/volatile/log/
+drwxr-xr-x    2 root     root            80 Oct 11 01:58 .
+drwxrwxrwt    4 root     root            80 Oct 11 01:58 ..
+-rw-r--r--    1 root     root          1060 Oct 11 02:03 messages
+-rw-r--r--    1 root     root          6355 Oct 11 01:58 weston.log
+
+root@am335x-idec-pd:/home/service# cat /var/volatile/log/messages 
+Oct 11 01:58:26 am335x-idec-pd syslog.info syslogd started: BusyBox v1.29.3
+Oct 11 01:58:26 am335x-idec-pd user.notice kernel: klogd started: BusyBox v1.29.3 (2021-11-11 06:46:22 UTC)
+Oct 11 01:58:26 am335x-idec-pd user.err kernel: klogctl(2) error: Function not implemented
+Oct 11 01:58:26 am335x-idec-pd user.notice kernel: klogd: exiting
+Oct 11 01:58:26 am335x-idec-pd authpriv.info dropbear[223]: Running in background
+Oct 11 02:03:12 am335x-idec-pd authpriv.info dropbear[2970]: Child connection from 192.168.1.160:44290
+Oct 11 02:03:12 am335x-idec-pd authpriv.warn dropbear[2970]: Pubkey auth attempt with unknown algo for 'service' from 192.168.1.160:44290
+Oct 11 02:03:15 am335x-idec-pd authpriv.notice dropbear[2970]: PAM password auth succeeded for 'service' from 192.168.1.160:44290
+Oct 11 02:03:15 am335x-idec-pd authpriv.warn dropbear[3003]: lastlog_perform_login: Couldn't stat /var/log/lastlog: No such file or directory
+Oct 11 02:03:15 am335x-idec-pd authpriv.warn dropbear[3003]: lastlog_openseek: /var/log/lastlog is not a file or directory!
+
+
+
+root@am335x-idec-pd:/home/service# cat /var/volatile/log/weston.log 
+Date: 2026-10-11 -05
+[01:58:26.322] weston 5.0.0
+               https://wayland.freedesktop.org
+               Bug reports to: https://gitlab.freedesktop.org/wayland/weston/issues/
+               Build: unknown (not built from git or tarball)
+[01:58:26.323] Command line: weston --idle-time=0
+[01:58:26.323] OS: Linux, 4.19.59-idec-hg2j-001.001.000.000-g5f8c1c6121, #1 PREEMPT Fri Nov 29 01:11:25 UTC 2024, armv7l
+[01:58:26.323] warning: XDG_RUNTIME_DIR "/tmp/0-runtime-dir" is not configured
+correctly.  Unix access mode must be 0700 (current mode is 777),
+and must be owned by the user (current owner is UID 0).
+Refer to your distribution on how to get it, or
+http://www.freedesktop.org/wiki/Specifications/basedir-spec
+on how to implement it.
+[01:58:26.329] Using config file '/etc//weston.ini'
+[01:58:26.353] Output repaint window is 7 ms maximum.
+[01:58:26.360] Loading module '/usr/lib/libweston-5/drm-backend.so'
+[01:58:26.386] initializing drm backend
+[01:58:26.400] using /dev/dri/card0
+[01:58:26.400] DRM: supports universal planes
+[01:58:26.400] DRM: supports atomic modesetting
+[01:58:26.400] DRM: supports picture aspect ratio
+[01:58:26.403] Loading module '/usr/lib/libweston-5/gl-renderer.so'
+failed to load module: /usr/lib/gbm/gbm_dri.so: cannot open shared object file: No such file or directory
+failed to load module: /usr/lib/gbm/gbm_gallium_drm.so: cannot open shared object file: No such file or directory
+loaded module : gbm_pvr.so
+found valid GBM backend : gbm_pvr.so
+[01:58:26.524] warning: either no EGL_EXT_platform_base support or specific platform support; falling back to eglGetDisplay.
+[01:58:26.625] warning: EGL_EXT_buffer_age not supported. Performance could be affected.
+[01:58:26.625] warning: neither EGL_EXT_swap_buffers_with_damage or EGL_KHR_swap_buffers_with_damage is supported. Performance could be affected.
+[01:58:26.626] warning: Disabling render GPU timeline due to missing EGL_ANDROID_native_fence_sync extension
+[01:58:26.626] Retrieving EGL client extension string failed.
+[01:58:26.626] EGL_KHR_surfaceless_context available
+[01:58:26.694] Failed to obtain a high priority context.
+[01:58:26.697] EGL version: 1.4 build 1.17@4948957
+[01:58:26.697] EGL vendor: Imagination Technologies
+[01:58:26.697] EGL client APIs: OpenGL_ES 
+[01:58:26.697] EGL extensions: EGL_KHR_image EGL_KHR_image_base
+               EGL_KHR_gl_texture_2D_image EGL_KHR_gl_texture_cubemap_image
+               EGL_KHR_gl_renderbuffer_image EGL_IMG_cl_image
+               EGL_KHR_fence_sync EGL_IMG_context_priority
+               EGL_IMG_hibernate_process EGL_IMG_image_plane_attribs
+               EGL_KHR_surfaceless_context EGL_KHR_wait_sync
+               EGL_KHR_create_context EGL_WL_bind_wayland_display
+[01:58:26.698] GL version: OpenGL ES 2.0 build 1.17@4948957
+[01:58:26.698] GLSL version: OpenGL ES GLSL ES 1.00 build 1.17@4948957
+[01:58:26.698] GL vendor: Imagination Technologies
+[01:58:26.698] GL renderer: PowerVR SGX 530
+[01:58:26.698] GL extensions: GL_OES_compressed_ETC1_RGB8_texture
+               GL_OES_depth24 GL_OES_depth_texture GL_OES_egl_sync
+               GL_OES_element_index_uint GL_OES_EGL_image
+               GL_OES_EGL_image_external GL_OES_fbo_render_mipmap
+               GL_OES_fragment_precision_high GL_OES_get_program_binary
+               GL_OES_mapbuffer GL_OES_packed_depth_stencil
+               GL_OES_required_internalformat GL_OES_rgb8_rgba8
+               GL_OES_standard_derivatives GL_OES_surfaceless_context
+               GL_OES_texture_float GL_OES_texture_half_float
+               GL_OES_vertex_array_object GL_OES_vertex_half_float
+               GL_EXT_blend_minmax GL_EXT_discard_framebuffer
+               GL_EXT_multi_draw_arrays GL_EXT_multisampled_render_to_texture
+               GL_EXT_shader_texture_lod GL_EXT_texture_format_BGRA8888
+               GL_EXT_texture_rg GL_IMG_multisampled_render_to_texture
+               GL_IMG_program_binary GL_IMG_read_format GL_IMG_shader_binary
+               GL_IMG_texture_compression_pvrtc GL_IMG_texture_format_BGRA8888
+               GL_IMG_texture_npot GL_IMG_uniform_buffer_object GL_KHR_debug
+               GL_EXT_texture_storage
+[01:58:26.699] GL ES 2 renderer features:
+               read-back format: RGBA
+               wl_shm sub-image to texture: no
+               EGL Wayland extension: yes
+[01:58:26.733] event0  - pwm-beeper: not tagged as supported input device
+[01:58:26.755] event0  - not using input device '/dev/input/event0'
+[01:58:26.757] event1  - hy461x_ts: is tagged by udev as: Touchscreen
+[01:58:26.760] event1  - hy461x_ts: device is a touch device
+[01:58:26.768] Touchscreen - hy461x_ts - /sys/devices/platform/ocp/4802a000.i2c/i2c-1/1-0038/input/input1/event1
+[01:58:26.769] input device event1 has no enabled output associated (none named), skipping calibration for now.
+[01:58:26.772] DRM: head 'LVDS-1' found, connector 31 is connected, EDID make 'unknown', model 'unknown', serial 'unknown'
+[01:58:26.776] Registered plugin API 'weston_drm_output_api_v1' of size 12
+[01:58:26.805] Chosen EGL config details:
+               RGBA bits: 8 8 8 0
+               swap interval range: 1 - 1
+[01:58:26.809] No backlight control for output 'LVDS-1'
+[01:58:26.809] Output LVDS-1 (crtc 29) video modes:
+               800x480@60.0, preferred, current, 33.3 MHz
+[01:58:26.826] associating input device event1 with output LVDS-1 (none by udev)
+[01:58:26.827] Warning: input device event1 has WL_CALIBRATION property set. Support for it will be removed in the future. Please use LIBINPUT_CALIBRATION_MATRIX instead.
+[01:58:26.843] input device event1: applying calibration:
+                 -1.000000 0.000000 0.998750
+                 0.000000 -1.000000 0.997917
+                 raw translation 799.000000 479.000000 for output LVDS-1
+[01:58:26.845] Output 'LVDS-1' enabled with head(s) LVDS-1
+[01:58:26.845] Compositor capabilities:
+               arbitrary surface rotation: yes
+               screen capture uses y-flip: yes
+               presentation clock: CLOCK_MONOTONIC, id 1
+               presentation clock resolution: 0.000000001 s
+[01:58:26.848] Loading module '/usr/lib/weston/desktop-shell.so'
+[01:58:26.891] launching '/usr/libexec/weston-desktop-shell'
+could not load cursor 'dnd-move'
+could not load cursor 'dnd-copy'
+could not load cursor 'dnd-none'
+invalid background-type: none
+
+
+## what the F do we launch graphics with?
+root@am335x-idec-pd:/home/service# which weston-simple-egl
+root@am335x-idec-pd:/home/service# 
+root@am335x-idec-pd:/home/service# which weston-simple-shm
+root@am335x-idec-pd:/home/service#
+root@am335x-idec-pd:/home/service# which weston-terminal
+/usr/bin/weston-terminal
+
+
+root@am335x-idec-pd:/home/service# find /usr/bin /usr/local/bin /usr/libexec /bin -name 'weston*' 2>/dev/null
+/usr/bin/weston-calibrator
+/usr/bin/weston-info
+/usr/bin/weston-launch
+/usr/bin/weston-terminal
+/usr/bin/weston-start
+/usr/bin/weston
+/usr/libexec/weston-keyboard
+/usr/libexec/weston-screenshooter
+/usr/libexec/weston-ivi-shell-user-interface
+/usr/libexec/weston-simple-im
+/usr/libexec/weston-desktop-shell
+
+# so what I want now is a graphic for testing.
+root@am335x-idec-pd:/home/service# find /usr /bin /opt -name '*simple-shm*' 2>/dev/null
+/usr/share/weston/icon_ivi_simple-shm.png
+
+
+# neat, weston has a terminal
+root@am335x-idec-pd:/home/service# XDG_RUNTIME_DIR=/tmp/0-runtime-dir \
+> WAYLAND_DISPLAY=wayland-0 \
+> WAYLAND_DEBUG=1 \
+> weston-terminal >/tmp/weston-terminal-debug.log 2>&1 &
+[1]-  Terminated                 weston-terminal 1>/tmp/weston-terminal.log 2>&1
+root@am335x-idec-pd:/home/service# term_pid=$!
+root@am335x-idec-pd:/home/service# tail -n 60 /tmp/weston-terminal-debug.log
+[2062408.804]  -> wl_display@1.get_registry(new id wl_registry@2)
+[2062411.312]  -> wl_display@1.sync(new id wl_callback@3)
+[2062412.269] wl_display@1.delete_id(3)
+[2062412.594] wl_registry@2.global(1, "wl_compositor", 4)
+[2062412.737]  -> wl_registry@2.bind(1, "wl_compositor", 3, new id [unknown]@4)
+[2062412.885] wl_registry@2.global(2, "wl_subcompositor", 1)
+[2062414.082]  -> wl_registry@2.bind(2, "wl_subcompositor", 1, new id [unknown]@5)
+[2062414.244] wl_registry@2.global(3, "wp_viewporter", 1)
+[2062414.348] wl_registry@2.global(4, "wp_presentation", 1)
+[2062414.440] wl_registry@2.global(5, "zwp_relative_pointer_manager_v1", 1)
+[2062414.536]  -> wl_registry@2.bind(5, "zwp_relative_pointer_manager_v1", 1, new id [unknown]@6)
+[2062414.651] wl_registry@2.global(6, "zwp_pointer_constraints_v1", 1)
+[2062414.745]  -> wl_registry@2.bind(6, "zwp_pointer_constraints_v1", 1, new id [unknown]@7)
+[2062414.860] wl_registry@2.global(7, "zwp_input_timestamps_manager_v1", 1)
+[2062414.950] wl_registry@2.global(8, "wl_data_device_manager", 3)
+[2062416.146]  -> wl_registry@2.bind(8, "wl_data_device_manager", 3, new id [unknown]@8)
+[2062416.275] wl_registry@2.global(9, "wl_shm", 1)
+[2062416.371]  -> wl_registry@2.bind(9, "wl_shm", 1, new id [unknown]@9)
+[2062416.488] wl_registry@2.global(10, "wl_drm", 1)
+[2062416.580] wl_registry@2.global(11, "wl_seat", 5)
+[2062416.673]  -> wl_registry@2.bind(11, "wl_seat", 5, new id [unknown]@10)
+[2062416.806]  -> wl_data_device_manager@8.get_data_device(new id wl_data_device@11, wl_seat@10)
+[2062416.891]  -> wl_compositor@4.create_surface(new id wl_surface@12)
+[2062418.110] wl_registry@2.global(12, "wl_output", 3)
+[2062418.240]  -> wl_registry@2.bind(12, "wl_output", 2, new id [unknown]@13)
+[2062418.364] wl_registry@2.global(13, "zwp_input_panel_v1", 1)
+[2062418.459] wl_registry@2.global(14, "zwp_input_method_v1", 1)
+[2062418.551] wl_registry@2.global(15, "zwp_text_input_manager_v1", 1)
+[2062418.641] wl_registry@2.global(16, "zxdg_shell_v6", 1)
+[2062418.734]  -> wl_registry@2.bind(16, "zxdg_shell_v6", 1, new id [unknown]@14)
+[2062418.850] wl_registry@2.global(17, "wl_shell", 1)
+[2062420.074] wl_registry@2.global(18, "weston_desktop_shell", 1)
+[2062420.209] wl_registry@2.global(19, "weston_screenshooter", 1)
+[2062420.305] wl_callback@3.done(15)
+[2062422.343]  -> wl_shm@9.create_pool(new id wl_shm_pool@3, fd 8, 4096)
+[2062423.776]  -> wl_shm_pool@3.resize(8832)
+[2062425.219]  -> wl_shm_pool@3.resize(18624)
+could not load cursor 'dnd-move'
+could not load cursor 'dnd-copy'
+could not load cursor 'dnd-none'
+[2062615.567]  -> wl_compositor@4.create_surface(new id wl_surface@15)
+[2062615.788]  -> zxdg_shell_v6@14.get_xdg_surface(new id zxdg_surface_v6@16, wl_surface@15)
+[2062615.888]  -> zxdg_surface_v6@16.get_toplevel(new id zxdg_toplevel_v6@17)
+[2062615.975]  -> wl_surface@15.commit()
+[2062621.809]  -> zxdg_toplevel_v6@17.set_title("Wayland Terminal")
+
+########################################################################
+OH SHIT DAWH WE HAVE A STERMINAL Window atop the HMI Program!!!
+########################################################################
+--> took god damn forever after I launched it.
+
+
+
+well anyhow, theres no weston graphphics library, that I can find, so Ill 
+still have to cross compile something, but atleast I know I can get a window
+on the screen.
+root@am335x-idec-pd:/home/service# ls -l /lib/ld-linux* /usr/lib/libc.so* 2>/dev/null
+lrwxrwxrwx    1 root     root            10 Oct 10 23:48 /lib/ld-linux-armhf.so.3 -> ld-2.28.so
+root@am335x-idec-pd:/home/service# ls /usr/include/wayland* 2>/dev/null
+root@am335x-idec-pd:/home/service# ls -l /lib/libc.so* /lib/libm.so* /lib/libpthread.so* \
+>     /lib/libdl.so* /usr/lib/libwayland-client.so* \
+>     /usr/lib/libffi.so* 2>/dev/null
+-rwxr-xr-x    1 root     root       1246784 Jun  7  2023 /lib/libc.so.6
+-rwxr-xr-x    1 root     root          9672 Jun  7  2023 /lib/libdl.so.2
+-rwxr-xr-x    1 root     root        452004 Jun  7  2023 /lib/libm.so.6
+-rwxr-xr-x    1 root     root         92436 Jun  7  2023 /lib/libpthread.so.0
+lrwxrwxrwx    1 root     root            15 Oct 10 23:48 /usr/lib/libffi.so.6 -> libffi.so.6.0.4
+-rwxr-xr-x    1 root     root         22068 Jun  7  2023 /usr/lib/libffi.so.6.0.4
+lrwxrwxrwx    1 root     root            26 Oct 10 23:48 /usr/lib/libwayland-client.so.0 -> libwayland-client.so.0.3.0
+-rwxr-xr-x    1 root     root         30644 Jun  8  2023 /usr/lib/libwayland-client.so.0.3.0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

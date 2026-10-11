@@ -1,0 +1,2 @@
+echo 9000 > /sys/class/backlight/backlight/brightness
+
