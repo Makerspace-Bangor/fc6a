@@ -10,6 +10,8 @@ interface to the hmi. then simulates being the plc the
 hmi is requesting. works on linux great, but windows
 netsh command hasnt worked right. 
 
+RIG9.ZNX is a broken ZNX file for testing. 
+
 HG2F.BIN == idec_operation.BIN
 HG2F.BIN = is the arm binary in the znv files
 idec_operation.BIN = the project runtime

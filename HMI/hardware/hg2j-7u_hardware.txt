@@ -1,0 +1,664 @@
+HG2J-7U HMI HARDWARE INVENTORY
+================================
+Generated: Sun Oct 11 00:30:22 -05 2026
+Host name: am335x-idec-pd
+
+
+--- Operating system and kernel ---
+Linux am335x-idec-pd 4.19.59-idec-hg2j-001.001.000.000-g5f8c1c6121 #1 PREEMPT Fri Nov 29 01:11:25 UTC 2024 armv7l GNU/Linux
+
+[/etc/os-release]
+ID="arago"
+NAME="Arago"
+VERSION="2019.07"
+VERSION_ID="2019.07"
+PRETTY_NAME="Arago 2019.07"
+
+[/etc/version]
+20241129010957
+
+[/proc/version]
+Linux version 4.19.59-idec-hg2j-001.001.000.000-g5f8c1c6121 (oe-user@oe-host) (gcc version 8.3.0 (GNU Toolchain for the A-profile Architecture 8.3-2019.03 (arm-rel-8.36))) #1 PREEMPT Fri Nov 29 01:11:25 UTC 2024
+
+--- Device model and device tree ---
+/proc/device-tree/model: TI AM335x IDEC 7inch wide PD
+/sys/firmware/devicetree/base/model: TI AM335x IDEC 7inch wide PD
+
+[/proc/cmdline]
+console=tty2 rootfs=A, reset=OFF, tp=1 quiet loglevel=0 root=ubi0:rootfs-a rw ubi.mtd=NAND.rootfs-a,512 ubi.fm_autoconvert=1 rootfstype=ubifs rootwait=1
+
+--- Processor ---
+
+[/proc/cpuinfo]
+processor	: 0
+model name	: ARMv7 Processor rev 2 (v7l)
+BogoMIPS	: 597.60
+Features	: half thumb fastmult vfp edsp neon vfpv3 tls vfpd32 
+CPU implementer	: 0x41
+CPU architecture: 7
+CPU variant	: 0x3
+CPU part	: 0xc08
+CPU revision	: 2
+
+Hardware	: Generic AM33XX (Flattened Device Tree)
+Revision	: 0000
+Serial		: 00:03:7b:20:24:4f
+/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq: 600000
+/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_min_freq: 600000
+/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq: 600000
+
+--- Memory ---
+
+[/proc/meminfo]
+MemTotal:         248564 kB
+MemFree:          184128 kB
+MemAvailable:     197196 kB
+Buffers:            2112 kB
+Cached:            21496 kB
+SwapCached:            0 kB
+Active:            15772 kB
+Inactive:          16048 kB
+Active(anon):       8324 kB
+Inactive(anon):     6568 kB
+Active(file):       7448 kB
+Inactive(file):     9480 kB
+Unevictable:           0 kB
+Mlocked:               0 kB
+HighTotal:             0 kB
+HighFree:              0 kB
+LowTotal:         248564 kB
+LowFree:          184128 kB
+SwapTotal:             0 kB
+SwapFree:              0 kB
+Dirty:                20 kB
+Writeback:             0 kB
+AnonPages:          8224 kB
+Mapped:            25044 kB
+Shmem:              6680 kB
+Slab:               8204 kB
+SReclaimable:       2576 kB
+SUnreclaim:         5628 kB
+KernelStack:         760 kB
+PageTables:          580 kB
+NFS_Unstable:          0 kB
+Bounce:                0 kB
+WritebackTmp:          0 kB
+CommitLimit:      124280 kB
+Committed_AS:     351108 kB
+VmallocTotal:     770048 kB
+VmallocUsed:           0 kB
+VmallocChunk:          0 kB
+Percpu:               32 kB
+CmaTotal:          49152 kB
+CmaFree:           42864 kB
+
+--- Flash, block devices, and partitions ---
+
+[/proc/mtd]
+dev:    size   erasesize  name
+mtd0: 00020000 00020000 "spi0.0"
+mtd1: 00020000 00020000 "NAND.SPL"
+mtd2: 00020000 00020000 "NAND.SPL.backup1"
+mtd3: 00020000 00020000 "NAND.SPL.backup2"
+mtd4: 00020000 00020000 "NAND.SPL.backup3"
+mtd5: 00040000 00020000 "NAND.u-boot-spl-os"
+mtd6: 00100000 00020000 "NAND.u-boot"
+mtd7: 00020000 00020000 "NAND.u-boot-env"
+mtd8: 00020000 00020000 "NAND.u-boot-env.backup1"
+mtd9: 00800000 00020000 "NAND.kernel-b"
+mtd10: 00040000 00020000 "NAND.dtb-b"
+mtd11: 02f00000 00020000 "NAND.rootfs-b"
+mtd12: 00800000 00020000 "NAND.kernel-a"
+mtd13: 00040000 00020000 "NAND.dtb-a1"
+mtd14: 00040000 00020000 "NAND.dtb-a2"
+mtd15: 09400000 00020000 "NAND.rootfs-a"
+mtd16: 02800000 00020000 "NAND.userspace"
+mtd17: 00200000 00020000 "NAND.workspace"
+
+[/proc/partitions]
+major minor  #blocks  name
+
+   1        0      65536 ram0
+   1        1      65536 ram1
+   1        2      65536 ram2
+   1        3      65536 ram3
+  31        0        128 mtdblock0
+  31        1        128 mtdblock1
+  31        2        128 mtdblock2
+  31        3        128 mtdblock3
+  31        4        128 mtdblock4
+  31        5        256 mtdblock5
+  31        6       1024 mtdblock6
+  31        7        128 mtdblock7
+  31        8        128 mtdblock8
+  31        9       8192 mtdblock9
+  31       10        256 mtdblock10
+  31       11      48128 mtdblock11
+  31       12       8192 mtdblock12
+  31       13        256 mtdblock13
+  31       14        256 mtdblock14
+  31       15     151552 mtdblock15
+  31       16      40960 mtdblock16
+  31       17       2048 mtdblock17
+   8        0   15558144 sda
+   8        1   15558016 sda1
+
+[/proc/scsi/scsi]
+Attached devices:
+Host: scsi0 Channel: 00 Id: 00 Lun: 00
+  Vendor: Mass     Model: Storage Device   Rev:     
+  Type:   Direct-Access                    ANSI  SCSI revision: 00
+
+Device: mtdblock0
+  dev: 31:0
+  size: 256
+  removable: 0
+  ro: 0
+  MAJOR=31
+  MINOR=0
+  DEVNAME=mtdblock0
+  DEVTYPE=disk
+
+Device: mtdblock1
+  dev: 31:1
+  size: 256
+  removable: 0
+  ro: 0
+  MAJOR=31
+  MINOR=1
+  DEVNAME=mtdblock1
+  DEVTYPE=disk
+
+Device: mtdblock10
+  dev: 31:10
+  size: 512
+  removable: 0
+  ro: 0
+  MAJOR=31
+  MINOR=10
+  DEVNAME=mtdblock10
+  DEVTYPE=disk
+
+Device: mtdblock11
+  dev: 31:11
+  size: 96256
+  removable: 0
+  ro: 0
+  MAJOR=31
+  MINOR=11
+  DEVNAME=mtdblock11
+  DEVTYPE=disk
+
+Device: mtdblock12
+  dev: 31:12
+  size: 16384
+  removable: 0
+  ro: 0
+  MAJOR=31
+  MINOR=12
+  DEVNAME=mtdblock12
+  DEVTYPE=disk
+
+Device: mtdblock13
+  dev: 31:13
+  size: 512
+  removable: 0
+  ro: 0
+  MAJOR=31
+  MINOR=13
+  DEVNAME=mtdblock13
+  DEVTYPE=disk
+
+Device: mtdblock14
+  dev: 31:14
+  size: 512
+  removable: 0
+  ro: 0
+  MAJOR=31
+  MINOR=14
+  DEVNAME=mtdblock14
+  DEVTYPE=disk
+
+Device: mtdblock15
+  dev: 31:15
+  size: 303104
+  removable: 0
+  ro: 0
+  MAJOR=31
+  MINOR=15
+  DEVNAME=mtdblock15
+  DEVTYPE=disk
+
+Device: mtdblock16
+  dev: 31:16
+  size: 81920
+  removable: 0
+  ro: 0
+  MAJOR=31
+  MINOR=16
+  DEVNAME=mtdblock16
+  DEVTYPE=disk
+
+Device: mtdblock17
+  dev: 31:17
+  size: 4096
+  removable: 0
+  ro: 0
+  MAJOR=31
+  MINOR=17
+  DEVNAME=mtdblock17
+  DEVTYPE=disk
+
+Device: mtdblock2
+  dev: 31:2
+  size: 256
+  removable: 0
+  ro: 0
+  MAJOR=31
+  MINOR=2
+  DEVNAME=mtdblock2
+  DEVTYPE=disk
+
+Device: mtdblock3
+  dev: 31:3
+  size: 256
+  removable: 0
+  ro: 0
+  MAJOR=31
+  MINOR=3
+  DEVNAME=mtdblock3
+  DEVTYPE=disk
+
+Device: mtdblock4
+  dev: 31:4
+  size: 256
+  removable: 0
+  ro: 0
+  MAJOR=31
+  MINOR=4
+  DEVNAME=mtdblock4
+  DEVTYPE=disk
+
+Device: mtdblock5
+  dev: 31:5
+  size: 512
+  removable: 0
+  ro: 0
+  MAJOR=31
+  MINOR=5
+  DEVNAME=mtdblock5
+  DEVTYPE=disk
+
+Device: mtdblock6
+  dev: 31:6
+  size: 2048
+  removable: 0
+  ro: 0
+  MAJOR=31
+  MINOR=6
+  DEVNAME=mtdblock6
+  DEVTYPE=disk
+
+Device: mtdblock7
+  dev: 31:7
+  size: 256
+  removable: 0
+  ro: 0
+  MAJOR=31
+  MINOR=7
+  DEVNAME=mtdblock7
+  DEVTYPE=disk
+
+Device: mtdblock8
+  dev: 31:8
+  size: 256
+  removable: 0
+  ro: 0
+  MAJOR=31
+  MINOR=8
+  DEVNAME=mtdblock8
+  DEVTYPE=disk
+
+Device: mtdblock9
+  dev: 31:9
+  size: 16384
+  removable: 0
+  ro: 0
+  MAJOR=31
+  MINOR=9
+  DEVNAME=mtdblock9
+  DEVTYPE=disk
+
+Device: ram0
+  dev: 1:0
+  size: 131072
+  removable: 0
+  ro: 0
+  MAJOR=1
+  MINOR=0
+  DEVNAME=ram0
+  DEVTYPE=disk
+
+Device: ram1
+  dev: 1:1
+  size: 131072
+  removable: 0
+  ro: 0
+  MAJOR=1
+  MINOR=1
+  DEVNAME=ram1
+  DEVTYPE=disk
+
+Device: ram2
+  dev: 1:2
+  size: 131072
+  removable: 0
+  ro: 0
+  MAJOR=1
+  MINOR=2
+  DEVNAME=ram2
+  DEVTYPE=disk
+
+Device: ram3
+  dev: 1:3
+  size: 131072
+  removable: 0
+  ro: 0
+  MAJOR=1
+  MINOR=3
+  DEVNAME=ram3
+  DEVTYPE=disk
+
+Device: sda
+  dev: 8:0
+  size: 31116288
+  removable: 1
+  ro: 0
+  device/model: Storage Device  
+  device/vendor: Mass    
+  MAJOR=8
+  MINOR=0
+  DEVNAME=sda
+  DEVTYPE=disk
+
+Device: sda1
+  dev: 8:1
+  size: 31116032
+  ro: 0
+  MAJOR=8
+  MINOR=1
+  DEVNAME=sda1
+  DEVTYPE=partition
+  PARTN=1
+
+MTD device: mtd0
+  name: spi0.0
+  type: nor
+  size: 131072
+  erasesize: 131072
+  flags: 0x1c00
+
+MTD device: mtd0ro
+
+MTD device: mtd1
+  name: NAND.SPL
+  type: nand
+  size: 131072
+  erasesize: 131072
+  flags: 0x400
+
+MTD device: mtd10
+  name: NAND.dtb-b
+  type: nand
+  size: 262144
+  erasesize: 131072
+  flags: 0x400
+
+MTD device: mtd10ro
+
+MTD device: mtd11
+  name: NAND.rootfs-b
+  type: nand
+  size: 49283072
+  erasesize: 131072
+  flags: 0x400
+
+MTD device: mtd11ro
+
+MTD device: mtd12
+  name: NAND.kernel-a
+  type: nand
+  size: 8388608
+  erasesize: 131072
+  flags: 0x400
+
+MTD device: mtd12ro
+
+MTD device: mtd13
+  name: NAND.dtb-a1
+  type: nand
+  size: 262144
+  erasesize: 131072
+  flags: 0x400
+
+MTD device: mtd13ro
+
+MTD device: mtd14
+  name: NAND.dtb-a2
+  type: nand
+  size: 262144
+  erasesize: 131072
+  flags: 0x400
+
+MTD device: mtd14ro
+
+MTD device: mtd15
+  name: NAND.rootfs-a
+  type: nand
+  size: 155189248
+  erasesize: 131072
+  flags: 0x400
+
+MTD device: mtd15ro
+
+MTD device: mtd16
+  name: NAND.userspace
+  type: nand
+  size: 41943040
+  erasesize: 131072
+  flags: 0x400
+
+MTD device: mtd16ro
+
+MTD device: mtd17
+  name: NAND.workspace
+  type: nand
+  size: 2097152
+  erasesize: 131072
+  flags: 0x400
+
+MTD device: mtd17ro
+
+MTD device: mtd1ro
+
+MTD device: mtd2
+  name: NAND.SPL.backup1
+  type: nand
+  size: 131072
+  erasesize: 131072
+  flags: 0x400
+
+MTD device: mtd2ro
+
+MTD device: mtd3
+  name: NAND.SPL.backup2
+  type: nand
+  size: 131072
+  erasesize: 131072
+  flags: 0x400
+
+MTD device: mtd3ro
+
+MTD device: mtd4
+  name: NAND.SPL.backup3
+  type: nand
+  size: 131072
+  erasesize: 131072
+  flags: 0x400
+
+MTD device: mtd4ro
+
+MTD device: mtd5
+  name: NAND.u-boot-spl-os
+  type: nand
+  size: 262144
+  erasesize: 131072
+  flags: 0x400
+
+MTD device: mtd5ro
+
+MTD device: mtd6
+  name: NAND.u-boot
+  type: nand
+  size: 1048576
+  erasesize: 131072
+  flags: 0x400
+
+MTD device: mtd6ro
+
+MTD device: mtd7
+  name: NAND.u-boot-env
+  type: nand
+  size: 131072
+  erasesize: 131072
+  flags: 0x400
+
+MTD device: mtd7ro
+
+MTD device: mtd8
+  name: NAND.u-boot-env.backup1
+  type: nand
+  size: 131072
+  erasesize: 131072
+  flags: 0x400
+
+MTD device: mtd8ro
+
+MTD device: mtd9
+  name: NAND.kernel-b
+  type: nand
+  size: 8388608
+  erasesize: 131072
+  flags: 0x400
+
+MTD device: mtd9ro
+
+--- Mounted filesystems and disk usage ---
+
+[/proc/mounts]
+ubi0:rootfs-a / ubifs rw,relatime,assert=read-only,ubi=0,vol=0 0 0
+devtmpfs /dev devtmpfs rw,relatime,size=99192k,nr_inodes=24798,mode=755 0 0
+proc /proc proc rw,relatime 0 0
+sysfs /sys sysfs rw,relatime 0 0
+debugfs /sys/kernel/debug debugfs rw,relatime 0 0
+configfs /sys/kernel/config configfs rw,relatime 0 0
+fusectl /sys/fs/fuse/connections fusectl rw,relatime 0 0
+tmpfs /run tmpfs rw,nosuid,nodev,mode=755 0 0
+tmpfs /var/volatile tmpfs rw,relatime,size=51200k 0 0
+tmpfs /home/idec/.tmp tmpfs rw,nodev,noatime,nodiratime,size=20480k,mode=777 0 0
+tmpfs /home/idec/.work tmpfs rw,nodev,noatime,nodiratime,size=10240k,mode=777 0 0
+tmpfs /home/idec/usr/tmp tmpfs rw,nosuid,nodev,noexec,noatime,nodiratime,size=102400k,mode=777 0 0
+/dev/mtdblock16 /home/idec/rom yaffs2 rw,sync,nosuid,nodev,noexec,relatime 0 0
+/dev/mtdblock17 /mnt/work yaffs2 rw,sync,nosuid,nodev,noexec,relatime 0 0
+/dev/sda1 /home/idec/usr/exmem/A vfat rw,dirsync,nodev,noexec,noatime,fmask=0111,dmask=0000,allow_utime=0022,codepage=437,iocharset=iso8859-1,shortname=mixed,errors=remount-ro 0 0
+
+
+
+--- Network interfaces ---
+
+Interface: eth0
+  address: 00:03:7b:20:24:4f
+  type: 1
+  operstate: up
+  mtu: 1500
+
+Interface: lo
+  address: 00:00:00:00:00:00
+  type: 772
+  operstate: unknown
+  mtu: 65536
+
+Interface: sit0
+  address: 00:00:00:00
+  type: 776
+  operstate: down
+  mtu: 1480
+
+
+--- Graphics ---
+
+0 DRM emulated
+I: Bus=0019 Vendor=001f Product=0001 Version=0100
+N: Name="pwm-beeper"
+P: Phys=pwm/input0
+S: Sysfs=/devices/platform/buzzer/input/input0
+U: Uniq=
+H: Handlers=kbd event0 
+B: PROP=0
+B: EV=40001
+B: SND=6
+
+I: Bus=0018 Vendor=12fa Product=2143 Version=0100
+N: Name="hy461x_ts"
+P: Phys=
+S: Sysfs=/devices/platform/ocp/4802a000.i2c/i2c-1/1-0038/input/input1
+U: Uniq=
+H: Handlers=event1 
+B: PROP=0
+B: EV=b
+B: KEY=400 0 0 0 0 0 0 0 0 0 0
+B: ABS=2640000 0
+
+/sys/class/graphics/fb0/name: DRM emulated
+/sys/class/graphics/fb0/virtual_size: 800,480
+/sys/class/graphics/fb0/bits_per_pixel: 16
+/sys/class/graphics/fb0/modes: U:800x480p-0
+/sys/class/drm/card0-LVDS-1/modes: 800x480
+/sys/class/backlight/backlight/brightness: 1024
+/sys/class/backlight/backlight/max_brightness: 65535
+
+
+--- Touch Screen ---
+
+I: Bus=0019 Vendor=001f Product=0001 Version=0100
+N: Name="pwm-beeper"
+P: Phys=pwm/input0
+S: Sysfs=/devices/platform/buzzer/input/input0
+U: Uniq=
+H: Handlers=kbd event0 
+B: PROP=0
+B: EV=40001
+B: SND=6
+
+I: Bus=0018 Vendor=12fa Product=2143 Version=0100
+N: Name="hy461x_ts"
+P: Phys=
+S: Sysfs=/devices/platform/ocp/4802a000.i2c/i2c-1/1-0038/input/input1
+U: Uniq=
+H: Handlers=event1 
+B: PROP=0
+B: EV=b
+B: KEY=400 0 0 0 0 0 0 0 0 0 0
+B: ABS=2640000 0
+
+
+
+--- Thermal sensors ---
+
+
+
+
+--- Relevant boot messages ---
+dmesg command unavailable.
+
+End of inventory.

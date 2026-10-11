@@ -31,7 +31,17 @@ HMI/
 │   ├── hmi_register_logger2.py  # detect, and log HMI. if we integrate hmi_dl_test this will be very useful
 │   ├── hmi_registers.txt   # Example hmi_register_logger2.py output
 │   ├── readme.md
-│   
+│
+├── hardware
+│   ├── hg2j-7u_hardware.txt # The hardware 
+│   └── hw.sh                # script to get hardware
+|
+├── SSH
+│   ├── files                # ZNX Files
+│   ├── imgs                 # photos
+│   ├── OS_mod_notes.txt     # notes
+│   └── readme.md
+|   
 ├── UDP
 │   └── udp_select.py       # Unit select using UDP 
 └── ZNX
