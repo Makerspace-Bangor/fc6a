@@ -193,16 +193,28 @@ nested archives:
   
 
 </pre>
-# Sample Extraction 
+# Sample Extraction and Repack
 <pre>
-<b>$ ./extract_znx.py Read_regs.ZNX</b> 
+$ python3 extract_znx.py Read_regs.ZNX 
 found 2 file(s)
 
       offset          size        stored  name
 ------------  ------------  ------------  --------------------------------
-0x00000064    0x026bb57c    0x00000048    os_update.tar.xz
-0x026bb5e0    0x002c8934    0x026bb5c4    project.znv
+0x00000064  0x026bb57c  0x00000048  os_update.tar.xz
+0x026bb5e0  0x002c8934  0x026bb5c4  project.znv
 
 extracted 2 file(s) to Read_regs
+Saved metadata to: Read_regs/.znx-meta.json
+
+$ python3 repack_znx.py Read_regs output.ZNX
+wrote output.ZNX
+sha256: a0fd4375baa55628b8d346ec74a7c6a93eb832f9f2566a33f22b74cad3013411
+EXACT ROUNDTRIP MATCH
+
+$ sha256sum Read_regs.ZNX 
+a0fd4375baa55628b8d346ec74a7c6a93eb832f9f2566a33f22b74cad3013411  Read_regs.ZNX
+$ sha256sum output.ZNX 
+a0fd4375baa55628b8d346ec74a7c6a93eb832f9f2566a33f22b74cad3013411  output.ZNX
+
 
 </pre>
