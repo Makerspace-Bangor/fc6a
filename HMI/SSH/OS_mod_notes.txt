@@ -1,3 +1,51 @@
+### not doom, but I dont have to cross compile anything.
+
+root@am335x-idec-pd:/home/service/v/games# export XDG_RUNTIME_DIR=/tmp/0-runtime-dir
+root@am335x-idec-pd:/home/service/v/games# export WAYLAND_DISPLAY=wayland-0
+# weston-terminal  --shell=/home/service/v/games/vitetris
+
+https://packages.debian.org/bookworm/armhf/vitetris/download
+ ssh  -o IdentitiesOnly=yes  -o HostKeyAlgorithms=+ssh-rsa service@192.168.1.20
+
+#### input woes
+root@am335x-idec-pd:/home/service/v/games# cat /etc/weston.ini
+[core]
+require-input=false
+gbm-format=rgb565
+
+[shell]
+locking=false
+animation=none
+background-type=none
+background-color=0xff000000
+panel-position=none
+panel-location=""
+startup-animation=none
+close-animation=none
+
+[input-method]
+path=
+
+[screensaver]
+# Uncomment path to disable screensaver
+#path=@libexecdir@/weston-screensaver
+
+root@am335x-idec-pd:/home/service# cat /proc/kmsg
+cat: can't open '/proc/kmsg': No such file or directory
+root@am335x-idec-pd:/home/service# ls -l /proc/241/fd/1 /proc/241/fd/2
+l-wx------    1 root     root            64 Sep 15 22:32 /proc/241/fd/1 -> /var/volatile/log/weston.log
+l-wx------    1 root     root            64 Sep 15 22:32 /proc/241/fd/2 -> /var/volatile/log/weston.log
+root@am335x-idec-pd:/home/service# ls -l /dev/kmsg
+-rw-r--r--    1 root     root            92 Sep 15 20:34 /dev/kmsg
+root@am335x-idec-pd:/home/service# which fuser
+/usr/bin/fusergrep -iE 'keyboard|input|seat|libinput|xkb|keymap|error|failed' \
+    /var/volatile/log/weston.log
+
+### SEE INPUT_WOES.TXT
+
+
+############# NOT DOOM ##############
+
 Might be worth noting: Mod_Read_Regs image sets ip to 192.168.1.20
 I been setting it back to 192.168.1.150, so I can use the default case
 set in these programs. 

@@ -1,0 +1,716 @@
+- USB HID drivers are working.
+- udev correctly classifies the keyboard.
+- libinput recognizes it.
+- Weston associates it with LVDS-1.
+- XKB reports only the Compose warning, not a fatal keymap error.
+
+## But not MF input to the weston terminal :(
+################## SOLVED #############################
+- Kernel Was compiled without keyboard support       -
+#######################################################
+
+root@am335x-idec-pd:/home/service/v/games# export XDG_RUNTIME_DIR=/tmp/0-runtime-dir
+root@am335x-idec-pd:/home/service/v/games# export WAYLAND_DISPLAY=wayland-0
+root@am335x-idec-pd:/home/service/v/games# weston-terminal &
+root@am335x-idec-pd:/home/service/v/games# could not load cursor 'dnd-move'
+could not load cursor 'dnd-copy'
+could not load cursor 'dnd-none'
+
+root@am335x-idec-pd:/home/service/v/games# weston-terminal -e /home/service/vitetris
+Usage: weston-terminal [OPTIONS]
+  --fullscreen or -f
+  --maximized or -m
+  --font=NAME
+  --font-size=SIZE
+  --shell=NAME
+root@am335x-idec-pd:/home/service/v/games# weston-terminal --shell=/home/service/vitetris
+could not load cursor 'dnd-move'
+could not load cursor 'dnd-copy'
+could not load cursor 'dnd-none'
+
+^C
+root@am335x-idec-pd:/home/service/v/games# weston-terminal --shell=/home/service/vitetris
+could not load cursor 'dnd-move'
+could not load cursor 'dnd-copy'
+could not load cursor 'dnd-none'
+root@am335x-idec-pd:/home/service/v/games# weston-terminal --shell=/home/service/vitetris
+could not load cursor 'dnd-move'
+could not load cursor 'dnd-copy'
+could not load cursor 'dnd-none'
+root@am335x-idec-pd:/home/service/v/games# weston-terminal --fullscreen --shell=/home/service/vitetris
+could not load cursor 'dnd-move'
+could not load cursor 'dnd-copy'
+could not load cursor 'dnd-none'
+root@am335x-idec-pd:/home/service/v/games# export XDG_RUNTIME_DIR=/tmp/0-runtime-dir
+root@am335x-idec-pd:/home/service/v/games# export WAYLAND_DISPLAY=wayland-0
+root@am335x-idec-pd:/home/service/v/games# weston-terminal --shell=/home/service/vitetris
+could not load cursor 'dnd-move'
+could not load cursor 'dnd-copy'
+could not load cursor 'dnd-none'
+root@am335x-idec-pd:/home/service/v/games# weston-terminal --shell=/home/service/vitetris &
+root@am335x-idec-pd:/home/service/v/games# could not load cursor 'dnd-move'
+could not load cursor 'dnd-copy'
+could not load cursor 'dnd-none'
+
+[2]+  Done                       weston-terminal --shell=/home/service/vitetris
+root@am335x-idec-pd:/home/service/v/games# weston-terminal  --shell=/home/service/v/games/vitetris
+could not load cursor 'dnd-move'
+could not load cursor 'dnd-copy'
+could not load cursor 'dnd-none'
+xkbcommon: ERROR: couldn't find a Compose file for locale "C"
+xkbcommon: ERROR: couldn't find a Compose file for locale "C"
+could not create XKB compose table for locale 'C'.  Disabiling compose
+could not create XKB compose table for locale 'C'.  Disabiling compose
+^C
+root@am335x-idec-pd:/home/service/v/games# cat /proc/bus/input/devices
+I: Bus=0019 Vendor=001f Product=0001 Version=0100
+N: Name="pwm-beeper"
+P: Phys=pwm/input0
+S: Sysfs=/devices/platform/buzzer/input/input0
+U: Uniq=
+H: Handlers=kbd event0 
+B: PROP=0
+B: EV=40001
+B: SND=6
+
+I: Bus=0018 Vendor=12fa Product=2143 Version=0100
+N: Name="hy461x_ts"
+P: Phys=
+S: Sysfs=/devices/platform/ocp/4802a000.i2c/i2c-1/1-0038/input/input1
+U: Uniq=
+H: Handlers=event1 
+B: PROP=0
+B: EV=b
+B: KEY=400 0 0 0 0 0 0 0 0 0 0
+B: ABS=2640000 0
+
+root@am335x-idec-pd:/home/service/v/games# xkbcommon: ERROR: couldn't find a Compose file for locale "C"
+could not create XKB compose table for locale 'C'.  Disabiling compose
+root@am335x-idec-pd:/home/service/v/games# cat /proc/bus/input/devices
+I: Bus=0019 Vendor=001f Product=0001 Version=0100
+N: Name="pwm-beeper"
+P: Phys=pwm/input0
+S: Sysfs=/devices/platform/buzzer/input/input0
+U: Uniq=
+H: Handlers=kbd event0 
+B: PROP=0
+B: EV=40001
+B: SND=6
+
+I: Bus=0018 Vendor=12fa Product=2143 Version=0100
+N: Name="hy461x_ts"
+P: Phys=
+S: Sysfs=/devices/platform/ocp/4802a000.i2c/i2c-1/1-0038/input/input1
+U: Uniq=
+H: Handlers=event1 
+B: PROP=0
+B: EV=b
+B: KEY=400 0 0 0 0 0 0 0 0 0 0
+B: ABS=2640000 0
+
+I: Bus=0003 Vendor=3434 Product=0aa0 Version=0111
+N: Name="Keychron Keychron K10 Max"
+P: Phys=usb-musb-hdrc.0-1/input0
+S: Sysfs=/devices/platform/ocp/47400000.usb/47401400.usb/musb-hdrc.0/usb1/1-1/1-1:1.0/0003:3434:0AA0.0005/input/input8
+U: Uniq=
+H: Handlers=sysrq kbd leds event2 
+B: PROP=0
+B: EV=120013
+B: KEY=10000 7 ff9f207a c14057ff febeffdf ffefffff ffffffff fffffffe
+B: MSC=10
+B: LED=1f
+
+I: Bus=0003 Vendor=3434 Product=0aa0 Version=0111
+N: Name="Keychron Keychron K10 Max Mouse"
+P: Phys=usb-musb-hdrc.0-1/input2
+S: Sysfs=/devices/platform/ocp/47400000.usb/47401400.usb/musb-hdrc.0/usb1/1-1/1-1:1.2/0003:3434:0AA0.0007/input/input9
+U: Uniq=
+H: Handlers=event3 
+B: PROP=0
+root@am335x-idec-pd:/home/service/v/games# cat /proc/bus/input/devices
+I: Bus=0019 Vendor=001f Product=0001 Version=0100
+N: Name="pwm-beeper"
+P: Phys=pwm/input0
+S: Sysfs=/devices/platform/buzzer/input/input0
+U: Uniq=
+H: Handlers=kbd event0 
+B: PROP=0
+B: EV=40001
+B: SND=6
+
+I: Bus=0018 Vendor=12fa Product=2143 Version=0100
+N: Name="hy461x_ts"
+P: Phys=
+S: Sysfs=/devices/platform/ocp/4802a000.i2c/i2c-1/1-0038/input/input1
+U: Uniq=
+H: Handlers=event1 
+B: PROP=0
+B: EV=b
+B: KEY=400 0 0 0 0 0 0 0 0 0 0
+B: ABS=2640000 0
+
+I: Bus=0003 Vendor=3434 Product=0aa0 Version=0111
+N: Name="Keychron Keychron K10 Max"
+P: Phys=usb-musb-hdrc.0-1/input0
+S: Sysfs=/devices/platform/ocp/47400000.usb/47401400.usb/musb-hdrc.0/usb1/1-1/1-1:1.0/0003:3434:0AA0.0005/input/input8
+U: Uniq=
+H: Handlers=sysrq kbd leds event2 
+B: PROP=0
+B: EV=120013
+B: KEY=10000 7 ff9f207a c14057ff febeffdf ffefffff ffffffff fffffffe
+B: MSC=10
+B: LED=1f
+
+I: Bus=0003 Vendor=3434 Product=0aa0 Version=0111
+N: Name="Keychron Keychron K10 Max Mouse"
+P: Phys=usb-musb-hdrc.0-1/input2
+S: Sysfs=/devices/platform/ocp/47400000.usb/47401400.usb/musb-hdrc.0/usb1/1-1/1-1:1.2/0003:3434:0AA0.0007/input/input9
+U: Uniq=
+H: Handlers=event3 
+B: PROP=0
+B: EV=17
+B: KEY=ff0000 0 0 0 0 0 0 0 0
+B: REL=143
+B: MSC=10
+
+I: Bus=0003 Vendor=3434 Product=0aa0 Version=0111
+N: Name="Keychron Keychron K10 Max System Control"
+P: Phys=usb-musb-hdrc.0-1/input2
+S: Sysfs=/devices/platform/ocp/47400000.usb/47401400.usb/musb-hdrc.0/usb1/1-1/1-1:1.2/0003:3434:0AA0.0007/input/input10
+U: Uniq=
+H: Handlers=kbd event4 
+B: PROP=0
+B: EV=1b
+B: KEY=400000 1000000 12 0 0 0 8 0 4000 10cc00 101680 0 0 0
+B: ABS=100 0
+B: MSC=10
+
+I: Bus=0003 Vendor=3434 Product=0aa0 Version=0111
+N: Name="Keychron Keychron K10 Max Consumer Control"
+P: Phys=usb-musb-hdrc.0-1/input2
+S: Sysfs=/devices/platform/ocp/47400000.usb/47401400.usb/musb-hdrc.0/usb1/1-1/1-1:1.2/0003:3434:0AA0.0007/input/input11
+U: Uniq=
+H: Handlers=kbd event5 
+B: PROP=0
+B: EV=1f
+B: KEY=300ff 0 0 0 0 483ffff 17aff32d bf544446 0 0 1 130ff3 8b17c000 677bfa d9415fed 19ed680 4400 0 10000002
+B: REL=40
+B: ABS=1 0
+B: MSC=10
+
+I: Bus=0003 Vendor=3434 Product=0aa0 Version=0111
+N: Name="Keychron Keychron K10 Max Keyboard"
+P: Phys=usb-musb-hdrc.0-1/input2
+S: Sysfs=/devices/platform/ocp/47400000.usb/47401400.usb/musb-hdrc.0/usb1/1-1/1-1:1.2/0003:3434:0AA0.0007/input/input12
+U: Uniq=
+H: Handlers=sysrq kbd leds event6 
+B: PROP=0
+B: EV=120013
+B: KEY=10000 7 ff98007a 7ff febeffdf ffefffff ffffffff fffffffe
+B: MSC=10
+B: LED=1f
+
+root@am335x-idec-pd:/home/service/v/games# echo ##################################
+
+root@am335x-idec-pd:/home/service/v/games# cat /proc/bus/input/devices
+I: Bus=0019 Vendor=001f Product=0001 Version=0100
+N: Name="pwm-beeper"
+P: Phys=pwm/input0
+S: Sysfs=/devices/platform/buzzer/input/input0
+U: Uniq=
+H: Handlers=kbd event0 
+B: PROP=0
+B: EV=40001
+B: SND=6
+
+I: Bus=0018 Vendor=12fa Product=2143 Version=0100
+N: Name="hy461x_ts"
+P: Phys=
+S: Sysfs=/devices/platform/ocp/4802a000.i2c/i2c-1/1-0038/input/input1
+U: Uniq=
+H: Handlers=event1 
+B: PROP=0
+B: EV=b
+B: KEY=400 0 0 0 0 0 0 0 0 0 0
+B: ABS=2640000 0
+
+I: Bus=0003 Vendor=3434 Product=0aa0 Version=0111
+N: Name="Keychron Keychron K10 Max"
+P: Phys=usb-musb-hdrc.0-1/input0
+S: Sysfs=/devices/platform/ocp/47400000.usb/47401400.usb/musb-hdrc.0/usb1/1-1/1-1:1.0/0003:3434:0AA0.0005/input/input8
+U: Uniq=
+H: Handlers=sysrq kbd leds event2 
+B: PROP=0
+B: EV=120013
+B: KEY=10000 7 ff9f207a c14057ff febeffdf ffefffff ffffffff fffffffe
+B: MSC=10
+B: LED=1f
+
+I: Bus=0003 Vendor=3434 Product=0aa0 Version=0111
+N: Name="Keychron Keychron K10 Max Mouse"
+P: Phys=usb-musb-hdrc.0-1/input2
+S: Sysfs=/devices/platform/ocp/47400000.usb/47401400.usb/musb-hdrc.0/usb1/1-1/1-1:1.2/0003:3434:0AA0.0007/input/input9
+U: Uniq=
+H: Handlers=event3 
+B: PROP=0
+B: EV=17
+B: KEY=ff0000 0 0 0 0 0 0 0 0
+B: REL=143
+B: MSC=10
+
+I: Bus=0003 Vendor=3434 Product=0aa0 Version=0111
+N: Name="Keychron Keychron K10 Max System Control"
+P: Phys=usb-musb-hdrc.0-1/input2
+S: Sysfs=/devices/platform/ocp/47400000.usb/47401400.usb/musb-hdrc.0/usb1/1-1/1-1:1.2/0003:3434:0AA0.0007/input/input10
+U: Uniq=
+H: Handlers=kbd event4 
+B: PROP=0
+B: EV=1b
+B: KEY=400000 1000000 12 0 0 0 8 0 4000 10cc00 101680 0 0 0
+B: ABS=100 0
+B: MSC=10
+
+I: Bus=0003 Vendor=3434 Product=0aa0 Version=0111
+N: Name="Keychron Keychron K10 Max Consumer Control"
+P: Phys=usb-musb-hdrc.0-1/input2
+S: Sysfs=/devices/platform/ocp/47400000.usb/47401400.usb/musb-hdrc.0/usb1/1-1/1-1:1.2/0003:3434:0AA0.0007/input/input11
+U: Uniq=
+H: Handlers=kbd event5 
+B: PROP=0
+B: EV=1f
+B: KEY=300ff 0 0 0 0 483ffff 17aff32d bf544446 0 0 1 130ff3 8b17c000 677bfa d9415fed 19ed680 4400 0 10000002
+B: REL=40
+B: ABS=1 0
+B: MSC=10
+
+I: Bus=0003 Vendor=3434 Product=0aa0 Version=0111
+N: Name="Keychron Keychron K10 Max Keyboard"
+P: Phys=usb-musb-hdrc.0-1/input2
+S: Sysfs=/devices/platform/ocp/47400000.usb/47401400.usb/musb-hdrc.0/usb1/1-1/1-1:1.2/0003:3434:0AA0.0007/input/input12
+U: Uniq=
+H: Handlers=sysrq kbd leds event6 
+B: PROP=0
+B: EV=120013
+B: KEY=10000 7 ff98007a 7ff febeffdf ffefffff ffffffff fffffffe
+B: MSC=10
+B: LED=1f
+
+root@am335x-idec-pd:/home/service/v/games# weston-terminal  --shell=/home/service/v/games/vitetri
+s
+could not load cursor 'dnd-move'
+could not load cursor 'dnd-copy'
+could not load cursor 'dnd-none'
+xkbcommon: ERROR: couldn't find a Compose file for locale "C"
+could not create XKB compose table for locale 'C'.  Disabiling compose
+
+^C
+root@am335x-idec-pd:/home/service/v/games# ps ww | grep '[w]eston'
+  241 root     21416 S    weston --idle-time=0
+  281 root     10584 S    /usr/libexec/weston-desktop-shell
+ 4296 root     12200 S    weston-terminal
+root@am335x-idec-pd:/home/service/v/games# pidof weston
+241
+root@am335x-idec-pd:/home/service/v/games# tr '\0' '\n' < /proc/$(pidof weston)/environ
+CONSOLE=/dev/console
+prevlevel=N
+SHLVL=4
+HOME=/
+PS1=\u@\h:\w\$ 
+runlevel=S
+INIT_VERSION=sysvinit-2.88
+tp=1
+TERM=linux
+PATH=/usr/local/bin:/usr/bin:/bin
+WS_CALUDEV_FILE=/etc/udev/rules.d/ws-calibrate.rules
+rootwait=1
+RUNLEVEL=S
+XDG_RUNTIME_DIR=/tmp/0-runtime-dir
+PREVLEVEL=N
+XDG_CONFIG_HOME=/etc/
+SHELL=/bin/sh
+reset=OFF,
+PWD=/
+previous=N
+rootfs=A,
+VERBOSE=no
+EDITOR=vi
+root@am335x-idec-pd:/home/service/v/games# cat /etc/weston.ini
+[core]
+require-input=false
+gbm-format=rgb565
+
+[shell]
+locking=false
+animation=none
+background-type=none
+background-color=0xff000000
+panel-position=none
+panel-location=""
+startup-animation=none
+close-animation=none
+
+[input-method]
+path=
+
+[screensaver]
+# Uncomment path to disable screensaver
+#path=@libexecdir@/weston-screensaver
+root@am335x-idec-pd:/home/service/v/games# ls -l /proc/241/fd/ | grep /dev/input
+lrwx------    1 root     root            64 Sep 15 22:32 19 -> /dev/input/event1
+lrwx------    1 root     root            64 Sep 15 22:32 35 -> /dev/input/event3
+lrwx------    1 root     root            64 Sep 15 22:32 36 -> /dev/input/event4
+lrwx------    1 root     root            64 Sep 15 22:32 37 -> /dev/input/event2
+lrwx------    1 root     root            64 Sep 15 22:32 39 -> /dev/input/event5
+lrwx------    1 root     root            64 Sep 15 22:32 40 -> /dev/input/event6
+root@am335x-idec-pd:/home/service/v/games# weston-terminal --shell=/bin/sh
+could not load cursor 'dnd-move'
+could not load cursor 'dnd-copy'
+could not load cursor 'dnd-none'
+xkbcommon: ERROR: couldn't find a Compose file for locale "C"
+could not create XKB compose table for locale 'C'.  Disabiling compose
+^C     
+root@am335x-idec-pd:/home/service/v/games# for f in /sys/class/input/event{2,6}/device/name; do
+>     cat "$f"
+> done
+cat: can't open '/sys/class/input/event{2,6}/device/name': No such file or directory
+root@am335x-idec-pd:/home/service/v/games# udevadm info --query=property --name=/dev/input/event2
+ | grep -E 'ID_INPUT|ID_SEAT|WL_SEAT'
+ID_INPUT=1
+ID_INPUT_KEY=1
+ID_INPUT_KEYBOARD=1
+root@am335x-idec-pd:/home/service/v/games# udevadm info --query=property --name=/dev/input/event6
+ | grep -E 'ID_INPUT|ID_SEAT|WL_SEAT'
+ID_INPUT=1
+ID_INPUT_KEY=1
+ID_INPUT_KEYBOARD=1
+root@am335x-idec-pd:/home/service/v/games# for n in 2 6; do
+>     cat /sys/class/input/event$n/device/name
+> done
+Keychron Keychron K10 Max
+Keychron Keychron K10 Max Keyboard
+root@am335x-idec-pd:/home/service/v/games# weston-terminal --shell=/bin/sh
+could not load cursor 'dnd-move'
+could not load cursor 'dnd-copy'
+could not load cursor 'dnd-none'
+xkbcommon: ERROR: couldn't find a Compose file for locale "C"
+could not create XKB compose table for locale 'C'.  Disabiling compose
+ghhjg
+
+
+^C
+root@am335x-idec-pd:/home/service/v/games# cat /dev/input/event2 | od -x
+^C
+root@am335x-idec-pd:/home/service/v/games# weston-terminal --shell=/bin/sh
+could not load cursor 'dnd-move'
+could not load cursor 'dnd-copy'
+could not load cursor 'dnd-none'
+xkbcommon: ERROR: couldn't find a Compose file for locale "C"
+could not create XKB compose table for locale 'C'.  Disabiling compose
+^C
+root@am335x-idec-pd:/home/service/v/games# weston-terminal --shell=/bin/sh && cat /dev/input/even
+t2 | od -x
+could not load cursor 'dnd-move'
+could not load cursor 'dnd-copy'
+could not load cursor 'dnd-none'
+xkbcommon: ERROR: couldn't find a Compose file for locale "C"
+could not create XKB compose table for locale 'C'.  Disabiling compose
+fghj
+^C
+root@am335x-idec-pd:/home/service/v/games# weston-terminal --shell=/bin/sh &
+root@am335x-idec-pd:/home/service/v/games# could not load cursor 'dnd-move'
+could not load cursor 'dnd-copy'
+could not load cursor 'dnd-none'
+xkbcommon: ERROR: couldn't find a Compose file for locale "C"
+could not create XKB compose table for locale 'C'.  Disabiling compose
+root@am335x-idec-pd:/home/service/v/games# cat /dev/input/event2 | od -x
+asdf
+asdf
+^C
+
+root@am335x-idec-pd:/home/service/v/games# cd 
+
+root@am335x-idec-pd:/home/service# cat /dev/input/event2 | od -x  > balls.txt
+s
+sdfg
+asdf
+bhgjh
+^C
+
+root@am335x-idec-pd:/home/service# cat balls.txt 
+
+root@am335x-idec-pd:/home/service# dd if=/dev/input/event2 bs=16 count=4 2>/dev/null | hexdump -C
+asdf
+asdf
+asdf
+hhhh
+
+^C
+root@am335x-idec-pd:/home/service# cat /proc/sys/kernel/sysrq
+1
+
+root@am335x-idec-pd:/home/service# cat /dev/input/event6 | hexdump -C
+ASD
+asdf
+
+asdf
+
+asdf
+fdkljjklsfd;g
+^C
+
+root@am335x-idec-pd:/home/service# cat /proc/kmsg
+cat: can't open '/proc/kmsg': No such file or directory
+
+root@am335x-idec-pd:/home/service# ls -l /proc/241/fd/1 /proc/241/fd/2
+l-wx------    1 root     root            64 Sep 15 22:32 /proc/241/fd/1 -> /var/volatile/log/weston.log
+l-wx------    1 root     root            64 Sep 15 22:32 /proc/241/fd/2 -> /var/volatile/log/weston.log
+root@am335x-idec-pd:/home/service# ls -l /dev/kmsg
+-rw-r--r--    1 root     root            92 Sep 15 20:34 /dev/kmsg
+root@am335x-idec-pd:/home/service# which fuser
+/usr/bin/fuser
+
+root@am335x-idec-pd:/home/service# grep -iE 'keyboard|input|seat|libinput|xkb|keymap|error|failed
+' /var/volatile/log/weston.log
+failed to load module: /usr/lib/gbm/gbm_dri.so: cannot open shared object file: No such file or directory
+failed to load module: /usr/lib/gbm/gbm_gallium_drm.so: cannot open shared object file: No such file or directory
+[10:34:51.864] Retrieving EGL client extension string failed.
+[10:34:51.926] Failed to obtain a high priority context.
+[10:34:51.962] event0  - pwm-beeper: not tagged as supported input device
+[10:34:52.001] event0  - not using input device '/dev/input/event0'
+[10:34:52.016] Touchscreen - hy461x_ts - /sys/devices/platform/ocp/4802a000.i2c/i2c-1/1-0038/input/input1/event1
+[10:34:52.017] input device event1 has no enabled output associated (none named), skipping calibration for now.
+[10:34:52.077] associating input device event1 with output LVDS-1 (none by udev)
+[10:34:52.079] Warning: input device event1 has WL_CALIBRATION property set. Support for it will be removed in the future. Please use LIBINPUT_CALIBRATION_MATRIX instead.
+[10:34:52.091] input device event1: applying calibration:
+[22:10:31.862] event3  - Keychron  Keychron Link : not tagged as supported input device
+[22:10:31.909] event3  - not using input device '/dev/input/event3'
+[22:10:32.039] event4  - not using input device '/dev/input/event4'
+[22:10:32.042] event5  - Keychron  Keychron Link  Keyboard: is tagged by udev as: Keyboard
+[22:10:32.042] event5  - Keychron  Keychron Link  Keyboard: device is a keyboard
+[22:10:32.271] associating input device event5 with output LVDS-1 (none by udev)
+[22:10:32.278] event6  - Keychron  Keychron Link  Consumer Control: is tagged by udev as: Keyboard
+[22:10:32.278] event6  - Keychron  Keychron Link  Consumer Control: device is a keyboard
+[22:10:32.278] associating input device event6 with output LVDS-1 (none by udev)
+[22:10:32.301] event7  - Keychron  Keychron Link  System Control: is tagged by udev as: Keyboard
+[22:10:32.302] event7  - Keychron  Keychron Link  System Control: device is a keyboard
+[22:10:32.302] associating input device event7 with output LVDS-1 (none by udev)
+[22:10:32.377] associating input device event2 with output LVDS-1 (none by udev)
+xkbcommon: ERROR: couldn't find a Compose file for locale "C"
+could not create XKB compose table for locale 'C'.  Disabiling compose
+[22:10:51.760] event5  - Keychron  Keychron Link  Keyboard: device removed
+[22:24:59.374] associating input device event3 with output LVDS-1 (none by udev)
+[22:24:59.408] event4  - Keychron Keychron K10 Max System Control: is tagged by udev as: Keyboard
+[22:24:59.408] event4  - Keychron Keychron K10 Max System Control: device is a keyboard
+[22:24:59.409] associating input device event4 with output LVDS-1 (none by udev)
+[22:24:59.453] event2  - Keychron Keychron K10 Max: is tagged by udev as: Keyboard
+[22:24:59.453] event2  - Keychron Keychron K10 Max: device is a keyboard
+[22:24:59.453] associating input device event2 with output LVDS-1 (none by udev)
+[22:24:59.483] event5  - Keychron Keychron K10 Max Consumer Control: is tagged by udev as: Keyboard
+[22:24:59.484] event5  - Keychron Keychron K10 Max Consumer Control: device is a keyboard
+[22:24:59.484] associating input device event5 with output LVDS-1 (none by udev)
+[22:24:59.495] event6  - Keychron Keychron K10 Max Keyboard: is tagged by udev as: Keyboard
+[22:24:59.495] event6  - Keychron Keychron K10 Max Keyboard: device is a keyboard
+[22:24:59.496] associating input device event6 with output LVDS-1 (none by udev)
+xkbcommon: ERROR: couldn't find a Compose file for locale "C"
+could not create XKB compose table for locale 'C'.  Disabiling compose
+
+root@am335x-idec-pd:/home/service# cat /proc/bus/input/handlers
+N: Number=0 Name=rfkill
+N: Number=1 Name=kbd
+N: Number=2 Name=sysrq (filter)
+N: Number=3 Name=leds
+N: Number=4 Name=evdev Minor=64
+
+root@am335x-idec-pd:/home/service# cat /proc/interrupts | grep -Ei 'usb|musb'
+ 55:          0  4804c000.gpio  21 Edge      uio_usb_overcurrent
+ 56:          0  4804c000.gpio  27 Edge      uio_usb_overcurrent
+ 60:         55      INTC  18 Level     musb-hdrc.0
+ 61:        378      INTC  19 Level     musb-hdrc.1
+
+root@am335x-idec-pd:/home/service# grep -iE 'seat|focus|keymap|keyboard' /var/volatile/log/weston
+.log | tail -40
+[22:10:32.042] event5  - Keychron  Keychron Link  Keyboard: is tagged by udev as: Keyboard
+[22:10:32.042] event5  - Keychron  Keychron Link  Keyboard: device is a keyboard
+[22:10:32.278] event6  - Keychron  Keychron Link  Consumer Control: is tagged by udev as: Keyboard
+[22:10:32.278] event6  - Keychron  Keychron Link  Consumer Control: device is a keyboard
+[22:10:32.301] event7  - Keychron  Keychron Link  System Control: is tagged by udev as: Keyboard
+[22:10:32.302] event7  - Keychron  Keychron Link  System Control: device is a keyboard
+[22:10:51.760] event5  - Keychron  Keychron Link  Keyboard: device removed
+[22:24:59.408] event4  - Keychron Keychron K10 Max System Control: is tagged by udev as: Keyboard
+[22:24:59.408] event4  - Keychron Keychron K10 Max System Control: device is a keyboard
+[22:24:59.453] event2  - Keychron Keychron K10 Max: is tagged by udev as: Keyboard
+[22:24:59.453] event2  - Keychron Keychron K10 Max: device is a keyboard
+[22:24:59.483] event5  - Keychron Keychron K10 Max Consumer Control: is tagged by udev as: Keyboard
+[22:24:59.484] event5  - Keychron Keychron K10 Max Consumer Control: device is a keyboard
+[22:24:59.495] event6  - Keychron Keychron K10 Max Keyboard: is tagged by udev as: Keyboard
+[22:24:59.495] event6  - Keychron Keychron K10 Max Keyboard: device is a keyboard
+
+
+root@am335x-idec-pd:/home/service# ls -l /dev/uinput /dev/input/uinput 2>/dev/null
+root@am335x-idec-pd:/home/service# grep uinput /proc/misc
+root@am335x-idec-pd:/home/service# 
+
+root@am335x-idec-pd:/home/service# zcat /proc/config.gz 2>/dev/null | grep CONFIG_INPUT_UINPUT
+# CONFIG_INPUT_UINPUT is not set
+
+######## Unfortunately I dont know when to give up #####################
+
+the main idea RN is that I can access touch inputs, and device events.
+so all I really need to do is write a shell script to launch the game, 
+Then process certain touch events as keystrokes and send them to the application.
+That shouldnt require hardware. so Now, all we need to do is get more info 
+about what events and interfaces ARE available.
+########################################################################
+
+root@am335x-idec-pd:/home/service/v/games# cat l.sh 
+#!/bin/sh
+
+export XDG_RUNTIME_DIR=/tmp/0-runtime-dir
+export WAYLAND_DISPLAY=wayland-0
+
+exec weston-terminal --fullscreen \
+    --shell=/home/service/v/games/vitetris
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+################# Geschiste von fehlers ######################
+root@am335x-idec-pd:/home/service/v/games# hexdump -v -e '16/1 "%02x " "\n"' /dev/input/event1 | 
+awk '
+> $9=="03" && $11=="39" {
+>     print "TRACKING:", $13, $14, $15, $16
+>     fflush()
+> }
+> $9=="01" && $11=="4a" {
+>     print "TOUCH:", $13, $14, $15, $16
+>     fflush()
+> }'
+TRACKING: 00 00 00 00
+TRACKING: 00 00 00 00
+TRACKING: 00 00 00 00
+TRACKING: 00 00 00 00
+
+#################### aber, es arbiet.................
+
+root@am335x-idec-pd:/home/service/v/games# hexdump -v -e '16/1 "%02x " "\n"' /dev/input/event1 | 
+awk '
+ $9=="03" && $10=="00" && $11=="35" && $12=="00" {
+     touching=1
+     if (!down) {
+         down=1
+         print "ENTER"
+         fflush()
+     }
+ }
+ 
+ $9=="00" && $10=="00" && $11=="00" && $12=="00" {
+     if (!touching)
+         down=0
+     touching=0
+}'
+ENTER
+ENTER
+ENTER
+ENTER
+################# mehr einfac
+
+
+
+#!/bin/sh
+
+GAME=/home/service/v/games/vitetris
+TOUCH=/dev/input/event1
+
+export XDG_RUNTIME_DIR=/tmp/0-runtime-dir
+export WAYLAND_DISPLAY=wayland-0
+
+# Launch Vitetris in Weston
+weston-terminal --shell="$GAME" &
+WESTON_PID=$!
+
+# Wait for Vitetris to start
+PID=""
+for i in 1 2 3 4 5; do
+    PID=$(pidof vitetris | awk '{print $1}')
+    [ -n "$PID" ] && break
+    sleep 1
+done
+
+if [ -z "$PID" ]; then
+    echo "Vitetris failed to start"
+    exit 1
+fi
+
+echo "Vitetris PID: $PID"
+
+# Find its terminal
+TTY=$(readlink /proc/$PID/fd/0)
+MASTER="/dev/pty${TTY##*/tty}"
+
+echo "Terminal: $TTY"
+echo "Master:   $MASTER"
+
+if [ ! -e "$MASTER" ]; then
+    echo "PTY master not found"
+    exit 1
+fi
+
+echo "Touch the screen to send ENTER"
+
+# Decode touchscreen events
+hexdump -v -e '16/1 "%02x " "\n"' "$TOUCH" |
+awk '
+$9=="03" && $10=="00" && $11=="35" && $12=="00" {
+    touching=1
+    if (!down) {
+        down=1
+        print "ENTER"
+        fflush()
+    }
+}
+$9=="00" && $10=="00" && $11=="00" && $12=="00" {
+    if (!touching)
+        down=0
+    touching=0
+}' |
+while read -r KEY; do
+    echo "Touch detected: $KEY"
+
+    if ! printf '\r' > "$MASTER"; then
+        echo "Cannot write to $MASTER"
+        echo "Weston may have exclusive ownership"
+        break
+    fi
+done
+
+Vitetris PID: 26993
+Terminal: /dev/ttyp0
+Master:   /dev/ptyp0
+Touch the screen to send ENTER
+xkbcommon: ERROR: couldn't find a Compose file for locale "C"
+could not create XKB compose table for locale 'C'.  Disabiling compose
+Touch detected: ENTER
+
+
+#####################FFFFFFFFFFFFFFFFFFFFFFFF#########################
+ 
+
+

@@ -1,0 +1,31 @@
+# These notes are about whether the hmi can recieve network traffics from its own interface, 
+and whether it can communicate with itself via Maintenance Protcol localy. 
+
+root@am335x-idec-pd:/home/service# netstat -ltn
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       
+tcp        0      0 0.0.0.0:2537            0.0.0.0:*               LISTEN      
+tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN      
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      
+tcp        0      0 :::22                   :::*                    LISTEN   
+
+It certainly appears that it could.
+ 
+root@am335x-idec-pd:/home/service# cat /proc/net/tcp
+  sl  local_address rem_address   st tx_queue rx_queue tr tm->when retrnsmt   uid  timeout inode                                                     
+   0: 00000000:09E9 00000000:0000 0A 00000000:00000000 00:00000000 00000000  1000        0 2874 1 40d97929 100 0 0 10 0                              
+   1: 00000000:0050 00000000:0000 0A 00000000:00000000 00:00000000 00000000  1000        0 2915 1 0a9c6899 100 0 0 10 0                              
+   2: 00000000:0016 00000000:0000 0A 00000000:00000000 00:00000000 00000000     0        0 2725 1 bcd9fbd3 100 0 0 10 5                              
+   3: 1401A8C0:0016 6401A8C0:DDEC 01 00000000:00000000 00:00000000 00000000     0        0 1708793 3 fb370be7 21 4 27 10 -1 
+   
+# uid 1000 = idec 0 is root or the service account.
+ssh -N -L 12537:127.0.0.1:2537 \
+    -o IdentitiesOnly=yes \
+    -o HostKeyAlgorithms=+ssh-rsa \
+    service@192.168.1.20ssh -N -L 12537:127.0.0.1:2537 \
+    -o IdentitiesOnly=yes \
+    -o HostKeyAlgorithms=+ssh-rsa \
+    service@192.168.1.20
+    
+ ---So now we're listening on 2537 without a shell
+ 
