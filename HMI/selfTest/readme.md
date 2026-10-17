@@ -1,49 +1,50 @@
+# 1 2 1 2, check check
 <pre>
-# here, we fail
- * sn@ker:~/fc6a/HMI/selfTest$ gcc -O2 -Wall -Wextra -o hg2j_self_register_pc hg2j_self_register.c
- * sn@ker:~/fc6a/HMI/selfTest$ ./hg2j_self_register_pc 192.168.1.20 5
- * Connecting to 192.168.1.20:2537 ...
- * TCP connected; registering LSD31 with CG01
- * CG was not ACKed (expected inner 06)
- * Reply (26 bytes), inner bytes: 15 30 30 46 46 30 33 0D
- * NAK 00FF03 CR
- * Which is a FAIL, but its a Maintenance Protocol Fail. :D
+arm-linux-gnueabihf-gcc -O2 -static -s -Wall -Wextra -o hg2j_screen_scpi_arm hg2j_screen_scpi.c
 
-# after Authentication, we succeed!
-sn@ker:~/fc6a/HMI/selfTest$ ./hg2j_self_register_pc 192.168.1.20 5
-Connecting to 192.168.1.20:2537 ...
-TCP connected; registering LSD31 with CG01
-CG accepted; touch/change NV4 screens while polling:
-01  LSD31 = 2 (0x0002)
-02  LSD31 = 2 (0x0002)
-03  LSD31 = 2 (0x0002)
-04  LSD31 = 2 (0x0002)
-05  LSD31 = 2 (0x0002)
 
-so ugh. we can read the registers from my PC, whoopdee doo.
-now to cross compile, and try it over on the hmi!
+scp -O -o HostKeyAlgorithms=+ssh-rsa hg2j_screen_scpi_arm service@192.168.1.20:/home/service/
+service@192.168.1.20's password: 
+hg2j_screen_scpi_arm                          100%  353KB   1.4MB/s   00:00  
 
-arm-linux-gnueabihf-gcc -O2 -static -s -o hg2j_self_register_arm hg2j_self_register.c
+# ya thought you were going to run:
+./hg2j_screen_scpi_arm 192.168.1.20 0 /dev/usbtmc0
+but that device did not enumerate.
+no dmesg, no lsusb 
+so we do this cheesey little hack:
 
-sn@ker:~/fc6a/HMI/selfTest$ scp -O -o HostKeyAlgorithms=+ssh-rsa -o IdentitiesOnly=yes hg2j_self_register_arm service@192.168.1.20:/home/service/
-hg2j_self_register_arm                        100%  353KB   1.7MB/s   00:00  
+ls /dev/* > plugged
+ls /dev/* > unplugged
+diff plugged unplugged 
 
-root@am335x-idec-pd:/home/service# ./hg2j_self_register_arm 
-Connecting to 127.0.0.1:2537 ...
-connect: Connection refused
----ugh ok...
+--- plugged
++++ unplugged
+@@ -180,7 +180,6 @@
+ 13:65
+ 189:0
+ 189:128
+-189:129
+ 226:0
+ 226:1
+ 226:128
+root@am335x-idec-pd:/home/service# for f in idVendor idProduct manufacturer product busnum devnum; do
+>     printf "%-15s " "$f"
+>     cat "/sys/bus/usb/devices/2-1/$f"
+> done
+idVendor        0957
+idProduct       0407
+manufacturer    Agilent Technologies
+product         33220A Waveform Generator
+busnum          2
+devnum          3
 
-root@am335x-idec-pd:/home/service# ./hg2j_self_register_arm 192.168.1.20 5
-Connecting to 192.168.1.20:2537 ...
-TCP connected; registering LSD31 with CG01
-CG accepted; touch/change NV4 screens while polling:
-01  LSD31 = 2 (0x0002)
-02  LSD31 = 2 (0x0002)
-03  LSD31 = 2 (0x0002)
-04  LSD31 = 2 (0x0002)
-05  LSD31 = 2 (0x0002)
-root@am335x-idec-pd:/home/service# 
-__# BOOYAH!
-This confirms we can read registers from the hmi's own ip. not localhost, even thought it is listening there...
+
+root@am335x-idec-pd:/home/service# ./hg2j_usbtmc_idn_arm /dev/bus/usb/002/003
+USB identity: 0957:0407
+Claimed interface 0, bulk OUT 0x02, bulk IN 0x86
+USBTMC DEV_DEP_MSG_OUT sent, tag=1: *IDN?
+USBTMC response: 66 bytes, msg=2, tag=2, payload=54, EOM=1
+33220A identification: Agilent Technologies,33220A,MY44009632,2.07-2.00-22-2
+
 
 </pre>
