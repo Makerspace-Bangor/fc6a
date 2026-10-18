@@ -1,5 +1,15 @@
 #HMI Contents
 <pre>
+The difference with the HG2J Model HMI, and other similar devices is that
+They are Linux systems using an HMI specific version of the Maintence Protocol.
+
+The protocol language is functionaly the same as the PLCs, but the operation 
+is different. The PLC is reading all the registers in a loop. The HMI may only 
+read / poll regiters on screen, which changes how our projects run.
+
+
+
+
     NOTE: HMI nearly all figured out. Modes, project loading up & down.
           fail statuses, internal register R/W, special commands...
           Its just all scattered in a bunch of individual testing scripts.

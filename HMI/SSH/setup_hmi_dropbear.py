@@ -6,6 +6,7 @@ From scratch/:
 
 Patches the extracted directory and rebuilds the sibling os_update.tar.xz.
 Original tar metadata is retained, except for explicitly added/changed entries.
+Sets /etc/profile PATH to include administrative command directories.
 No service .ssh directory or authorized_keys are created.
 """
 
@@ -17,8 +18,9 @@ import re
 import tarfile
 from pathlib import Path
 
-UID = 1001
-GID = 1001
+UID = 0 # 1001
+GID = 0 # 1001
+PROFILE_PATH = 'PATH="/sbin:/usr/sbin:/usr/local/bin:/usr/bin:/bin"'
 
 
 def norm(name):
@@ -49,6 +51,15 @@ def dropbear_config(data):
     return ('\n'.join(lines) + '\n').encode()
 
 
+def profile_config(data):
+    lines = data.decode('utf-8').splitlines()
+    matches = [i for i, line in enumerate(lines) if re.match(r'^\s*PATH=', line)]
+    if len(matches) != 1:
+        raise ValueError('Expected exactly one active PATH assignment in /etc/profile')
+    lines[matches[0]] = PROFILE_PATH
+    return ('\n'.join(lines) + '\n').encode()
+
+
 def entry(name, mode, uid=0, gid=0, kind=tarfile.REGTYPE, link=''):
     info = tarfile.TarInfo('./' + name)
     info.type, info.mode, info.uid, info.gid = kind, mode, uid, gid
@@ -73,13 +84,14 @@ def apply(root, hash_file, host_key):
         if len(sources) != len(members):
             raise ValueError('Duplicate normalized names in archive')
         necessary = ('etc/passwd', 'etc/group', 'etc/shadow',
-                     'etc/default/dropbear', 'etc/init.d/dropbear')
+                     'etc/default/dropbear', 'etc/init.d/dropbear', 'etc/profile')
         if any(name not in sources for name in necessary):
             raise ValueError('Archive missing one of: ' + ', '.join(necessary))
 
         patched = {}
         fields = {
-            'etc/passwd': 'service:x:1001:1001:Service SSH:/home/service:/bin/sh',
+            #'etc/passwd': 'service:x:1001:1001:Service SSH:/home/service:/bin/sh',
+            'etc/passwd': 'service:x:0:0:Service SSH:/home/service:/bin/sh',
             'etc/group': 'service:x:1001:',
             'etc/shadow': f'service:{password_hash}:20736:0:99999:7:::',
         }
@@ -88,6 +100,8 @@ def apply(root, hash_file, host_key):
                                          'service', value)
         patched['etc/default/dropbear'] = dropbear_config(
             original.extractfile(sources['etc/default/dropbear']).read())
+        patched['etc/profile'] = profile_config(
+            original.extractfile(sources['etc/profile']).read())
 
         if host_key is not None:
             patched['etc/dropbear/dropbear_rsa_host_key'] = host_key.read_bytes()
@@ -143,6 +157,9 @@ def apply(root, hash_file, host_key):
                     raise ValueError('Wrong service account ownership in tar archive')
                 if result['etc/rc5.d/S20dropbear'].linkname != '../init.d/dropbear':
                     raise ValueError('Wrong Dropbear startup symlink')
+                profile = test.extractfile(result['etc/profile']).read()
+                if PROFILE_PATH.encode() not in profile.splitlines():
+                    raise ValueError('Updated PATH missing from /etc/profile')
 
             # Keep extracted worktree in sync with the newly produced tar archive.
             for name, content in patched.items():
@@ -168,9 +185,11 @@ def apply(root, hash_file, host_key):
     print(f'Updated extracted OS: {root}')
     print(f'Rebuilt OS archive:  {archive}')
     print('Dropbear: port 22, runlevel 5 startup, password login enabled')
+    print(f'/etc/profile: {PROFILE_PATH}')
     print('service: UID/GID 1001, password hash configured')
     print('No service .ssh directory or authorized_keys created')
-    print('Tar ownership: original member metadata preserved; service home = 1001:1001')
+    #print('Tar ownership: original member metadata preserved; service home = 1001:1001')
+    print('Tar ownership: original member metadata preserved; service home = 0:0')
 
 
 def main():

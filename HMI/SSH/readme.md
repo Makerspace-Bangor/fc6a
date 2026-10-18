@@ -1,5 +1,33 @@
 # MF HG2J-7U SSH SON!
 
+This section is about configuring ssh on the HG2J IDEC HMI, and what you find when you get there.  
+There is no OEM support for shell access, and WindO/I-NV4 has no method to configure, or  
+interact with a shell, or the Linux subsystem.  
+
+SSH here, was obtained by modifying the embedded firmware in such a way as to include a 
+Functional SSH session, and user to log into it.  
+
+While Maintenacne Protocol is a utilizable feature from the subsequent ssh session,  
+This section is neither Maintenance Protocol derrived, nor intrisicaly utilized.
+
+
+<pre>
+the script modifies the extracted IDEC HG2J operating system and rebuilds os_update.tar.xz with the following changes:
+1. Enable SSH: Configures Dropbear to accept password-based SSH connections on TCP port 22.
+2. Enable SSH at startup: Creates /etc/rc5.d/S20dropbear to start Dropbear automatically in runlevel 5.
+3. Create service account: Adds service to /etc/passwd, /etc/group, and /etc/shadow, 
+   with a supplied SHA-512 password hash. The account is assigned UID 0 and primary GID 0 (root privileges).
+4. Create service home directory: Creates /home/service with restricted permissions (0700), configured with ownership UID/GID 1001.
+5. Configure SSH host key: Optionally installs a supplied RSA host key in /etc/dropbear/.
+6. Expand system PATH: Modifies /etc/profile to include /sbin, /usr/sbin, /usr/local/bin, /usr/bin, and /bin.
+7. Rebuild OS archive: Updates both the extracted filesystem and os_update.tar.xz, 
+   preserving original archive metadata except where modifications are required.
+
+Note: The script modifies the OS update archive, not the complete .ZNX project file. 
+The modified archive must be incorporated into the firmware package for deployment via repak_znx_roundtrip.py
+./repak_znx_roundtrip.py <original.ZNX> <extracted_dir> <output.ZNX>
+
+</pre>
 # System Specs:
 <pre>
 service@am335x-idec-pd:~$ cat /etc/os-release
@@ -111,7 +139,7 @@ download
 Alternatively: extract the rr_ssh.ZNX, 
 run $openssl passwd -6  
 to create your own password,  
-go into etc/shadow, and populate the serivce user with your own password hash. 
+go into etc/shadow, and populate the serivce user with your own password hash.  
 
 
 then repack the os, and download your ssh enabled hmi.
