@@ -1,3 +1,8 @@
+# About the ZNX and ZNV package structure.
+<img src="znx_package_structure.svg">
+
+You can download a ZNX, but you can never upload one. 
+
 <pre>
 Theres a lot of parts to discect... but you might extract a project.znv from a Named.ZNX,  
 so maybe deconstruct_znv.py  

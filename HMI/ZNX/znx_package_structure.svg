@@ -1,0 +1,1341 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="1200"
+   height="2070"
+   viewBox="0 0 1200 2070"
+   role="img"
+   aria-label="IDEC ZNX package structure showing nested project ZNV constituents, checksums, and OS update archive"
+   version="1.1"
+   id="svg318"
+   sodipodi:docname="znx_package_structure.svg"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs322" />
+  <sodipodi:namedview
+     id="namedview320"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showgrid="false"
+     inkscape:zoom="1.3991833"
+     inkscape:cx="747.57898"
+     inkscape:cy="801.89638"
+     inkscape:window-width="1914"
+     inkscape:window-height="2044"
+     inkscape:window-x="1920"
+     inkscape:window-y="28"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg318" />
+  <style
+     id="style2">text{font-family:DejaVu Sans,Arial,sans-serif} </style>
+  <g
+     id="g861">
+    <rect
+       x="0"
+       y="0"
+       width="1200"
+       height="2070"
+       rx="0"
+       fill="#ffffff"
+       stroke="none"
+       stroke-width="1"
+       id="rect4" />
+    <text
+       x="600"
+       y="75"
+       font-size="47px"
+       font-weight="700"
+       fill="#153c36"
+       text-anchor="middle"
+       id="text6">IDEC ZNX Package Structure</text>
+    <text
+       x="600"
+       y="115"
+       font-size="24px"
+       font-weight="400"
+       fill="#59676d"
+       text-anchor="middle"
+       id="text8">Typical package contents and known ZNV constituents</text>
+    <rect
+       x="26"
+       y="150"
+       width="772"
+       height="1760"
+       rx="14"
+       fill="#e5f7e7"
+       stroke="#32984f"
+       stroke-width="2.6"
+       id="rect10" />
+    <text
+       x="52"
+       y="216"
+       font-size="43px"
+       font-weight="700"
+       fill="#174734"
+       text-anchor="start"
+       id="text12">ZNX Package</text>
+    <text
+       x="52"
+       y="253"
+       font-size="21px"
+       font-weight="400"
+       fill="#4c6561"
+       text-anchor="start"
+       id="text14">Typical top-level contents of a ZNX file</text>
+    <rect
+       x="820"
+       y="150"
+       width="353"
+       height="1760"
+       rx="14"
+       fill="#f8fafb"
+       stroke="#98a9b4"
+       stroke-width="2"
+       id="rect16" />
+    <text
+       x="843"
+       y="204"
+       font-size="29px"
+       font-weight="700"
+       fill="#1b2732"
+       text-anchor="start"
+       id="text18">ZNV Descriptions</text>
+    <text
+       x="843"
+       y="241"
+       font-size="18px"
+       font-weight="400"
+       fill="#596773"
+       text-anchor="start"
+       id="text20">Known ZNV constituents</text>
+    <text
+       x="843"
+       y="268"
+       font-size="18px"
+       font-weight="400"
+       fill="#596773"
+       text-anchor="start"
+       id="text22">and their purpose</text>
+    <rect
+       x="49"
+       y="286"
+       width="726"
+       height="1204"
+       rx="13"
+       fill="#e0f3ff"
+       stroke="#26a7e6"
+       stroke-width="2.5"
+       id="rect24" />
+    <rect
+       x="75"
+       y="310"
+       width="49"
+       height="60"
+       rx="6"
+       fill="#ffffff"
+       stroke="#1683d6"
+       stroke-width="2"
+       id="rect26" />
+    <path
+       d="m 105,310 v 18 h 19"
+       fill="none"
+       stroke="#1683d6"
+       stroke-width="2"
+       id="path28" />
+    <rect
+       x="76"
+       y="340"
+       width="47"
+       height="29"
+       rx="4"
+       fill="#1683d6"
+       stroke="#1683d6"
+       stroke-width="1"
+       id="rect30" />
+    <text
+       x="99.5"
+       y="361"
+       font-size="17px"
+       font-weight="700"
+       fill="#ffffff"
+       text-anchor="middle"
+       id="text32">ZNV</text>
+    <text
+       x="156"
+       y="355"
+       font-size="38px"
+       font-weight="700"
+       fill="#122f61"
+       text-anchor="start"
+       id="text34">project.znv</text>
+    <text
+       x="156"
+       y="389"
+       font-size="20px"
+       font-weight="400"
+       fill="#395876"
+       text-anchor="start"
+       id="text36">Nested container with project data</text>
+    <rect
+       x="66"
+       y="419"
+       width="691"
+       height="1049"
+       rx="11"
+       fill="#f0faff"
+       stroke="#64b8e7"
+       stroke-width="2"
+       id="rect38" />
+    <text
+       x="85"
+       y="458"
+       font-size="23px"
+       font-weight="700"
+       fill="#163e7d"
+       text-anchor="start"
+       id="text40">Known / commonly identified constituents</text>
+    <rect
+       x="78"
+       y="478"
+       width="670"
+       height="104"
+       rx="12"
+       fill="#f7fbfe"
+       stroke="#bcd6e6"
+       stroke-width="1.7"
+       id="rect42" />
+    <rect
+       x="96"
+       y="499"
+       width="49"
+       height="60"
+       rx="6"
+       fill="#ffffff"
+       stroke="#207fd5"
+       stroke-width="2"
+       id="rect44" />
+    <path
+       d="m 126,499 v 18 h 19"
+       fill="none"
+       stroke="#207fd5"
+       stroke-width="2"
+       id="path46" />
+    <rect
+       x="97"
+       y="529"
+       width="47"
+       height="29"
+       rx="4"
+       fill="#207fd5"
+       stroke="#207fd5"
+       stroke-width="1"
+       id="rect48" />
+    <text
+       x="120.5"
+       y="550"
+       font-size="17px"
+       font-weight="700"
+       fill="#ffffff"
+       text-anchor="middle"
+       id="text50">T2F</text>
+    <text
+       x="174"
+       y="521"
+       font-size="25px"
+       font-weight="700"
+       fill="#1d314b"
+       text-anchor="start"
+       id="text52">PROJECT.t2f</text>
+    <text
+       x="174"
+       y="553"
+       font-size="19px"
+       font-weight="400"
+       fill="#3d5263"
+       text-anchor="start"
+       id="text54">Core project data</text>
+    <rect
+       x="78"
+       y="593"
+       width="670"
+       height="104"
+       rx="12"
+       fill="#f7fbfe"
+       stroke="#bcd6e6"
+       stroke-width="1.7"
+       id="rect56" />
+    <rect
+       x="96"
+       y="614"
+       width="49"
+       height="60"
+       rx="6"
+       fill="#ffffff"
+       stroke="#1b9b55"
+       stroke-width="2"
+       id="rect58" />
+    <path
+       d="m 126,614 v 18 h 19"
+       fill="none"
+       stroke="#1b9b55"
+       stroke-width="2"
+       id="path60" />
+    <rect
+       x="97"
+       y="644"
+       width="47"
+       height="29"
+       rx="4"
+       fill="#1b9b55"
+       stroke="#1b9b55"
+       stroke-width="1"
+       id="rect62" />
+    <text
+       x="120.5"
+       y="665"
+       font-size="17px"
+       font-weight="700"
+       fill="#ffffff"
+       text-anchor="middle"
+       id="text64">B2F</text>
+    <text
+       x="174"
+       y="636"
+       font-size="25px"
+       font-weight="700"
+       fill="#1d314b"
+       text-anchor="start"
+       id="text66">PROJECT.b2f</text>
+    <text
+       x="174"
+       y="668"
+       font-size="19px"
+       font-weight="400"
+       fill="#3d5263"
+       text-anchor="start"
+       id="text68">Core project data / binary data</text>
+    <rect
+       x="78"
+       y="708"
+       width="670"
+       height="104"
+       rx="12"
+       fill="#f7fbfe"
+       stroke="#bcd6e6"
+       stroke-width="1.7"
+       id="rect70" />
+    <rect
+       x="96"
+       y="729"
+       width="49"
+       height="60"
+       rx="6"
+       fill="#ffffff"
+       stroke="#8543be"
+       stroke-width="2"
+       id="rect72" />
+    <path
+       d="m 126,729 v 18 h 19"
+       fill="none"
+       stroke="#8543be"
+       stroke-width="2"
+       id="path74" />
+    <rect
+       x="97"
+       y="759"
+       width="47"
+       height="29"
+       rx="4"
+       fill="#8543be"
+       stroke="#8543be"
+       stroke-width="1"
+       id="rect76" />
+    <text
+       x="120.5"
+       y="780"
+       font-size="17px"
+       font-weight="700"
+       fill="#ffffff"
+       text-anchor="middle"
+       id="text78">D2F</text>
+    <text
+       x="174"
+       y="751"
+       font-size="25px"
+       font-weight="700"
+       fill="#1d314b"
+       text-anchor="start"
+       id="text80">PROJECT.d2f</text>
+    <text
+       x="174"
+       y="783"
+       font-size="19px"
+       font-weight="400"
+       fill="#3d5263"
+       text-anchor="start"
+       id="text82">Compressed XML / project definitions</text>
+    <rect
+       x="78"
+       y="823"
+       width="670"
+       height="104"
+       rx="12"
+       fill="#f7fbfe"
+       stroke="#bcd6e6"
+       stroke-width="1.7"
+       id="rect84" />
+    <rect
+       x="96"
+       y="844"
+       width="49"
+       height="60"
+       rx="6"
+       fill="#ffffff"
+       stroke="#d92f54"
+       stroke-width="2"
+       id="rect86" />
+    <path
+       d="m 126,844 v 18 h 19"
+       fill="none"
+       stroke="#d92f54"
+       stroke-width="2"
+       id="path88" />
+    <rect
+       x="97"
+       y="874"
+       width="47"
+       height="29"
+       rx="4"
+       fill="#d92f54"
+       stroke="#d92f54"
+       stroke-width="1"
+       id="rect90" />
+    <text
+       x="120.5"
+       y="895"
+       font-size="17px"
+       font-weight="700"
+       fill="#ffffff"
+       text-anchor="middle"
+       id="text92">M2F</text>
+    <text
+       x="174"
+       y="866"
+       font-size="25px"
+       font-weight="700"
+       fill="#1d314b"
+       text-anchor="start"
+       id="text94">mg0001.m2f</text>
+    <text
+       x="174"
+       y="898"
+       font-size="19px"
+       font-weight="400"
+       fill="#3d5263"
+       text-anchor="start"
+       id="text96">MG resource data</text>
+    <rect
+       x="78"
+       y="938"
+       width="670"
+       height="104"
+       rx="12"
+       fill="#f7fbfe"
+       stroke="#bcd6e6"
+       stroke-width="1.7"
+       id="rect98" />
+    <rect
+       x="96"
+       y="959"
+       width="49"
+       height="60"
+       rx="6"
+       fill="#ffffff"
+       stroke="#d58a0a"
+       stroke-width="2"
+       id="rect100" />
+    <path
+       d="m 126,959 v 18 h 19"
+       fill="none"
+       stroke="#d58a0a"
+       stroke-width="2"
+       id="path102" />
+    <rect
+       x="97"
+       y="989"
+       width="47"
+       height="29"
+       rx="4"
+       fill="#d58a0a"
+       stroke="#d58a0a"
+       stroke-width="1"
+       id="rect104" />
+    <text
+       x="120.5"
+       y="1010"
+       font-size="17px"
+       font-weight="700"
+       fill="#ffffff"
+       text-anchor="middle"
+       id="text106">O2F</text>
+    <text
+       x="174"
+       y="981"
+       font-size="25px"
+       font-weight="700"
+       fill="#1d314b"
+       text-anchor="start"
+       id="text108">bs0001.o2f ... bsNNNN.o2f</text>
+    <text
+       x="174"
+       y="1013"
+       font-size="19px"
+       font-weight="400"
+       fill="#3d5263"
+       text-anchor="start"
+       id="text110">BS screen / popup / keyboard object data</text>
+    <rect
+       x="78"
+       y="1053"
+       width="670"
+       height="104"
+       rx="12"
+       fill="#f7fbfe"
+       stroke="#bcd6e6"
+       stroke-width="1.7"
+       id="rect112" />
+    <rect
+       x="96"
+       y="1074"
+       width="49"
+       height="60"
+       rx="6"
+       fill="#ffffff"
+       stroke="#1e72b8"
+       stroke-width="2"
+       id="rect114" />
+    <path
+       d="m 126,1074 v 18 h 19"
+       fill="none"
+       stroke="#1e72b8"
+       stroke-width="2"
+       id="path116" />
+    <rect
+       x="97"
+       y="1104"
+       width="47"
+       height="29"
+       rx="4"
+       fill="#1e72b8"
+       stroke="#1e72b8"
+       stroke-width="1"
+       id="rect118" />
+    <text
+       x="120.5"
+       y="1125"
+       font-size="17px"
+       font-weight="700"
+       fill="#ffffff"
+       text-anchor="middle"
+       id="text120">G2F</text>
+    <text
+       x="174"
+       y="1096"
+       font-size="25px"
+       font-weight="700"
+       fill="#1d314b"
+       text-anchor="start"
+       id="text122">DRIVER1.G2F ... DRIVER4.G2F</text>
+    <text
+       x="174"
+       y="1128"
+       font-size="19px"
+       font-weight="400"
+       fill="#3d5263"
+       text-anchor="start"
+       id="text124">Communication driver resource</text>
+    <rect
+       x="79"
+       y="1180"
+       width="664"
+       height="263"
+       rx="12"
+       fill="#fff1dc"
+       stroke="#f17d16"
+       stroke-width="2.5"
+       id="rect126" />
+    <rect
+       x="101"
+       y="1203"
+       width="49"
+       height="60"
+       rx="6"
+       fill="#ffffff"
+       stroke="#f26a16"
+       stroke-width="2"
+       id="rect128" />
+    <path
+       d="m 131,1203 v 18 h 19"
+       fill="none"
+       stroke="#f26a16"
+       stroke-width="2"
+       id="path130" />
+    <rect
+       x="102"
+       y="1233"
+       width="47"
+       height="29"
+       rx="4"
+       fill="#f26a16"
+       stroke="#f26a16"
+       stroke-width="1"
+       id="rect132" />
+    <text
+       x="125.5"
+       y="1254"
+       font-size="17px"
+       font-weight="700"
+       fill="#ffffff"
+       text-anchor="middle"
+       id="text134">?</text>
+    <text
+       x="169"
+       y="1232"
+       font-size="22px"
+       font-weight="700"
+       fill="#c74c12"
+       text-anchor="start"
+       id="text136">Additional recognized extensions</text>
+    <text
+       x="169"
+       y="1262"
+       font-size="22px"
+       font-weight="700"
+       fill="#c74c12"
+       text-anchor="start"
+       id="text138">Unverified function</text>
+    <rect
+       x="99"
+       y="1291"
+       width="625"
+       height="126"
+       rx="11"
+       fill="#fffaf4"
+       stroke="#eba05e"
+       stroke-width="1.8"
+       id="rect140" />
+    <text
+       x="120"
+       y="1326"
+       font-size="20px"
+       font-weight="600"
+       fill="#29333b"
+       text-anchor="start"
+       id="text142">.c2f .e2f .i2f .l2f .p2f .q2f .s2f</text>
+    <text
+       x="120"
+       y="1360"
+       font-size="20px"
+       font-weight="600"
+       fill="#29333b"
+       text-anchor="start"
+       id="text144">.u2f .v2f .X2F .F2F .j2f .k2f .o1a .eip .mqt .bac</text>
+    <text
+       x="120"
+       y="1395"
+       font-size="17px"
+       font-weight="400"
+       fill="#6a5a4b"
+       text-anchor="start"
+       id="text146">Additional types found in IDEC software</text>
+    <rect
+       x="55"
+       y="1510"
+       width="721"
+       height="98"
+       rx="11"
+       fill="#edf9ed"
+       stroke="#56ae67"
+       stroke-width="2"
+       id="rect148" />
+    <rect
+       x="80"
+       y="1529"
+       width="49"
+       height="60"
+       rx="6"
+       fill="#ffffff"
+       stroke="#75818a"
+       stroke-width="2"
+       id="rect150" />
+    <path
+       d="m 110,1529 v 18 h 19"
+       fill="none"
+       stroke="#75818a"
+       stroke-width="2"
+       id="path152" />
+    <rect
+       x="81"
+       y="1559"
+       width="47"
+       height="29"
+       rx="4"
+       fill="#75818a"
+       stroke="#75818a"
+       stroke-width="1"
+       id="rect154" />
+    <text
+       x="104.5"
+       y="1580"
+       font-size="17px"
+       font-weight="700"
+       fill="#ffffff"
+       text-anchor="middle"
+       id="text156">MD5</text>
+    <text
+       x="161"
+       y="1551"
+       font-size="25px"
+       font-weight="700"
+       fill="#1e2930"
+       text-anchor="start"
+       id="text158">project.znv.md5</text>
+    <text
+       x="161"
+       y="1582"
+       font-size="19px"
+       font-weight="400"
+       fill="#47555c"
+       text-anchor="start"
+       id="text160">MD5 checksum for project.znv</text>
+    <rect
+       x="55"
+       y="1631"
+       width="721"
+       height="98"
+       rx="11"
+       fill="#edf9ed"
+       stroke="#56ae67"
+       stroke-width="2"
+       id="rect162" />
+    <rect
+       x="80"
+       y="1650"
+       width="49"
+       height="60"
+       rx="6"
+       fill="#ffffff"
+       stroke="#c28a1e"
+       stroke-width="2"
+       id="rect164" />
+    <path
+       d="m 110,1650 v 18 h 19"
+       fill="none"
+       stroke="#c28a1e"
+       stroke-width="2"
+       id="path166" />
+    <rect
+       x="81"
+       y="1680"
+       width="47"
+       height="29"
+       rx="4"
+       fill="#c28a1e"
+       stroke="#c28a1e"
+       stroke-width="1"
+       id="rect168" />
+    <text
+       x="104.5"
+       y="1701"
+       font-size="17px"
+       font-weight="700"
+       fill="#ffffff"
+       text-anchor="middle"
+       id="text170">XZ</text>
+    <text
+       x="161"
+       y="1672"
+       font-size="25px"
+       font-weight="700"
+       fill="#1e2930"
+       text-anchor="start"
+       id="text172">os_update.tar.xz</text>
+    <text
+       x="161"
+       y="1703"
+       font-size="19px"
+       font-weight="400"
+       fill="#47555c"
+       text-anchor="start"
+       id="text174">Linux / HMI OS update archive</text>
+    <rect
+       x="55"
+       y="1752"
+       width="721"
+       height="98"
+       rx="11"
+       fill="#edf9ed"
+       stroke="#56ae67"
+       stroke-width="2"
+       id="rect176" />
+    <rect
+       x="80"
+       y="1771"
+       width="49"
+       height="60"
+       rx="6"
+       fill="#ffffff"
+       stroke="#75818a"
+       stroke-width="2"
+       id="rect178" />
+    <path
+       d="m 110,1771 v 18 h 19"
+       fill="none"
+       stroke="#75818a"
+       stroke-width="2"
+       id="path180" />
+    <rect
+       x="81"
+       y="1801"
+       width="47"
+       height="29"
+       rx="4"
+       fill="#75818a"
+       stroke="#75818a"
+       stroke-width="1"
+       id="rect182" />
+    <text
+       x="104.5"
+       y="1822"
+       font-size="17px"
+       font-weight="700"
+       fill="#ffffff"
+       text-anchor="middle"
+       id="text184">MD5</text>
+    <text
+       x="161"
+       y="1793"
+       font-size="25px"
+       font-weight="700"
+       fill="#1e2930"
+       text-anchor="start"
+       id="text186">os_update.tar.xz.md5</text>
+    <text
+       x="161"
+       y="1824"
+       font-size="19px"
+       font-weight="400"
+       fill="#47555c"
+       text-anchor="start"
+       id="text188">MD5 checksum for the OS archive</text>
+    <rect
+       x="853"
+       y="329"
+       width="49"
+       height="60"
+       rx="6"
+       fill="#ffffff"
+       stroke="#207fd5"
+       stroke-width="2"
+       id="rect190" />
+    <path
+       d="m 883,329 v 18 h 19"
+       fill="none"
+       stroke="#207fd5"
+       stroke-width="2"
+       id="path192" />
+    <rect
+       x="854"
+       y="359"
+       width="47"
+       height="29"
+       rx="4"
+       fill="#207fd5"
+       stroke="#207fd5"
+       stroke-width="1"
+       id="rect194" />
+    <text
+       x="877.5"
+       y="380"
+       font-size="17px"
+       font-weight="700"
+       fill="#ffffff"
+       text-anchor="middle"
+       id="text196">T2F</text>
+    <text
+       x="924"
+       y="348"
+       font-size="25px"
+       font-weight="700"
+       fill="#202b36"
+       text-anchor="start"
+       id="text198">.t2f</text>
+    <text
+       x="924"
+       y="379"
+       font-size="18px"
+       font-weight="400"
+       fill="#495966"
+       text-anchor="start"
+       id="text200">Core project data</text>
+    <path
+       d="m 850,438 h 293"
+       stroke="#d2dce1"
+       stroke-width="1"
+       id="path202" />
+    <rect
+       x="853"
+       y="474"
+       width="49"
+       height="60"
+       rx="6"
+       fill="#ffffff"
+       stroke="#1b9b55"
+       stroke-width="2"
+       id="rect204" />
+    <path
+       d="m 883,474 v 18 h 19"
+       fill="none"
+       stroke="#1b9b55"
+       stroke-width="2"
+       id="path206" />
+    <rect
+       x="854"
+       y="504"
+       width="47"
+       height="29"
+       rx="4"
+       fill="#1b9b55"
+       stroke="#1b9b55"
+       stroke-width="1"
+       id="rect208" />
+    <text
+       x="877.5"
+       y="525"
+       font-size="17px"
+       font-weight="700"
+       fill="#ffffff"
+       text-anchor="middle"
+       id="text210">B2F</text>
+    <text
+       x="924"
+       y="493"
+       font-size="25px"
+       font-weight="700"
+       fill="#202b36"
+       text-anchor="start"
+       id="text212">.b2f</text>
+    <text
+       x="924"
+       y="524"
+       font-size="18px"
+       font-weight="400"
+       fill="#495966"
+       text-anchor="start"
+       id="text214">Core binary project data</text>
+    <path
+       d="m 850,583 h 293"
+       stroke="#d2dce1"
+       stroke-width="1"
+       id="path216" />
+    <rect
+       x="853"
+       y="619"
+       width="49"
+       height="60"
+       rx="6"
+       fill="#ffffff"
+       stroke="#8543be"
+       stroke-width="2"
+       id="rect218" />
+    <path
+       d="m 883,619 v 18 h 19"
+       fill="none"
+       stroke="#8543be"
+       stroke-width="2"
+       id="path220" />
+    <rect
+       x="854"
+       y="649"
+       width="47"
+       height="29"
+       rx="4"
+       fill="#8543be"
+       stroke="#8543be"
+       stroke-width="1"
+       id="rect222" />
+    <text
+       x="877.5"
+       y="670"
+       font-size="17px"
+       font-weight="700"
+       fill="#ffffff"
+       text-anchor="middle"
+       id="text224">D2F</text>
+    <text
+       x="924"
+       y="638"
+       font-size="25px"
+       font-weight="700"
+       fill="#202b36"
+       text-anchor="start"
+       id="text226">.d2f</text>
+    <text
+       x="924"
+       y="669"
+       font-size="18px"
+       font-weight="400"
+       fill="#495966"
+       text-anchor="start"
+       id="text228">Compressed XML /</text>
+    <text
+       x="924"
+       y="694"
+       font-size="18px"
+       font-weight="400"
+       fill="#495966"
+       text-anchor="start"
+       id="text230">project definitions</text>
+    <path
+       d="m 850,728 h 293"
+       stroke="#d2dce1"
+       stroke-width="1"
+       id="path232" />
+    <rect
+       x="853"
+       y="764"
+       width="49"
+       height="60"
+       rx="6"
+       fill="#ffffff"
+       stroke="#d92f54"
+       stroke-width="2"
+       id="rect234" />
+    <path
+       d="m 883,764 v 18 h 19"
+       fill="none"
+       stroke="#d92f54"
+       stroke-width="2"
+       id="path236" />
+    <rect
+       x="854"
+       y="794"
+       width="47"
+       height="29"
+       rx="4"
+       fill="#d92f54"
+       stroke="#d92f54"
+       stroke-width="1"
+       id="rect238" />
+    <text
+       x="877.5"
+       y="815"
+       font-size="17px"
+       font-weight="700"
+       fill="#ffffff"
+       text-anchor="middle"
+       id="text240">M2F</text>
+    <text
+       x="924"
+       y="783"
+       font-size="25px"
+       font-weight="700"
+       fill="#202b36"
+       text-anchor="start"
+       id="text242">.m2f</text>
+    <text
+       x="924"
+       y="814"
+       font-size="18px"
+       font-weight="400"
+       fill="#495966"
+       text-anchor="start"
+       id="text244">MG resource data</text>
+    <path
+       d="m 850,873 h 293"
+       stroke="#d2dce1"
+       stroke-width="1"
+       id="path246" />
+    <rect
+       x="853"
+       y="909"
+       width="49"
+       height="60"
+       rx="6"
+       fill="#ffffff"
+       stroke="#d58a0a"
+       stroke-width="2"
+       id="rect248" />
+    <path
+       d="m 883,909 v 18 h 19"
+       fill="none"
+       stroke="#d58a0a"
+       stroke-width="2"
+       id="path250" />
+    <rect
+       x="854"
+       y="939"
+       width="47"
+       height="29"
+       rx="4"
+       fill="#d58a0a"
+       stroke="#d58a0a"
+       stroke-width="1"
+       id="rect252" />
+    <text
+       x="877.5"
+       y="960"
+       font-size="17px"
+       font-weight="700"
+       fill="#ffffff"
+       text-anchor="middle"
+       id="text254">O2F</text>
+    <text
+       x="924"
+       y="928"
+       font-size="25px"
+       font-weight="700"
+       fill="#202b36"
+       text-anchor="start"
+       id="text256">.o2f</text>
+    <text
+       x="924"
+       y="959"
+       font-size="18px"
+       font-weight="400"
+       fill="#495966"
+       text-anchor="start"
+       id="text258">Screen / popup objects</text>
+    <text
+       x="924"
+       y="984"
+       font-size="18px"
+       font-weight="400"
+       fill="#495966"
+       text-anchor="start"
+       id="text260">Keyboard use: NV4</text>
+    <path
+       d="m 850,1018 h 293"
+       stroke="#d2dce1"
+       stroke-width="1"
+       id="path262" />
+    <rect
+       x="853"
+       y="1054"
+       width="49"
+       height="60"
+       rx="6"
+       fill="#ffffff"
+       stroke="#1e72b8"
+       stroke-width="2"
+       id="rect264" />
+    <path
+       d="m 883,1054 v 18 h 19"
+       fill="none"
+       stroke="#1e72b8"
+       stroke-width="2"
+       id="path266" />
+    <rect
+       x="854"
+       y="1084"
+       width="47"
+       height="29"
+       rx="4"
+       fill="#1e72b8"
+       stroke="#1e72b8"
+       stroke-width="1"
+       id="rect268" />
+    <text
+       x="877.5"
+       y="1105"
+       font-size="17px"
+       font-weight="700"
+       fill="#ffffff"
+       text-anchor="middle"
+       id="text270">G2F</text>
+    <text
+       x="924"
+       y="1073"
+       font-size="25px"
+       font-weight="700"
+       fill="#202b36"
+       text-anchor="start"
+       id="text272">.G2F</text>
+    <text
+       x="924"
+       y="1104"
+       font-size="18px"
+       font-weight="400"
+       fill="#495966"
+       text-anchor="start"
+       id="text274">Communication driver</text>
+    <path
+       d="m 850,1163 h 293"
+       stroke="#d2dce1"
+       stroke-width="1"
+       id="path276" />
+    <rect
+       x="853"
+       y="1199"
+       width="49"
+       height="60"
+       rx="6"
+       fill="#ffffff"
+       stroke="#f26a16"
+       stroke-width="2"
+       id="rect278" />
+    <path
+       d="m 883,1199 v 18 h 19"
+       fill="none"
+       stroke="#f26a16"
+       stroke-width="2"
+       id="path280" />
+    <rect
+       x="854"
+       y="1229"
+       width="47"
+       height="29"
+       rx="4"
+       fill="#f26a16"
+       stroke="#f26a16"
+       stroke-width="1"
+       id="rect282" />
+    <text
+       x="877.5"
+       y="1250"
+       font-size="17px"
+       font-weight="700"
+       fill="#ffffff"
+       text-anchor="middle"
+       id="text284">?</text>
+    <text
+       x="924"
+       y="1218"
+       font-size="25px"
+       font-weight="700"
+       fill="#202b36"
+       text-anchor="start"
+       id="text286">Unverified set</text>
+    <text
+       x="924"
+       y="1249"
+       font-size="18px"
+       font-weight="400"
+       fill="#495966"
+       text-anchor="start"
+       id="text288">Unverified function</text>
+    <path
+       d="m 850,1308 h 293"
+       stroke="#d2dce1"
+       stroke-width="1"
+       id="path290" />
+    <rect
+       x="843"
+       y="1385"
+       width="307"
+       height="370"
+       rx="11"
+       fill="#ffffff"
+       stroke="#d8e0e5"
+       stroke-width="1.6"
+       id="rect292" />
+    <text
+       x="861"
+       y="1422"
+       font-size="21px"
+       font-weight="700"
+       fill="#243a4d"
+       text-anchor="start"
+       id="text294">Additional constituents</text>
+    <text
+       x="861"
+       y="1456"
+       font-size="18px"
+       font-weight="400"
+       fill="#4e5b66"
+       text-anchor="start"
+       id="text296">.c2f .e2f .i2f .l2f</text>
+    <text
+       x="861"
+       y="1486"
+       font-size="18px"
+       font-weight="400"
+       fill="#4e5b66"
+       text-anchor="start"
+       id="text298">.p2f .q2f .s2f .u2f</text>
+    <text
+       x="861"
+       y="1516"
+       font-size="18px"
+       font-weight="400"
+       fill="#4e5b66"
+       text-anchor="start"
+       id="text300">.v2f .X2F .F2F</text>
+    <text
+       x="861"
+       y="1546"
+       font-size="18px"
+       font-weight="400"
+       fill="#4e5b66"
+       text-anchor="start"
+       id="text302">.j2f .k2f .o1a .eip .mqt .bac</text>
+    <path
+       d="m 862,1580 h 271"
+       stroke="#d2dce1"
+       stroke-width="1"
+       id="path304" />
+    <text
+       x="861"
+       y="1616"
+       font-size="19px"
+       font-weight="700"
+       fill="#bf6316"
+       text-anchor="start"
+       id="text306">Orange = function</text>
+    <text
+       x="861"
+       y="1644"
+       font-size="19px"
+       font-weight="700"
+       fill="#bf6316"
+       text-anchor="start"
+       id="text308">not yet verified</text>
+    <text
+       x="861"
+       y="1690"
+       font-size="17px"
+       font-weight="400"
+       fill="#607079"
+       text-anchor="start"
+       id="text310">Presence varies by project.</text>
+    <path
+       d="M 48,1946 H 1152"
+       stroke="#d7dee3"
+       stroke-width="1.3"
+       id="path312" />
+    <text
+       x="50"
+       y="1986"
+       font-size="19px"
+       font-weight="400"
+       fill="#4b5962"
+       text-anchor="start"
+       id="text314">Note: ZNV constituents may vary by project and may not appear in the order shown.</text>
+    <text
+       x="50"
+       y="2017"
+       font-size="19px"
+       font-weight="400"
+       fill="#4b5962"
+       text-anchor="start"
+       id="text316">Graphic not to scale.</text>
+  </g>
+</svg>

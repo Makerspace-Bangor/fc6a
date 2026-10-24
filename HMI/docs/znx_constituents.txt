@@ -1,0 +1,80 @@
+Project files	/PROJECT, /HGWORK/PRO, .ZNV
+Project constituents	.l2f, .o2f, .m2f, .t2f, .i2f, .d2f, .e2f, .s2f, .p2f, .u2f, .v2f, .b2f, .c2f, .X2F, .q2f
+Additional constituent	.F2F
+Communication drivers	DRIVER1.G2F through DRIVER4.G2F
+Executables	/HG2F.BIN, /FT2J_PLCSYS.BIN
+Other resources	/EXFONT.BIN, /logo.ppm, /logo.ini
+Protocol-related extensions	.bac, .eip, .mqt
+Other directories	/HGWORK, /BS, /SA, /RCP, /MG
+
+Observed in extracted ZNV projects	.b2f, .d2f, .e2f, .i2f, .l2f, .m2f, .o2f, .p2f, .s2f, .t2f
+Additional types in HG2J runtime and simulator	.c2f, .q2f, .u2f, .v2f, .X2F, .F2F
+Additional types in Downloader.exe	.j2f, .k2f
+Communication-driver resources	.G2F
+Other resource type	.o1a
+
+sl@cker:~/Desktop/HG2J_RoMS$ strings -a -t x HG2F.BIN | awk '$1 >= "19fa40" && $1 <= "19ff00"'
+ ... 
+ 19fab r!F(F
+  19fde !F(F
+ 19fc28 /HGWORK/
+ 19fc34 /HGWORK/HG2F.BIN
+ 19fc50 /FT2J_PLCSYS.BIN
+ 19fc64 /HGWORK
+ 19fc6c /DRIVER4.G2F
+ 19fc7c /DRIVER2.G2F
+ 19fc8c /DRIVER3.G2F
+ 19fc9c /DRIVER1.G2F
+ 19fcac /HGWORK/PRO
+ 19fcb8 /HG2F.BIN
+ 19fcc4 .l2f
+ 19fccc /PROJECT
+ 19fcdc .o2f
+ 19fce8 /RCP
+ 19fcf0 .F2F
+ 19fcfc .m2f
+ 19fd04 .t2f
+ 19fd0c .i2f
+ 19fd14 .d2f
+ 19fd1c .e2f
+ 19fd24 .s2f
+ 19fd2c .p2f
+ 19fd34 .u2f
+ 19fd3c .v2f
+ 19fd44 .b2f
+ 19fd4c .c2f
+ 19fd54 .X2F
+ 19fd5c .q2f
+ 19fd64 .bac
+ 19fd6c .eip
+ 19fd74 .mqt
+ 19fd7c /EXFONT.BIN
+ 19fd88 /logo.ppm
+ 19fd94 /logo.ini
+ 19fda4 .ZNV
+ 19fdac CP932
+ 19fdb6 ISO8859-1
+ 19fdca BIG5
+ 19fdde CP1250
+ 19fde8 CP1257
+ 19fdf2 CP1251
+ 19fdfc ISO8859-1
+ 19fe08 /usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc
+ 19fe40 /usr/share/fonts/ttf-mplus/mplus-1m-regular.ttf
+ 19fe70 /usr/share/fonts/truetype/dseg/DSEG7ClassicMini-BoldItalic-TS.ttf
+ 19feb4 UCS2//IGNORE
+ 19fec4 iconv_open
+ 19fed0 iconv
+ 19fee8 false
+ 19fefc true
+...
+
+find ~/AO -type f \
+    \( -iname '*.l2f' -o -iname '*.o2f' -o -iname '*.F2F' \
+    -o -iname '*.m2f' -o -iname '*.t2f' -o -iname '*.i2f' \
+    -o -iname '*.d2f' -o -iname '*.e2f' -o -iname '*.s2f' \
+    -o -iname '*.p2f' -o -iname '*.u2f' -o -iname '*.v2f' \
+    -o -iname '*.b2f' -o -iname '*.c2f' -o -iname '*.X2F' \
+    -o -iname '*.q2f' -o -iname '*.G2F' \
+    -o -iname '*.bac' -o -iname '*.eip' -o -iname '*.mqt' \) \
+    -print
