@@ -1,0 +1,387 @@
+IDEC ZNV deconstruction log
+===========================
+
+source: webPage1.ZNV
+size: 2021864 bytes / 0x1ed9e8
+magic at 0x10: yes
+parser mode: observed-layout
+entries: 27
+
+[000] PROJECT.t2f
+  confidence:       observed-layout
+  record offset:    0x00000050
+  relative offset:  0x00000024
+  data offset:      0x00000074
+  size:             1532 / 0x5fc
+  end offset:       0x00000670
+  check/unknown:    0x8a61dde8
+  unknown A:        0x000042ca
+  unknown B:        0x000042ca
+  unknown C:        0x0000
+  name field len:   12 / 0xc
+  sha256:           ca7eaefc16e7731c4e3bb303f60e6bf710493e8e6b0b7ec1b9cfe0846214ddde
+
+[001] PROJECT.b2f
+  confidence:       observed-layout
+  record offset:    0x00000670
+  relative offset:  0x00000024
+  data offset:      0x00000694
+  size:             12 / 0xc
+  end offset:       0x000006a0
+  check/unknown:    0x1234565d
+  unknown A:        0x000042ca
+  unknown B:        0x000042ca
+  unknown C:        0x0000
+  name field len:   12 / 0xc
+  sha256:           9746e3507b0919613c47c81cd8cd41bad85d5ba5662dca5d041472b878c11cc1
+
+[002] mg0001.m2f
+  confidence:       observed-layout
+  record offset:    0x000006a0
+  relative offset:  0x00000024
+  data offset:      0x000006c4
+  size:             40 / 0x28
+  end offset:       0x000006ec
+  check/unknown:    0x755e5212
+  unknown A:        0x000042ca
+  unknown B:        0x000042ca
+  unknown C:        0x0000
+  name field len:   12 / 0xc
+  sha256:           5cea2669b07d5181f629e394dc7db4619df51767e7755d4c3f3e0eaa61c78e70
+
+[003] PROJECT.i2f
+  confidence:       observed-layout
+  record offset:    0x000006ec
+  relative offset:  0x00000024
+  data offset:      0x00000710
+  size:             740 / 0x2e4
+  end offset:       0x000009f4
+  check/unknown:    0x023dfcdb
+  unknown A:        0x000042ca
+  unknown B:        0x000042ca
+  unknown C:        0x0000
+  name field len:   12 / 0xc
+  sha256:           20a4a52fed4a2d8dd8931fe2c8760c5559bcbb02b93594c9044feb3f67e5ed52
+
+[004] PROJECT.d2f
+  confidence:       observed-layout
+  record offset:    0x000009f4
+  relative offset:  0x00000024
+  data offset:      0x00000a18
+  size:             12136 / 0x2f68
+  end offset:       0x00003980
+  check/unknown:    0x6f887f8c
+  unknown A:        0x000042ca
+  unknown B:        0x000042ca
+  unknown C:        0x0000
+  name field len:   12 / 0xc
+  sha256:           c70685ae2d917859c37a4e84f8d84701537eb49bd70f2b51e5b90e2e8e9a2c00
+
+[005] PROJECT.e2f
+  confidence:       observed-layout
+  record offset:    0x00003980
+  relative offset:  0x00000024
+  data offset:      0x000039a4
+  size:             28 / 0x1c
+  end offset:       0x000039c0
+  check/unknown:    0x00000018
+  unknown A:        0x000042ca
+  unknown B:        0x000042ca
+  unknown C:        0x0000
+  name field len:   12 / 0xc
+  sha256:           c4512b9808341d9f2558d8b508d17d402d2b2b2cf0dc0091373e1c1ef2309ab1
+
+[006] PROJECT.s2f
+  confidence:       observed-layout
+  record offset:    0x000039c0
+  relative offset:  0x00000024
+  data offset:      0x000039e4
+  size:             4 / 0x4
+  end offset:       0x000039e8
+  check/unknown:    0x00000004
+  unknown A:        0x000042ca
+  unknown B:        0x000042ca
+  unknown C:        0x0000
+  name field len:   12 / 0xc
+  sha256:           fb5e512425fc9449316ec95969ebe71e2d576dbab833d61e2a5b9330fd70ee02
+
+[007] PROJECT.p2f
+  confidence:       observed-layout
+  record offset:    0x000039e8
+  relative offset:  0x00000024
+  data offset:      0x00003a0c
+  size:             3712 / 0xe80
+  end offset:       0x0000488c
+  check/unknown:    0xbcaf76b7
+  unknown A:        0x000042ca
+  unknown B:        0x000042ca
+  unknown C:        0x0000
+  name field len:   12 / 0xc
+  sha256:           4213ab7c57b7ad82e6da1640c8397100b378cbf5da0fee04e46e4b79d174af9b
+
+[008] PROJECT.l2f
+  confidence:       observed-layout
+  record offset:    0x0000488c
+  relative offset:  0x00000024
+  data offset:      0x000048b0
+  size:             852 / 0x354
+  end offset:       0x00004c04
+  check/unknown:    0xe035cc8e
+  unknown A:        0x000042ca
+  unknown B:        0x000042ca
+  unknown C:        0x0000
+  name field len:   12 / 0xc
+  sha256:           f50454ab9f3ca479231662c8060e2fbb3c3752ce153e439884f7ba2469f8d88d
+
+[009] bs0001.o2f
+  confidence:       observed-layout
+  record offset:    0x00004c04
+  relative offset:  0x00000024
+  data offset:      0x00004c28
+  size:             96 / 0x60
+  end offset:       0x00004c88
+  check/unknown:    0xff1ef47b
+  unknown A:        0x000042ca
+  unknown B:        0x000042ca
+  unknown C:        0x0000
+  name field len:   12 / 0xc
+  sha256:           de54b72cbc9d83382b4cd505520af157a60e308ac638997cca4f8ab7427915cf
+
+[010] sa3001.o2f
+  confidence:       observed-layout
+  record offset:    0x00004c88
+  relative offset:  0x00000024
+  data offset:      0x00004cac
+  size:             3756 / 0xeac
+  end offset:       0x00005b58
+  check/unknown:    0x83f35de7
+  unknown A:        0x000042ca
+  unknown B:        0x000042ca
+  unknown C:        0x0000
+  name field len:   12 / 0xc
+  sha256:           a2289c459987e193e7d9581698a4c9d41e031ff8f2530eb49cc28cc0dcae923f
+
+[011] sa3002.o2f
+  confidence:       observed-layout
+  record offset:    0x00005b58
+  relative offset:  0x00000024
+  data offset:      0x00005b7c
+  size:             4652 / 0x122c
+  end offset:       0x00006da8
+  check/unknown:    0x83e2be1d
+  unknown A:        0x000042ca
+  unknown B:        0x000042ca
+  unknown C:        0x0000
+  name field len:   12 / 0xc
+  sha256:           939406a3313b069d24b849930c5b50813aa3895fd8be7f274a644dcd10ede5d6
+
+[012] sa3003.o2f
+  confidence:       observed-layout
+  record offset:    0x00006da8
+  relative offset:  0x00000024
+  data offset:      0x00006dcc
+  size:             8260 / 0x2044
+  end offset:       0x00008e10
+  check/unknown:    0x70cad698
+  unknown A:        0x000042ca
+  unknown B:        0x000042ca
+  unknown C:        0x0000
+  name field len:   12 / 0xc
+  sha256:           75007797ee9d0ee16d0ca0afbbac5e14648d5013e42b892513bcc35fa9d58463
+
+[013] sa3004.o2f
+  confidence:       observed-layout
+  record offset:    0x00008e10
+  relative offset:  0x00000024
+  data offset:      0x00008e34
+  size:             8260 / 0x2044
+  end offset:       0x0000ae78
+  check/unknown:    0x70edce46
+  unknown A:        0x000042ca
+  unknown B:        0x000042ca
+  unknown C:        0x0000
+  name field len:   12 / 0xc
+  sha256:           bdf65583ef8cb6e0445af56c6187d88f261614e53afcbef3b60cc7d075c4731c
+
+[014] sa3005.o2f
+  confidence:       observed-layout
+  record offset:    0x0000ae78
+  relative offset:  0x00000024
+  data offset:      0x0000ae9c
+  size:             11612 / 0x2d5c
+  end offset:       0x0000dbf8
+  check/unknown:    0x483bd9e2
+  unknown A:        0x000042ca
+  unknown B:        0x000042ca
+  unknown C:        0x0000
+  name field len:   12 / 0xc
+  sha256:           e7a1a38fc7b31f720e9e2eb178ff170517854b4e543d2cd66605c3f1f721df01
+
+[015] sa3009.o2f
+  confidence:       observed-layout
+  record offset:    0x0000dbf8
+  relative offset:  0x00000024
+  data offset:      0x0000dc1c
+  size:             8908 / 0x22cc
+  end offset:       0x0000fee8
+  check/unknown:    0x5428b6e4
+  unknown A:        0x000042ca
+  unknown B:        0x000042ca
+  unknown C:        0x0000
+  name field len:   12 / 0xc
+  sha256:           f83401e9e8abff35f0ebb64a5b2772c39ff0ef19ec9a31c65d4fd2098096c2cc
+
+[016] sa3010.o2f
+  confidence:       observed-layout
+  record offset:    0x0000fee8
+  relative offset:  0x00000024
+  data offset:      0x0000ff0c
+  size:             8912 / 0x22d0
+  end offset:       0x000121dc
+  check/unknown:    0x3814898d
+  unknown A:        0x000042ca
+  unknown B:        0x000042ca
+  unknown C:        0x0000
+  name field len:   12 / 0xc
+  sha256:           963d7b888c40167604d157c205d9dc73b833a3483248b14c3150fa5fdc6094c3
+
+[017] sa3011.o2f
+  confidence:       observed-layout
+  record offset:    0x000121dc
+  relative offset:  0x00000024
+  data offset:      0x00012200
+  size:             4924 / 0x133c
+  end offset:       0x0001353c
+  check/unknown:    0x895be370
+  unknown A:        0x000042ca
+  unknown B:        0x000042ca
+  unknown C:        0x0000
+  name field len:   12 / 0xc
+  sha256:           ccc2017675c8652f49d1d97f56311786e2678cbd94a4e37e190164c935d0fb1f
+
+[018] sa3012.o2f
+  confidence:       observed-layout
+  record offset:    0x0001353c
+  relative offset:  0x00000024
+  data offset:      0x00013560
+  size:             13240 / 0x33b8
+  end offset:       0x00016918
+  check/unknown:    0x1c7ad6eb
+  unknown A:        0x000042ca
+  unknown B:        0x000042ca
+  unknown C:        0x0000
+  name field len:   12 / 0xc
+  sha256:           0f83aed04e5ac3fd1a27e15dbf71c5a2886c0b490853e22fec793c7a05137d3d
+
+[019] sa3013.o2f
+  confidence:       observed-layout
+  record offset:    0x00016918
+  relative offset:  0x00000024
+  data offset:      0x0001693c
+  size:             13240 / 0x33b8
+  end offset:       0x00019cf4
+  check/unknown:    0x1c7bd6eb
+  unknown A:        0x000042ca
+  unknown B:        0x000042ca
+  unknown C:        0x0000
+  name field len:   12 / 0xc
+  sha256:           e61f010b8bb35981a8d6886531d4b731109f1acd6f7ef5dbee07d8d08a277f17
+
+[020] PROJECT.u2f
+  confidence:       observed-layout
+  record offset:    0x00019cf4
+  relative offset:  0x00000024
+  data offset:      0x00019d18
+  size:             40 / 0x28
+  end offset:       0x00019d40
+  check/unknown:    0x00000024
+  unknown A:        0x000042ca
+  unknown B:        0x000042ca
+  unknown C:        0x0000
+  name field len:   12 / 0xc
+  sha256:           046ca43f697335024b3e6d0ede770866f526d3f0afb08d5507951a23c9cccb43
+
+[021] PROJECT.q2f
+  confidence:       observed-layout
+  record offset:    0x00019d40
+  relative offset:  0x00000024
+  data offset:      0x00019d64
+  size:             4184 / 0x1058
+  end offset:       0x0001adbc
+  check/unknown:    0xbf02a95b
+  unknown A:        0x000042ca
+  unknown B:        0x000042ca
+  unknown C:        0x0000
+  name field len:   12 / 0xc
+  sha256:           7f0e9199af2f7de0f3ef1fceb099876fc1b51dc98dba504157b265fc265303e3
+
+[022] DRIVER1.G2F
+  confidence:       observed-layout
+  record offset:    0x0001adbc
+  relative offset:  0x00000024
+  data offset:      0x0001ade0
+  size:             53248 / 0xd000
+  end offset:       0x00027de0
+  check/unknown:    0x1234998c
+  unknown A:        0x00003ec0
+  unknown B:        0x00003ec0
+  unknown C:        0x0000
+  name field len:   12 / 0xc
+  sha256:           441421d7d7f84dbdef0c82a7faf2a7ef19067311aa2431a4dbdf09dee433de06
+
+[023] DRIVER2.G2F
+  confidence:       observed-layout
+  record offset:    0x00027de0
+  relative offset:  0x00000024
+  data offset:      0x00027e04
+  size:             6144 / 0x1800
+  end offset:       0x00029604
+  check/unknown:    0x1234418c
+  unknown A:        0x00003ec0
+  unknown B:        0x00003ec0
+  unknown C:        0x0000
+  name field len:   12 / 0xc
+  sha256:           580915f210b563e7d2ebafee00ccb879d3cb680f811924e1e0a35818d8286b04
+
+[024] DRIVER3.G2F
+  confidence:       observed-layout
+  record offset:    0x00029604
+  relative offset:  0x00000024
+  data offset:      0x00029628
+  size:             6144 / 0x1800
+  end offset:       0x0002ae28
+  check/unknown:    0x1234418c
+  unknown A:        0x00003ec0
+  unknown B:        0x00003ec0
+  unknown C:        0x0000
+  name field len:   12 / 0xc
+  sha256:           580915f210b563e7d2ebafee00ccb879d3cb680f811924e1e0a35818d8286b04
+
+[025] DRIVER4.G2F
+  confidence:       observed-layout
+  record offset:    0x0002ae28
+  relative offset:  0x00000024
+  data offset:      0x0002ae4c
+  size:             6144 / 0x1800
+  end offset:       0x0002c64c
+  check/unknown:    0x1234418c
+  unknown A:        0x00003ec0
+  unknown B:        0x00003ec0
+  unknown C:        0x0000
+  name field len:   12 / 0xc
+  sha256:           580915f210b563e7d2ebafee00ccb879d3cb680f811924e1e0a35818d8286b04
+
+[026] HG2F.BIN
+  confidence:       observed-layout
+  record offset:    0x0002c64c
+  relative offset:  0x00000024
+  data offset:      0x0002c670
+  size:             1839992 / 0x1c1378
+  end offset:       0x001ed9e8
+  check/unknown:    0x97734f5d
+  unknown A:        0x00003ed9
+  unknown B:        0x00003ed9
+  unknown C:        0x0000
+  name field len:   12 / 0xc
+  sha256:           3a1cef8776312e8c5c77f362fdcc45c51f5d09275b2dd72b590f9f88f29fb5ae
+

@@ -1,0 +1,19 @@
+l@cker:~/Desktop/ismod$ git clone --single-branch --branch processor-sdk-linux-4.19.y \
+    https://git.ti.com/git/processor-sdk/processor-sdk-linux.git \
+    hg2j-linux
+l@cker:~/Desktop/ismod$ cd hg2j-linux/
+l@cker:~/Desktop/ismod/hg2j-linux$ git checkout --detach 5f8c1c6121
+HEAD is now at 5f8c1c6121da Merge pull request #184 in PROCESSOR-SDK/processor-sdk-linux from increase_ipc_memory to processor-sdk-linux-4.19.y
+l@cker:~/Desktop/ismod/hg2j-linux$ command -v arm-linux-gnueabihf-gcc arm-linux-gnueabi-gcc
+/usr/bin/arm-linux-gnueabi-gcc
+l@cker:~/Desktop/ismod/hg2j-linux$ arm-linux-gnueabi-gcc --version | head -n 1
+arm-linux-gnueabi-gcc (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0
+l@cker:~/Desktop/ismod/hg2j-linux$ cp ../hg2j-kernel.config .config
+l@cker:~/Desktop/ismod/hg2j-linux$ scripts/config --module INPUT_UINPUT
+l@cker:~/Desktop/ismod/hg2j-linux$ scripts/config --disable LOCALVERSION_AUTO
+l@cker:~/Desktop/ismod/hg2j-linux$ scripts/config --set-str LOCALVERSION '-idec-hg2j-001.001.000.000-g5f8c1c6121'
+l@cker:~/Desktop/ismod/hg2j-linux$ make ARCH=arm CROSS_COMPILE=arm-linux-gnueabi- olddefconfig
+
+
+l@cker:~/Desktop/ismod/hg2j-linux$ sed -i '/^YYLTYPE yylloc;$/d' scripts/dtc/dtc-lexer.l
+l@cker:~/Desktop/ismod/hg2j-linux$ make ARCH=arm CROSS_COMPILE=arm-linux-gnueabi- LOCALVERSION= modules_prepare
