@@ -20,6 +20,7 @@ docker rm -f "$CONTAINER" 2>/dev/null || true
 docker run -d \
     --name "$CONTAINER" \
     --platform linux/arm/v7 \
+    --mount type=bind,src="$(pwd)/runtime-rom",dst=/home/idec/rom \
     --network none \
     --cap-drop ALL \
     --security-opt no-new-privileges \
